@@ -11,4 +11,4 @@
 .\_build\system_nrf51.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_bitfields.h
 .\_build\system_nrf51.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_deprecated.h
 .\_build\system_nrf51.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\compiler_abstraction.h
-.\_build\system_nrf51.o: ..\..\..\..\..\..\..\components\toolchain\system_nrf51.h
+.\_build\system_nrf51.o: ..\..\..\..\components\toolchain\system_nrf51.h

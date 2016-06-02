@@ -1,4 +1,4 @@
-.\_build\nrf_delay.o: ..\..\..\..\..\..\..\components\drivers_nrf\delay\nrf_delay.c
+.\_build\nrf_delay.o: ..\..\..\..\components\drivers_nrf\delay\nrf_delay.c
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\compiler_abstraction.h
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf.h
@@ -11,4 +11,4 @@
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\system_nrf51.h
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_bitfields.h
 .\_build\nrf_delay.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_deprecated.h
-.\_build\nrf_delay.o: ..\..\..\..\..\..\..\components\drivers_nrf\delay\nrf_delay.h
+.\_build\nrf_delay.o: ..\..\..\..\components\drivers_nrf\delay\nrf_delay.h
