@@ -1346,7 +1346,7 @@
       <Size>100</Size>
       <ActiveTab>8</ActiveTab>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\softdevice\s130\headers\ble_ranges.h</Name>
+        <Name>..\..\..\..\components\softdevice\s130\headers\ble_ranges.h</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>90</TopLine>
         <CurrentLine>1</CurrentLine>
@@ -1355,7 +1355,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\softdevice\s130\headers\ble_gatt.h</Name>
+        <Name>..\..\..\..\components\softdevice\s130\headers\ble_gatt.h</Name>
         <ColumnNumber>79</ColumnNumber>
         <TopLine>176</TopLine>
         <CurrentLine>84</CurrentLine>
@@ -1364,7 +1364,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_advertising\ble_advertising.h</Name>
+        <Name>..\..\..\..\components\ble\ble_advertising\ble_advertising.h</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>187</TopLine>
         <CurrentLine>1</CurrentLine>
@@ -1373,7 +1373,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_services\ble_dis\ble_dis.h</Name>
+        <Name>..\..\..\..\components\ble\ble_services\ble_dis\ble_dis.h</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>1</CurrentLine>
@@ -1382,7 +1382,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_advertising\ble_advertising.c</Name>
+        <Name>..\..\..\..\components\ble\ble_advertising\ble_advertising.c</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>467</TopLine>
         <CurrentLine>212</CurrentLine>
@@ -1391,7 +1391,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.h</Name>
+        <Name>..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.h</Name>
         <ColumnNumber>8</ColumnNumber>
         <TopLine>31</TopLine>
         <CurrentLine>54</CurrentLine>
@@ -1400,7 +1400,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c</Name>
+        <Name>..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>335</TopLine>
         <CurrentLine>367</CurrentLine>
@@ -1409,7 +1409,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\common\ble_srv_common.h</Name>
+        <Name>..\..\..\..\components\ble\common\ble_srv_common.h</Name>
         <ColumnNumber>45</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>45</CurrentLine>
@@ -1418,7 +1418,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.c</Name>
+        <Name>..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.c</Name>
         <ColumnNumber>29</ColumnNumber>
         <TopLine>347</TopLine>
         <CurrentLine>376</CurrentLine>
@@ -1427,7 +1427,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\device_manager\device_manager_peripheral.c</Name>
+        <Name>..\..\..\..\components\ble\device_manager\device_manager_peripheral.c</Name>
         <ColumnNumber>5</ColumnNumber>
         <TopLine>2907</TopLine>
         <CurrentLine>331</CurrentLine>
@@ -1436,7 +1436,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\common\ble_srv_common.c</Name>
+        <Name>..\..\..\..\components\ble\common\ble_srv_common.c</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>43</TopLine>
         <CurrentLine>54</CurrentLine>
@@ -1463,7 +1463,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\common\ble_advdata.h</Name>
+        <Name>..\..\..\..\components\ble\common\ble_advdata.h</Name>
         <ColumnNumber>104</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>97</CurrentLine>
@@ -1472,7 +1472,7 @@
         <PaneID>0</PaneID>
       </Doc>
       <Doc>
-        <Name>..\..\..\..\..\..\..\components\ble\ble_services\ble_bas\ble_bas.h</Name>
+        <Name>..\..\..\..\components\ble\ble_services\ble_bas\ble_bas.h</Name>
         <ColumnNumber>0</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>1</CurrentLine>
