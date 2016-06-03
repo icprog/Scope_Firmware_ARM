@@ -10,6 +10,37 @@
 #include "sdk_common.h"
 
 
+
+void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt)
+{
+		initial_slope=0;
+    if (p_bas == NULL || p_ble_evt == NULL)
+    {
+        return;
+    }
+    
+    switch (p_ble_evt->header.evt_id)
+    {
+        case BLE_GAP_EVT_CONNECTED:
+            //on_connect(p_bas, p_ble_evt);
+            break;
+
+        case BLE_GAP_EVT_DISCONNECTED:
+            //on_disconnect(p_bas, p_ble_evt);
+            break;
+
+        case BLE_GATTS_EVT_WRITE:
+            //on_write(p_bas, p_ble_evt);
+						initial_slope=0;
+            break;
+
+        default:
+            // No implementation needed.
+            break;
+    }
+}
+
+
 /**@brief Function for handling the Connect event.
  *
  * @param[in] p_dev_status      LED Button Service structure.
@@ -40,6 +71,7 @@ static void on_disconnect(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt
  */
 static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt)
 {
+	initial_slope=0;
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
     if ((p_evt_write->handle == p_dev_status->led_char_handles.value_handle) &&
@@ -271,7 +303,7 @@ static uint32_t slope_char_add(ble_dev_status_t * p_dev_status, const ble_dev_st
     attr_char_value.init_len     = sizeof(uint8_t);
     attr_char_value.init_offs    = 0;
     attr_char_value.max_len      = sizeof(uint8_t);
-    attr_char_value.p_value      = NULL;
+    attr_char_value.p_value      = &initial_slope;
 
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                            &char_md,

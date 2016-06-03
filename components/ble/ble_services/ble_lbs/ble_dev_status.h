@@ -57,6 +57,7 @@
 #define SCOPE_UUID_SNOW_PROFILE			0x145C
 #define SCOPE_UUID_SLOPE						0x112C									 
 															
+static uint8_t             initial_slope = 0x13;
 															
 // Forward declaration of the ble_dev_status_t type. 
 typedef struct ble_dev_status_s ble_dev_status_t;
@@ -81,6 +82,7 @@ struct ble_dev_status_s
     ble_dev_status_led_write_handler_t led_write_handler;   /**< Event handler to be called when the LED Characteristic is written. */
 };
 
+void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
 /**@brief Function for initializing the LED Button Service.
  *
  * @param[out] p_dev_status      LED Button Service structure. This structure must be supplied by
