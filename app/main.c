@@ -282,15 +282,15 @@ static void timers_init(void)
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
     // Create timers.
-    err_code = app_timer_create(&m_battery_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                battery_level_meas_timeout_handler);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_create(&m_battery_timer_id,
+//                                APP_TIMER_MODE_REPEATED,
+//                                battery_level_meas_timeout_handler);
+//    APP_ERROR_CHECK(err_code);
 
-    err_code = app_timer_create(&m_heart_rate_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                heart_rate_meas_timeout_handler);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_create(&m_heart_rate_timer_id,
+//                                APP_TIMER_MODE_REPEATED,
+//                                heart_rate_meas_timeout_handler);
+//    APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_create(&m_rr_interval_timer_id,
                                 APP_TIMER_MODE_REPEATED,
@@ -358,50 +358,50 @@ static void dev_status_write_handler(ble_dev_status_t * p_lbs, uint8_t led_state
 static void services_init(void)
 {
     uint32_t       err_code;
-    ble_hrs_init_t hrs_init;
-    ble_bas_init_t bas_init;
+    //ble_hrs_init_t hrs_init;
+    //ble_bas_init_t bas_init;
     ble_dis_init_t dis_init;
 		ble_dev_status_init_t dev_init;
 	  ble_dev_status_t dev_status;
     uint8_t        body_sensor_location;
 
     // Initialize Heart Rate Service.
-    body_sensor_location = BLE_HRS_BODY_SENSOR_LOCATION_FINGER;
+//    body_sensor_location = BLE_HRS_BODY_SENSOR_LOCATION_FINGER;
 
-    memset(&hrs_init, 0, sizeof(hrs_init));
+//    memset(&hrs_init, 0, sizeof(hrs_init));
 
-    hrs_init.evt_handler                 = NULL;
-    hrs_init.is_sensor_contact_supported = true;
-    hrs_init.p_body_sensor_location      = &body_sensor_location;
+//    hrs_init.evt_handler                 = NULL;
+//    hrs_init.is_sensor_contact_supported = true;
+//    hrs_init.p_body_sensor_location      = &body_sensor_location;
 
-    // Here the sec level for the Heart Rate Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_hrm_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.write_perm);
+//    // Here the sec level for the Heart Rate Service can be changed/increased.
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_hrm_attr_md.cccd_write_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.write_perm);
 
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_bsl_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_bsl_attr_md.write_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_bsl_attr_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_bsl_attr_md.write_perm);
 
-    err_code = ble_hrs_init(&m_hrs, &hrs_init);
-    APP_ERROR_CHECK(err_code);
+//    err_code = ble_hrs_init(&m_hrs, &hrs_init);
+//    APP_ERROR_CHECK(err_code);
 
-    // Initialize Battery Service.
-    memset(&bas_init, 0, sizeof(bas_init));
+//    // Initialize Battery Service.
+//    memset(&bas_init, 0, sizeof(bas_init));
 
-    // Here the sec level for the Battery Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
+//    // Here the sec level for the Battery Service can be changed/increased.
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
 
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
 
-    bas_init.evt_handler          = NULL;
-    bas_init.support_notification = true;
-    bas_init.p_report_ref         = NULL;
-    bas_init.initial_batt_level   = 100;
+//    bas_init.evt_handler          = NULL;
+//    bas_init.support_notification = true;
+//    bas_init.p_report_ref         = NULL;
+//    bas_init.initial_batt_level   = 100;
 
-    err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
+//    err_code = ble_bas_init(&m_bas, &bas_init);
+//    APP_ERROR_CHECK(err_code);
 
     // Initialize Device Information Service.
     memset(&dis_init, 0, sizeof(dis_init));
@@ -457,11 +457,11 @@ static void application_timers_start(void)
     uint32_t err_code;
 
     // Start application timers.
-    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+//    APP_ERROR_CHECK(err_code);
 
-    err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
+//    APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_start(m_rr_interval_timer_id, RR_INTERVAL_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
@@ -643,11 +643,11 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
     dm_ble_evt_handler(p_ble_evt);
-    ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+    //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
+    //ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 	  ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
-    bsp_btn_ble_on_ble_evt(p_ble_evt);
+   // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
 }
