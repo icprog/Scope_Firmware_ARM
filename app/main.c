@@ -336,6 +336,20 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void dev_status_write_handler(ble_dev_status_t * p_lbs, uint8_t led_state)
+{
+		uint8_t button_state = 7;
+    ble_gatts_hvx_params_t params;
+    uint16_t len = sizeof(button_state);
+    
+    memset(&params, 0, sizeof(params));
+    params.type = BLE_GATT_HVX_NOTIFICATION;
+    params.handle = p_lbs->slope_char_handles.value_handle;
+    params.p_data = &button_state;
+    params.p_len = &len;
+    
+    sd_ble_gatts_hvx(p_lbs->conn_handle, &params);
+}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -402,11 +416,7 @@ static void services_init(void)
 		
 		// Initialize Device Status Service.
     memset(&dev_init, 0, sizeof(dev_init));
-
-    //ble_srv_ascii_to_utf8(&dev_init.manufact_name_str, (char *)MANUFACTURER_NAME);
-
-   // BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dev_init.dev_attr_md.read_perm);
-   // BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
+		dev_init.led_write_handler = dev_status_write_handler;
 
     err_code = ble_device_status_init(&dev_status, &dev_init);
     APP_ERROR_CHECK(err_code);

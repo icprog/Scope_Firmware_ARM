@@ -11,10 +11,12 @@
 
 
 
-void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt)
+void ble_slope_on_ble_evt(ble_dev_status_t * p_dev, ble_evt_t * p_ble_evt)
 {
+		initial_slope = 0;
+		ble_slope_update(p_dev, 7); //test value = 7
 		initial_slope=0;
-    if (p_bas == NULL || p_ble_evt == NULL)
+    if (p_dev == NULL || p_ble_evt == NULL)
     {
         return;
     }
@@ -72,15 +74,17 @@ static void on_disconnect(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt
 static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt)
 {
 	initial_slope=0;
+		ble_slope_update(p_dev_status, 7); //test value = 7
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
-    if ((p_evt_write->handle == p_dev_status->led_char_handles.value_handle) &&
+    if ((p_evt_write->handle == p_dev_status->slope_char_handles.value_handle) &&
         (p_evt_write->len == 1) &&
-        (p_dev_status->led_write_handler != NULL))
+        (p_dev_status-> dev_status_write_handler != NULL))
     {
-        p_dev_status->led_write_handler(p_dev_status, p_evt_write->data[0]);
+        p_dev_status-> dev_status_write_handler(p_dev_status, p_evt_write->data[0]);
 				ble_dev_status_on_other_button_change(p_dev_status, 5);
     }
+		ble_slope_update(p_dev_status, 7); //test value = 7
 }
 
 
@@ -157,7 +161,7 @@ static uint32_t hardware_rev_char_add(ble_dev_status_t * p_dev_status, const ble
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                            &char_md,
                                            &attr_char_value,
-                                           &p_dev_status->led_char_handles);
+                                           &p_dev_status->slope_char_handles);
 }
 
 /**@brief Function for adding the Probing Errors Characteristic.
@@ -210,7 +214,7 @@ static uint32_t probing_errors_char_add(ble_dev_status_t * p_dev_status, const b
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                            &char_md,
                                            &attr_char_value,
-		&p_dev_status->led_char_handles);  //TODO: need to change led_char_handles to something else
+		&p_dev_status->slope_char_handles);  //TODO: need to change led_char_handles to something else
 }
 
 
@@ -255,7 +259,7 @@ static uint32_t snow_profile_char_add(ble_dev_status_t * p_dev_status, const ble
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                            &char_md,
                                            &attr_char_value,
-                                           &p_dev_status->led_char_handles);
+                                           &p_dev_status->slope_char_handles);
 }
 
 /**@brief Function for adding the Probing Errors Characteristic.
@@ -308,7 +312,7 @@ static uint32_t slope_char_add(ble_dev_status_t * p_dev_status, const ble_dev_st
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                            &char_md,
                                            &attr_char_value,
-		&p_dev_status->led_char_handles);  //TODO: need to change led_char_handles to something else
+		&p_dev_status->slope_char_handles);  
 }
 
 
@@ -367,7 +371,7 @@ static uint32_t battery_char_add(ble_dev_status_t * p_dev_status, const ble_dev_
     return sd_ble_gatts_characteristic_add(p_dev_status->service_handle,
                                                &char_md,
                                                &attr_char_value,
-                                               &p_dev_status->button_char_handles);  //change to battery char handles?
+                                               &p_dev_status->slope_char_handles);  //change to battery char handles?
 }
 
 uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_status_init_t * p_dev_status_init)
@@ -377,7 +381,7 @@ uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_s
 
     // Initialize service structure.
     p_dev_status->conn_handle       = BLE_CONN_HANDLE_INVALID;
-    p_dev_status->led_write_handler = p_dev_status_init->led_write_handler;
+    p_dev_status-> dev_status_write_handler = p_dev_status_init->led_write_handler;
 
     // Add service.
     ble_uuid128_t base_uuid = {DEV_STATUS_UUID_BASE}; //was LBS UUID_BASE
@@ -429,7 +433,7 @@ uint32_t ble_dev_status_on_button_change(ble_dev_status_t * p_dev_status, uint8_
     
     memset(&params, 0, sizeof(params));
     params.type = BLE_GATT_HVX_NOTIFICATION;
-    params.handle = p_dev_status->button_char_handles.value_handle;
+   // params.handle = p_dev_status->button_char_handles.value_handle;
     params.p_data = button_state2; //had & DH
     params.p_len = &len;
     
@@ -444,9 +448,83 @@ uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, 
     
     memset(&params, 0, sizeof(params));
     params.type = BLE_GATT_HVX_NOTIFICATION;
-    params.handle = p_dev_status->button_char_handles.value_handle;
+    //params.handle = p_dev_status->button_char_handles.value_handle;
     params.p_data = button_state2; //had & DH
     params.p_len = &len;
     
     return sd_ble_gatts_hvx(p_dev_status->conn_handle, &params);
 }
+//function for updating slope values:
+uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope)
+{
+	
+		uint8_t button_state2[3] = {5,6,7}; //DH test
+    ble_gatts_hvx_params_t params;
+    uint16_t len = sizeof(button_state2); //DH test
+    
+    memset(&params, 0, sizeof(params));
+    params.type = BLE_GATT_HVX_NOTIFICATION;
+    //params.handle = p_dev_status->button_char_handles.value_handle;
+    params.p_data = button_state2; //had & DH
+    params.p_len = &len;
+    
+    return sd_ble_gatts_hvx(p_dev->conn_handle, &params);
+	
+	
+	
+	
+//    if (p_dev == NULL)
+//    {
+//        return NRF_ERROR_NULL;
+//    }
+//    
+//    uint32_t err_code = NRF_SUCCESS;
+//    ble_gatts_value_t gatts_value;
+
+//    if (slope != p_dev->slope)
+//    {
+//        // Initialize value struct.
+//        memset(&gatts_value, 0, sizeof(gatts_value));
+
+//        gatts_value.len     = sizeof(uint8_t);
+//        gatts_value.offset  = 0;
+//        gatts_value.p_value = &slope;
+
+//        // Update database.
+//        err_code = sd_ble_gatts_value_set(p_dev->conn_handle,
+//                                          p_dev->slope_char_handles.value_handle,
+//                                          &gatts_value);
+//        if (err_code == NRF_SUCCESS)
+//        {
+//            // Save new battery value.
+//            p_dev->slope = slope;
+//        }
+//        else
+//        {
+//            return err_code;
+//        }
+
+//        // Send value if connected and notifying.
+//        if ((p_dev->conn_handle != BLE_CONN_HANDLE_INVALID))// && p_dev->is_notification_supported)
+//        {
+//            ble_gatts_hvx_params_t hvx_params;
+
+//            memset(&hvx_params, 0, sizeof(hvx_params));
+
+//            hvx_params.handle = p_dev->slope_char_handles.value_handle;
+//            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+//            hvx_params.offset = gatts_value.offset;
+//            hvx_params.p_len  = &gatts_value.len;
+//            hvx_params.p_data = gatts_value.p_value;
+
+//            err_code = sd_ble_gatts_hvx(p_dev->conn_handle, &hvx_params);
+//        }
+//        else
+//        {
+//            err_code = NRF_ERROR_INVALID_STATE;
+//        }
+//    }
+
+//    return err_code;
+}
+

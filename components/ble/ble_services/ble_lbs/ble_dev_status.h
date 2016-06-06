@@ -75,12 +75,15 @@ typedef struct
 struct ble_dev_status_s
 {
     uint16_t                    service_handle;      /**< Handle of LED Button Service (as provided by the BLE stack). */
-    ble_gatts_char_handles_t    led_char_handles;    /**< Handles related to the LED Characteristic. */
-    ble_gatts_char_handles_t    button_char_handles; /**< Handles related to the Button Characteristic. */
+    //ble_gatts_char_handles_t    led_char_handles;    /**< Handles related to the LED Characteristic. */
+    ble_gatts_char_handles_t    slope_char_handles; /**< Handles related to the Button Characteristic. */
     uint8_t                     uuid_type;           /**< UUID type for the LED Button Service. */
+		uint8_t											slope;
     uint16_t                    conn_handle;         /**< Handle of the current connection (as provided by the BLE stack). BLE_CONN_HANDLE_INVALID if not in a connection. */
-    ble_dev_status_led_write_handler_t led_write_handler;   /**< Event handler to be called when the LED Characteristic is written. */
+    ble_dev_status_led_write_handler_t dev_status_write_handler;   /**< Event handler to be called when the LED Characteristic is written. */
 };
+
+uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope);
 
 void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
 /**@brief Function for initializing the LED Button Service.
@@ -113,6 +116,8 @@ void ble_device_status_on_ble_evt(ble_dev_status_t * p_dev_status, ble_evt_t * p
 uint32_t ble_dev_status_on_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state);
 
 uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state); //added to test data_send on button press DH
+
+static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
 
 #endif // ble_dev_status_H__
 
