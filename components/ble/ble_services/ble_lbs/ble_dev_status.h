@@ -83,9 +83,9 @@ struct ble_dev_status_s
     ble_dev_status_led_write_handler_t dev_status_write_handler;   /**< Event handler to be called when the LED Characteristic is written. */
 };
 
-uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope);
+//uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope);
 
-void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
+//void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
 /**@brief Function for initializing the LED Button Service.
  *
  * @param[out] p_dev_status      LED Button Service structure. This structure must be supplied by
@@ -104,7 +104,7 @@ uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_s
  * @param[in] p_dev_status      LED Button Service structure.
  * @param[in] p_ble_evt  Event received from the BLE stack.
  */
-void ble_device_status_on_ble_evt(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
+//void ble_device_status_on_ble_evt(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
 
 /**@brief Function for sending a button state notification.
  *
@@ -113,11 +113,11 @@ void ble_device_status_on_ble_evt(ble_dev_status_t * p_dev_status, ble_evt_t * p
  *
  * @retval NRF_SUCCESS If the notification was sent successfully. Otherwise, an error code is returned.
  */
-uint32_t ble_dev_status_on_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state);
+//uint32_t ble_dev_status_on_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state);
 
-uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state); //added to test data_send on button press DH
+//uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state); //added to test data_send on button press DH
 
-static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
+//static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
 
 #endif // ble_dev_status_H__
 

@@ -423,31 +423,31 @@ static void services_init(void)
 }
 
 
-/**@brief Function for initializing the sensor simulators.
- */
-static void sensor_simulator_init(void)
-{
-    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-    m_battery_sim_cfg.start_at_max = true;
+///**@brief Function for initializing the sensor simulators.
+// */
+//static void sensor_simulator_init(void)
+//{
+//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
+//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
+//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
+//    m_battery_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
 
-    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-    m_heart_rate_sim_cfg.start_at_max = false;
+//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
+//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
+//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
+//    m_heart_rate_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
-    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-    m_rr_interval_sim_cfg.start_at_max = false;
+//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
+//    m_rr_interval_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
-}
+//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
+//}
 
 
 /**@brief Function for starting application timers.
@@ -645,7 +645,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     //ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	  ble_slope_on_ble_evt(&m_stat, p_ble_evt);
+	  //ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -863,7 +863,7 @@ int main(void)
     gap_params_init();
     advertising_init();
     services_init();
-    sensor_simulator_init();
+    //sensor_simulator_init();
     conn_params_init();
 
     // Start execution.
