@@ -25,9 +25,10 @@
 .\_build\ble_dev_status.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\system_nrf51.h
 .\_build\ble_dev_status.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_bitfields.h
 .\_build\ble_dev_status.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include\nrf51_deprecated.h
-.\_build\ble_dev_status.o: ..\..\..\..\components\ble\ble_services\ble_lbs\ble_lbs.h
 .\_build\ble_dev_status.o: ..\..\..\..\components\libraries\util\sdk_common.h
 .\_build\ble_dev_status.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\_build\ble_dev_status.o: ..\..\..\..\components\libraries\util\nordic_common.h
 .\_build\ble_dev_status.o: ..\..\..\..\components\libraries\util\sdk_os.h
 .\_build\ble_dev_status.o: ..\..\..\..\components\libraries\util\sdk_errors.h
+.\_build\ble_dev_status.o: ..\..\..\..\segger_rtt\SEGGER_RTT.h
+.\_build\ble_dev_status.o: ..\..\..\..\segger_rtt\SEGGER_RTT_Conf.h

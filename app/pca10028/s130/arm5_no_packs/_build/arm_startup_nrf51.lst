@@ -185,12 +185,12 @@ ARM Macro Assembler    Page 3
   127 00000000 2103            MOVS             R1, #NRF_POWER_RAMONx_RAMxON_ON
 MODE_Msk
   128 00000002         
-  129 00000002 4809            LDR              R0, =NRF_POWER_RAMON_ADDRESS
+  129 00000002 480C            LDR              R0, =NRF_POWER_RAMON_ADDRESS
   130 00000004 6802            LDR              R2, [R0]
   131 00000006 430A            ORRS             R2, R2, R1
   132 00000008 6002            STR              R2, [R0]
   133 0000000A         
-  134 0000000A 4808            LDR              R0, =NRF_POWER_RAMONB_ADDRESS
+  134 0000000A 480B            LDR              R0, =NRF_POWER_RAMONB_ADDRESS
   135 0000000C 6802            LDR              R2, [R0]
   136 0000000E 430A            ORRS             R2, R2, R1
 
@@ -201,9 +201,9 @@ ARM Macro Assembler    Page 4
 
   137 00000010 6002            STR              R2, [R0]
   138 00000012         
-  139 00000012 4807            LDR              R0, =SystemInit
+  139 00000012 480A            LDR              R0, =SystemInit
   140 00000014 4780            BLX              R0
-  141 00000016 4807            LDR              R0, =__main
+  141 00000016 480A            LDR              R0, =__main
   142 00000018 4700            BX               R0
   143 0000001A                 ENDP
   144 0000001A         
@@ -307,37 +307,50 @@ ARM Macro Assembler    Page 5
   225 00000028         ; User Initial Stack & Heap
   226 00000028         
   227 00000028                 IF               :DEF:__MICROLIB
-  228 00000028         
-  229 00000028                 EXPORT           __initial_sp
-  230 00000028                 EXPORT           __heap_base
-  231 00000028                 EXPORT           __heap_limit
-  232 00000028         
-  233 00000028                 ELSE
-  249                          ENDIF
-  250 00000028         
-  251 00000028                 END
-              40000524 
-              40000554 
-              00000000 
-              00000000 
-Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
-ork --depend=.\_build\arm_startup_nrf51.d -o.\_build\arm_startup_nrf51.o -IC:\U
-sers\Dave\Documents\GitHub\nrf51_repo\Scope_Firmware_ARM\app\pca10028\s130\arm5
+  234 00000028         
+  235 00000028                 IMPORT           __use_two_region_memory
+  236 00000028                 EXPORT           __user_initial_stackheap
+  237 00000028         
+  238 00000028         __user_initial_stackheap
+                               PROC
+  239 00000028         
+  240 00000028 4806            LDR              R0, = Heap_Mem
+  241 0000002A 4907            LDR              R1, = (Stack_Mem + Stack_Size)
+  242 0000002C 4A07            LDR              R2, = (Heap_Mem + Heap_Size)
+  243 0000002E 4B08            LDR              R3, = Stack_Mem
+  244 00000030 4770            BX               LR
+  245 00000032                 ENDP
+  246 00000032         
+  247 00000032 00 00           ALIGN
+  248 00000034         
 
 
 
 ARM Macro Assembler    Page 6 
 
 
+  249 00000034                 ENDIF
+  250 00000034         
+  251 00000034                 END
+              40000524 
+              40000554 
+              00000000 
+              00000000 
+              00000000 
+              00000800 
+              00000800 
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
+ork --depend=.\_build\arm_startup_nrf51.d -o.\_build\arm_startup_nrf51.o -IC:\U
+sers\Dave\Documents\GitHub\nrf51_repo\Scope_Firmware_ARM\app\pca10028\s130\arm5
 _no_packs\RTE -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include -IC:\Keil_v5\
 ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.5.0\Device\Include --predef
-ine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --predefine="__UVISION_VERS
-ION SETA 518" --predefine="_RTE_ SETA 1" --predefine="NRF51 SETA 1" --predefine
-="BLE_STACK_SUPPORT_REQD SETA 1" --predefine="BOARD_PCA10028 SETA 1" --predefin
-e="S130 SETA 1" --predefine="NRF51 SETA 1" --predefine="SOFTDEVICE_PRESENT SETA
- 1" --predefine="SWI_DISABLE0 SETA 1" --predefine="NRF_LOG_USES_UART SETA 1" --
-list=.\_build\arm_startup_nrf51.lst RTE\Device\nRF51422_xxAC\arm_startup_nrf51.
-s
+ine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 518" --predefine="_RTE_
+ SETA 1" --predefine="NRF51 SETA 1" --predefine="BLE_STACK_SUPPORT_REQD SETA 1"
+ --predefine="BOARD_PCA10028 SETA 1" --predefine="S130 SETA 1" --predefine="NRF
+51 SETA 1" --predefine="SOFTDEVICE_PRESENT SETA 1" --predefine="SWI_DISABLE0 SE
+TA 1" --predefine="NRF_LOG_USES_UART SETA 1" --list=.\_build\arm_startup_nrf51.
+lst RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
 
 
 
@@ -358,8 +371,9 @@ Symbol: Stack_Mem
    Definitions
       At line 35 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
-      None
-Comment: Stack_Mem unused
+      At line 241 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+      At line 243 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+
 __initial_sp 00000800
 
 Symbol: __initial_sp
@@ -367,8 +381,7 @@ Symbol: __initial_sp
       At line 36 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
       At line 59 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-      At line 229 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-
+Comment: __initial_sp used once
 3 symbols
 
 
@@ -390,24 +403,25 @@ Symbol: Heap_Mem
    Definitions
       At line 46 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
-      None
-Comment: Heap_Mem unused
+      At line 240 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+      At line 242 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+
 __heap_base 00000000
 
 Symbol: __heap_base
    Definitions
       At line 45 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
-      At line 230 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-Comment: __heap_base used once
+      None
+Comment: __heap_base unused
 __heap_limit 00000800
 
 Symbol: __heap_limit
    Definitions
       At line 47 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
-      At line 231 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-Comment: __heap_limit used once
+      None
+Comment: __heap_limit unused
 4 symbols
 
 
@@ -773,7 +787,15 @@ Symbol: WDT_IRQHandler
 ARM Macro Assembler    Page 6 Alphabetic symbol ordering
 Relocatable symbols
 
-33 symbols
+__user_initial_stackheap 00000028
+
+Symbol: __user_initial_stackheap
+   Definitions
+      At line 238 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+   Uses
+      At line 236 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+Comment: __user_initial_stackheap used once
+34 symbols
 
 
 
@@ -787,7 +809,8 @@ Symbol: Heap_Size
       At line 41 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
       At line 46 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-Comment: Heap_Size used once
+      At line 242 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+
 NRF_POWER_RAMONB_ADDRESS 40000554
 
 Symbol: NRF_POWER_RAMONB_ADDRESS
@@ -819,7 +842,8 @@ Symbol: Stack_Size
       At line 31 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
    Uses
       At line 35 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
-Comment: Stack_Size used once
+      At line 241 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+
 __Vectors_Size 000000C0
 
 Symbol: __Vectors_Size
@@ -851,5 +875,13 @@ Symbol: __main
    Uses
       At line 141 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
 Comment: __main used once
-2 symbols
-398 symbols in table
+__use_two_region_memory 00000000
+
+Symbol: __use_two_region_memory
+   Definitions
+      At line 235 in file RTE\Device\nRF51422_xxAC\arm_startup_nrf51.s
+   Uses
+      None
+Comment: __use_two_region_memory unused
+3 symbols
+401 symbols in table

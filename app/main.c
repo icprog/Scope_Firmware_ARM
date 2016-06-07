@@ -42,6 +42,7 @@
 #include "pstorage.h"
 #include "app_trace.h"
 #include "ble_dev_status.h"
+#include "SEGGER_RTT.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -282,10 +283,10 @@ static void timers_init(void)
     APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
     // Create timers.
-//    err_code = app_timer_create(&m_battery_timer_id,
-//                                APP_TIMER_MODE_REPEATED,
-//                                battery_level_meas_timeout_handler);
-//    APP_ERROR_CHECK(err_code);
+    err_code = app_timer_create(&m_battery_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                battery_level_meas_timeout_handler);
+    APP_ERROR_CHECK(err_code);
 
 //    err_code = app_timer_create(&m_heart_rate_timer_id,
 //                                APP_TIMER_MODE_REPEATED,
@@ -336,19 +337,21 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-static void dev_status_write_handler(ble_dev_status_t * p_lbs, uint8_t led_state)
+static void dev_status_write_handler(ble_dev_status_t * p_dev, uint8_t led_state)
 {
-		uint8_t button_state = 7;
+		SEGGER_RTT_WriteString(0, "Write Handler \n");
+	
+		//uint8_t button_state = 7;
     ble_gatts_hvx_params_t params;
-    uint16_t len = sizeof(button_state);
+    uint16_t len = sizeof(led_state);
     
     memset(&params, 0, sizeof(params));
+		
     params.type = BLE_GATT_HVX_NOTIFICATION;
-    params.handle = p_lbs->slope_char_handles.value_handle;
-    params.p_data = &button_state;
+    params.handle = p_dev->slope_char_handles.value_handle;
+    params.p_data = &led_state;
     params.p_len = &len;
-    
-    sd_ble_gatts_hvx(p_lbs->conn_handle, &params);
+    sd_ble_gatts_hvx(p_dev->conn_handle, &params);
 }
 
 /**@brief Function for initializing services that will be used by the application.
@@ -359,7 +362,7 @@ static void services_init(void)
 {
     uint32_t       err_code;
     //ble_hrs_init_t hrs_init;
-    //ble_bas_init_t bas_init;
+    ble_bas_init_t bas_init;
     ble_dis_init_t dis_init;
 		ble_dev_status_init_t dev_init;
 	  ble_dev_status_t dev_status;
@@ -386,22 +389,22 @@ static void services_init(void)
 //    APP_ERROR_CHECK(err_code);
 
 //    // Initialize Battery Service.
-//    memset(&bas_init, 0, sizeof(bas_init));
+    memset(&bas_init, 0, sizeof(bas_init));
 
-//    // Here the sec level for the Battery Service can be changed/increased.
-//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
-//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
-//    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
+    // Here the sec level for the Battery Service can be changed/increased.
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
 
-//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
 
-//    bas_init.evt_handler          = NULL;
-//    bas_init.support_notification = true;
-//    bas_init.p_report_ref         = NULL;
-//    bas_init.initial_batt_level   = 100;
+    bas_init.evt_handler          = NULL;
+    bas_init.support_notification = true;
+    bas_init.p_report_ref         = NULL;
+    bas_init.initial_batt_level   = 100;
 
-//    err_code = ble_bas_init(&m_bas, &bas_init);
-//    APP_ERROR_CHECK(err_code);
+    err_code = ble_bas_init(&m_bas, &bas_init);
+    APP_ERROR_CHECK(err_code);
 
     // Initialize Device Information Service.
     memset(&dis_init, 0, sizeof(dis_init));
@@ -409,7 +412,7 @@ static void services_init(void)
     ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, (char *)MANUFACTURER_NAME);
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.write_perm); //was no access
 
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
@@ -422,32 +425,41 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/**@brief Function for handling write events to the LED characteristic.
+ *
+ * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
+ * @param[in] led_state Written/desired state of the LED.
+ */
+static void led_write_handler(ble_dev_status_t * p_dev, uint8_t slope)
+{
+    ble_slope_update(p_dev, slope);
+}
 
 ///**@brief Function for initializing the sensor simulators.
 // */
-//static void sensor_simulator_init(void)
-//{
-//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-//    m_battery_sim_cfg.start_at_max = true;
+static void sensor_simulator_init(void)
+{
+    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
+    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
+    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
+    m_battery_sim_cfg.start_at_max = true;
 
-//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
 
-//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-//    m_heart_rate_sim_cfg.start_at_max = false;
+    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
+    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
+    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
+    m_heart_rate_sim_cfg.start_at_max = false;
 
-//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
-//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-//    m_rr_interval_sim_cfg.start_at_max = false;
+    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
+    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
+    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
+    m_rr_interval_sim_cfg.start_at_max = false;
 
-//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
-//}
+    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
+}
 
 
 /**@brief Function for starting application timers.
@@ -457,8 +469,8 @@ static void application_timers_start(void)
     uint32_t err_code;
 
     // Start application timers.
-//    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
-//    APP_ERROR_CHECK(err_code);
+    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 
 //    err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
 //    APP_ERROR_CHECK(err_code);
@@ -601,7 +613,7 @@ static void advertising_init(void)
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t err_code;
-
+SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
@@ -642,10 +654,11 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
+	SEGGER_RTT_WriteString(0, "ble dispatch \n");
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    //ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	  //ble_slope_on_ble_evt(&m_stat, p_ble_evt);
+    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+	  ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -863,14 +876,14 @@ int main(void)
     gap_params_init();
     advertising_init();
     services_init();
-    //sensor_simulator_init();
+    sensor_simulator_init();
     conn_params_init();
 
     // Start execution.
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-
+		SEGGER_RTT_WriteString(0, "Hello World!\n");
     // Enter main loop.
     for (;;)
     {

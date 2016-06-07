@@ -85,7 +85,7 @@ struct ble_dev_status_s
 
 //uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope);
 
-//void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
+void ble_slope_on_ble_evt(ble_dev_status_t * p_bas, ble_evt_t * p_ble_evt);
 /**@brief Function for initializing the LED Button Service.
  *
  * @param[out] p_dev_status      LED Button Service structure. This structure must be supplied by
@@ -117,8 +117,11 @@ uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_s
 
 //uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state); //added to test data_send on button press DH
 
-//static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
-
+static void on_write(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
+static void on_disconnect(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
+static void on_connect(ble_dev_status_t * p_dev_status, ble_evt_t * p_ble_evt);
+uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope);
+static void led_write_handler(ble_dev_status_t * p_dev, uint8_t slope);
 #endif // ble_dev_status_H__
 
 /** @} */
