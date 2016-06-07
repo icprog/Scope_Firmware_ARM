@@ -1,7 +1,51 @@
+/*******************************************************************************
+  L3GD20 Gyroscope driver
+  
+  Company:
+    AvaTech
+  
+  File Name:
+    L3GD20drv.c
+		
+  Summary:
+    Driver for the L3GD20 Gyro.
+		
+  Description:
+    Driver for the L3GD20 Gyro.
+     
+  Processor:       
+    nRF51822
+		
+  Toolchaing:
+		MDK-Lite version 5.20
+ 
+  Author(s): 
+    Richard Kirby
+ 
+  Created on:
+    June 1, 2016
+  
+  Revision History:
+    Development version      June 1, 2016
+ *******************************************************************************/
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files 
+// *****************************************************************************
+// *****************************************************************************
+
 #include "L3GD20drv.h"
 #include "SPI_utils.h"
 #include <stdint.h>
 #include "nrf51.h"
+
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Functions
+// *****************************************************************************
+// *****************************************************************************
 
 /*******************************************************************************
   Function:
@@ -27,7 +71,7 @@ uint8_t getL3GD_ID(void)
 
 void init_L3GD(void)
 {
-    uint8_t address, SPIcount, SPIData, retVal;
+    uint8_t address, SPIData;
     
     address = L3GD_CTRL1;  
     SPIData = L3GD_DATA_RATE_800HZ | L3GD_CUTOFF_100HZ | L3GD_POWER | L3GD_ZEN | L3GD_YEN | L3GD_XEN;
@@ -35,7 +79,6 @@ void init_L3GD(void)
 		SPIWriteReg(address, SPIData, L3G_DEVICE);
 
 }
-
 
 
 /*******************************************************************************
