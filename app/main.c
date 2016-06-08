@@ -42,6 +42,7 @@
 #include "pstorage.h"
 #include "app_trace.h"
 #include "ble_dev_status.h"
+#include "probe_error.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -67,7 +68,7 @@ static ble_beacon_init_t beacon_init;
 
 /*end addition for beacon*/
 
-#define DEVICE_NAME                          "Scope Test"                           /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                          "Scope Test Joe"                           /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                        /**< The advertising timeout in units of seconds. */
@@ -114,6 +115,7 @@ static ble_beacon_init_t beacon_init;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
+static ble_pes_t 						     m_pes;
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_dev_status_t                      m_stat;
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
@@ -134,12 +136,14 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-		{SCOPE_UUID_DEVICE_STATUS,            BLE_UUID_TYPE_BLE},
+	{SCOPE_UUID_DEVICE_STATUS,            BLE_UUID_TYPE_BLE},
     {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
     {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
-    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
+    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
+	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE}
 		
 };
+
 
 
 /**@brief Callback function for asserts in the SoftDevice.
@@ -170,6 +174,18 @@ static void battery_level_update(void)
     battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
 
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+    
+    //TESTING THE PROBE ERROR UPDATE
+    uint8_t probe_error_code = battery_level;
+    err_code = ble_probe_error_update(&m_pes, probe_error_code);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != BLE_ERROR_NO_TX_PACKETS) &&
@@ -347,8 +363,8 @@ static void services_init(void)
     ble_hrs_init_t hrs_init;
     ble_bas_init_t bas_init;
     ble_dis_init_t dis_init;
-		ble_dev_status_init_t dev_init;
-	  ble_dev_status_t dev_status;
+	ble_dev_status_init_t dev_init;
+	ble_dev_status_t dev_status;
     uint8_t        body_sensor_location;
 
     // Initialize Heart Rate Service.
@@ -410,6 +426,10 @@ static void services_init(void)
 
     err_code = ble_device_status_init(&dev_status, &dev_init);
     APP_ERROR_CHECK(err_code);
+	
+	//initialize probe error service
+	ble_probe_error_service_init(&m_pes);
+
 }
 
 
@@ -635,7 +655,10 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     dm_ble_evt_handler(p_ble_evt);
     ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	  ble_slope_on_ble_evt(&m_stat, p_ble_evt);
+	
+	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+	
+	ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
     bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -851,8 +874,8 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
     gap_params_init();
+	services_init();
     advertising_init();
-    services_init();
     sensor_simulator_init();
     conn_params_init();
 

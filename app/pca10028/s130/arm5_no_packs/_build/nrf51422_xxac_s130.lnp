@@ -1,6 +1,7 @@
 --cpu Cortex-M0
 ".\_build\advertiser_beacon.o"
 ".\_build\main.o"
+".\_build\probe_error.o"
 ".\_build\bsp.o"
 ".\_build\bsp_btn_ble.o"
 ".\_build\ble_advdata.o"

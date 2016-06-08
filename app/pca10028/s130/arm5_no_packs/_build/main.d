@@ -64,4 +64,5 @@
 .\_build\main.o: ..\..\..\config\pstorage_platform.h
 .\_build\main.o: ..\..\..\..\components\libraries\trace\app_trace.h
 .\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.h
+.\_build\main.o: ..\..\..\probe_error.h
 .\_build\main.o: ..\..\..\advertiser_beacon.h
