@@ -71,6 +71,12 @@ static ble_beacon_init_t beacon_init;
 
 #define DEVICE_NAME                          "Scope Test Dave"                           /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
+#define SERIAL_NUMBER												 "SN 0001"
+#define MODEL_NUMBER												 "Scope V 1.0"
+#define HARDWARE_REVISION										 "HW rev 1.0"
+#define FIRMWARE_VERSION										 "FW v 1.0"
+#define SYSTEM_ID														 "SYS ID 0001"
+
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
 
@@ -243,40 +249,7 @@ static void slope_level_meas_timeout_handler(void * p_context)
 
 
 
-/**@brief Function for handling the Heart rate measurement timer timeout.
- *
- * @details This function will be called each time the heart rate measurement timer expires.
- *          It will exclude RR Interval data from every third measurement.
- *
- * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
- *                          app_start_timer() call to the timeout handler.
- */
-//static void heart_rate_meas_timeout_handler(void * p_context)
-//{
-//    static uint32_t cnt = 0;
-//    uint32_t        err_code;
-//    uint16_t        heart_rate;
 
-//    UNUSED_PARAMETER(p_context);
-
-//    heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-
-//    cnt++;
-//    err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
-//    if ((err_code != NRF_SUCCESS) &&
-//        (err_code != NRF_ERROR_INVALID_STATE) &&
-//        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
-//        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-//    )
-//    {
-//        APP_ERROR_HANDLER(err_code);
-//    }
-
-//    // Disable RR Interval recording every third heart rate measurement.
-//    // NOTE: An application will normally not do this. It is done here just for testing generation
-//    //       of messages without RR Interval measurements.
-//    m_rr_interval_enabled = ((cnt % 3) != 0);
-//}
 
 
 /**@brief Function for handling the RR interval timer timeout.
@@ -388,22 +361,6 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-//static void dev_status_write_handler(ble_dev_status_t * p_dev, uint8_t led_state)
-//{
-//		SEGGER_RTT_WriteString(0, "Write Handler \n");
-//	
-//		//uint8_t button_state = 7;
-//    ble_gatts_hvx_params_t params;
-//    uint16_t len = sizeof(led_state);
-//    
-//    memset(&params, 0, sizeof(params));
-//		
-//    params.type = BLE_GATT_HVX_NOTIFICATION;
-//    params.handle = p_dev->slope_char_handles.value_handle;
-//    params.p_data = &led_state;
-//    params.p_len = &len;
-//    sd_ble_gatts_hvx(p_dev->conn_handle, &params);
-//}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -414,7 +371,7 @@ static void services_init(void)
     uint32_t       err_code;
     //ble_hrs_init_t hrs_init;
     ble_bas_init_t bas_init;
-   // ble_dis_init_t dis_init;
+    ble_dis_init_t dis_init;
 		//ble_dev_status_init_t dev_init;
 	  ble_slope_init_t slope_init;
     uint8_t        body_sensor_location;
@@ -457,18 +414,29 @@ static void services_init(void)
 
     err_code = ble_slope_init(&m_slope, &slope_init);
     APP_ERROR_CHECK(err_code);
+		
+		// Initialize Device Information Service.
+    memset(&dis_init, 0, sizeof(dis_init));
 
+
+		//add relevent data to 
+    ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, (char *)MANUFACTURER_NAME);
+		ble_srv_ascii_to_utf8(&dis_init.serial_num_str, (char *)SERIAL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init.model_num_str, (char *)MODEL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init.hw_rev_str, (char *)HARDWARE_REVISION);
+		ble_srv_ascii_to_utf8(&dis_init.fw_rev_str, (char *)FIRMWARE_VERSION);
+		ble_srv_ascii_to_utf8(&dis_init.sys_id_str, (char *)SYSTEM_ID);
+
+		
+		
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
+
+    err_code = ble_dis_init(&dis_init);
+    APP_ERROR_CHECK(err_code);
 }
 
-/**@brief Function for handling write events to the LED characteristic.
- *
- * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
- * @param[in] led_state Written/desired state of the LED.
- */
-//static void led_write_handler(ble_dev_status_t * p_dev, uint8_t slope)
-//{
-//    ble_slope_update(p_dev, slope);
-//}
+
 
 ///**@brief Function for initializing the sensor simulators.
 // */

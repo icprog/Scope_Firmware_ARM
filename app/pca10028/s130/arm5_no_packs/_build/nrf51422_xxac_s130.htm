@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\_build\nrf51422_xxac_s130.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\_build\nrf51422_xxac_s130.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Jun 08 11:28:53 2016
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060061: Last Updated: Wed Jun 08 14:41:22 2016
 <BR><P>
 <H3>Maximum Stack Usage =        392 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -19,7 +19,7 @@ Mutually Recursive functions
  <LI><a href="#[1c]">ADC_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1c]">ADC_IRQHandler</a><BR>
  <LI><a href="#[6e]">__asm___11_app_timer_c_cd27f9c3__nrf_delay_us</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[6e]">__asm___11_app_timer_c_cd27f9c3__nrf_delay_us</a><BR>
  <LI><a href="#[9f]">app_notify_error_state_transit</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[a1]">sm_state_change</a><BR>
- <LI><a href="#[a1]">sm_state_change</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[dd]">cmd_process</a><BR>
+ <LI><a href="#[a1]">sm_state_change</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[e2]">cmd_process</a><BR>
  <LI><a href="#[6d]">_sys_exit</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[6d]">_sys_exit</a><BR>
 </UL>
 <P>
@@ -125,82 +125,82 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
 </UL>
 
-<P><STRONG><a name="[11f]"></a>__scatterload_rt2_thumb_only</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
+<P><STRONG><a name="[124]"></a>__scatterload_rt2_thumb_only</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
 
-<P><STRONG><a name="[120]"></a>__scatterload_null</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
+<P><STRONG><a name="[125]"></a>__scatterload_null</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
 
-<P><STRONG><a name="[121]"></a>__scatterload_zeroinit</STRONG> (Thumb, 28 bytes, Stack size unknown bytes, __scatter_zi.o(!!handler_zi), UNUSED)
+<P><STRONG><a name="[126]"></a>__scatterload_zeroinit</STRONG> (Thumb, 28 bytes, Stack size unknown bytes, __scatter_zi.o(!!handler_zi), UNUSED)
 
 <P><STRONG><a name="[66]"></a>__rt_lib_init</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit.o(.ARM.Collect$$libinit$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_li
 </UL>
 
-<P><STRONG><a name="[122]"></a>__rt_lib_init_alloca_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002E))
+<P><STRONG><a name="[127]"></a>__rt_lib_init_alloca_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002E))
 
-<P><STRONG><a name="[123]"></a>__rt_lib_init_argv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002C))
+<P><STRONG><a name="[128]"></a>__rt_lib_init_argv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000002C))
 
-<P><STRONG><a name="[124]"></a>__rt_lib_init_atexit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001B))
+<P><STRONG><a name="[129]"></a>__rt_lib_init_atexit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001B))
 
-<P><STRONG><a name="[125]"></a>__rt_lib_init_clock_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000021))
+<P><STRONG><a name="[12a]"></a>__rt_lib_init_clock_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000021))
 
-<P><STRONG><a name="[126]"></a>__rt_lib_init_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000032))
+<P><STRONG><a name="[12b]"></a>__rt_lib_init_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000032))
 
-<P><STRONG><a name="[127]"></a>__rt_lib_init_exceptions_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000030))
+<P><STRONG><a name="[12c]"></a>__rt_lib_init_exceptions_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000030))
 
-<P><STRONG><a name="[128]"></a>__rt_lib_init_fp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000002))
+<P><STRONG><a name="[12d]"></a>__rt_lib_init_fp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000002))
 
-<P><STRONG><a name="[129]"></a>__rt_lib_init_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001F))
+<P><STRONG><a name="[12e]"></a>__rt_lib_init_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001F))
 
-<P><STRONG><a name="[12a]"></a>__rt_lib_init_getenv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000023))
+<P><STRONG><a name="[12f]"></a>__rt_lib_init_getenv_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000023))
 
-<P><STRONG><a name="[12b]"></a>__rt_lib_init_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000A))
+<P><STRONG><a name="[130]"></a>__rt_lib_init_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000A))
 
-<P><STRONG><a name="[12c]"></a>__rt_lib_init_lc_collate_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000011))
+<P><STRONG><a name="[131]"></a>__rt_lib_init_lc_collate_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000011))
 
-<P><STRONG><a name="[12d]"></a>__rt_lib_init_lc_ctype_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000013))
+<P><STRONG><a name="[132]"></a>__rt_lib_init_lc_ctype_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000013))
 
-<P><STRONG><a name="[12e]"></a>__rt_lib_init_lc_monetary_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000015))
+<P><STRONG><a name="[133]"></a>__rt_lib_init_lc_monetary_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000015))
 
-<P><STRONG><a name="[12f]"></a>__rt_lib_init_lc_numeric_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000017))
+<P><STRONG><a name="[134]"></a>__rt_lib_init_lc_numeric_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000017))
 
-<P><STRONG><a name="[130]"></a>__rt_lib_init_lc_time_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000019))
+<P><STRONG><a name="[135]"></a>__rt_lib_init_lc_time_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000019))
 
-<P><STRONG><a name="[131]"></a>__rt_lib_init_preinit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000004))
+<P><STRONG><a name="[136]"></a>__rt_lib_init_preinit_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000004))
 
-<P><STRONG><a name="[132]"></a>__rt_lib_init_rand_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000E))
+<P><STRONG><a name="[137]"></a>__rt_lib_init_rand_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000E))
 
-<P><STRONG><a name="[133]"></a>__rt_lib_init_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000033))
+<P><STRONG><a name="[138]"></a>__rt_lib_init_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000033))
 
-<P><STRONG><a name="[134]"></a>__rt_lib_init_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001D))
+<P><STRONG><a name="[139]"></a>__rt_lib_init_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000001D))
 
-<P><STRONG><a name="[135]"></a>__rt_lib_init_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000025))
+<P><STRONG><a name="[13a]"></a>__rt_lib_init_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$00000025))
 
-<P><STRONG><a name="[136]"></a>__rt_lib_init_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000C))
+<P><STRONG><a name="[13b]"></a>__rt_lib_init_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libinit2.o(.ARM.Collect$$libinit$$0000000C))
 
 <P><STRONG><a name="[6b]"></a>__rt_lib_shutdown</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown.o(.ARM.Collect$$libshutdown$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_exit_ls
 </UL>
 
-<P><STRONG><a name="[137]"></a>__rt_lib_shutdown_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000002))
+<P><STRONG><a name="[13c]"></a>__rt_lib_shutdown_cpp_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000002))
 
-<P><STRONG><a name="[138]"></a>__rt_lib_shutdown_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000007))
+<P><STRONG><a name="[13d]"></a>__rt_lib_shutdown_fp_trap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000007))
 
-<P><STRONG><a name="[139]"></a>__rt_lib_shutdown_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000F))
+<P><STRONG><a name="[13e]"></a>__rt_lib_shutdown_heap_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000F))
 
-<P><STRONG><a name="[13a]"></a>__rt_lib_shutdown_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000010))
+<P><STRONG><a name="[13f]"></a>__rt_lib_shutdown_return</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000010))
 
-<P><STRONG><a name="[13b]"></a>__rt_lib_shutdown_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000A))
+<P><STRONG><a name="[140]"></a>__rt_lib_shutdown_signal_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000A))
 
-<P><STRONG><a name="[13c]"></a>__rt_lib_shutdown_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000004))
+<P><STRONG><a name="[141]"></a>__rt_lib_shutdown_stdio_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$00000004))
 
-<P><STRONG><a name="[13d]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000C))
+<P><STRONG><a name="[142]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000C))
 
 <P><STRONG><a name="[61]"></a>__rt_entry</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry.o(.ARM.Collect$$rtentry$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
 </UL>
 
-<P><STRONG><a name="[13e]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
+<P><STRONG><a name="[143]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
 
 <P><STRONG><a name="[63]"></a>__rt_entry_sh</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry4.o(.ARM.Collect$$rtentry$$00000004))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
@@ -213,7 +213,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_lib_init
 </UL>
 
-<P><STRONG><a name="[13f]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
+<P><STRONG><a name="[144]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[67]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
 <BR><BR>[Stack]<UL><LI>Max Depth = 392 + Unknown Stack Size
@@ -223,7 +223,7 @@ Global Symbols
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
 </UL>
 
-<P><STRONG><a name="[140]"></a>__rt_entry_postli_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000C))
+<P><STRONG><a name="[145]"></a>__rt_entry_postli_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000C))
 
 <P><STRONG><a name="[7a]"></a>__rt_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit.o(.ARM.Collect$$rtexit$$00000000))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -233,7 +233,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_lib_shutdown
 </UL>
 
-<P><STRONG><a name="[141]"></a>__rt_exit_prels_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000002))
+<P><STRONG><a name="[146]"></a>__rt_exit_prels_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000002))
 
 <P><STRONG><a name="[6c]"></a>__rt_exit_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rtexit2.o(.ARM.Collect$$rtexit$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sys_exit
@@ -244,7 +244,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__asm___11_app_timer_c_cd27f9c3__nrf_delay_us
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rtc1_stop
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
 </UL>
 
 <P><STRONG><a name="[70]"></a>__aeabi_memcpy4</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, rt_memcpy.o(.emb_text))
@@ -255,7 +255,7 @@ Global Symbols
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 
-<P><STRONG><a name="[142]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memcpy.o(.emb_text), UNUSED)
+<P><STRONG><a name="[147]"></a>__aeabi_memcpy8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memcpy.o(.emb_text), UNUSED)
 
 <P><STRONG><a name="[10]"></a>Reset_Handler</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, arm_startup_nrf51.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> arm_startup_nrf51.o(RESET)
@@ -363,14 +363,20 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__user_setup_stackheap
 </UL>
 
-<P><STRONG><a name="[143]"></a>__use_no_semihosting</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi_2.o(.text), UNUSED)
+<P><STRONG><a name="[148]"></a>__use_no_semihosting</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi_2.o(.text), UNUSED)
 
-<P><STRONG><a name="[ea]"></a>memcmp</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, memcmp.o(.text))
+<P><STRONG><a name="[ef]"></a>memcmp</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, memcmp.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = memcmp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gatts_context_store
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_find
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_find
+</UL>
+
+<P><STRONG><a name="[c9]"></a>strlen</STRONG> (Thumb, 62 bytes, Stack size 12 bytes, strlen.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_srv_ascii_to_utf8
 </UL>
 
 <P><STRONG><a name="[6f]"></a>__aeabi_memcpy</STRONG> (Thumb, 130 bytes, Stack size 24 bytes, rt_memcpy.o(.text))
@@ -381,19 +387,19 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;service_data_encode
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;manuf_specific_data_encode
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_device_addr_encode
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_register
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_register
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_on_ble_evt
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_init
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_init
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_adv_packet
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_allocate
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_allocate
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SEGGER_RTT_Write
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
 </UL>
 
-<P><STRONG><a name="[144]"></a>__rt_memcpy</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, rt_memcpy.o(.text), UNUSED)
+<P><STRONG><a name="[149]"></a>__rt_memcpy</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, rt_memcpy.o(.text), UNUSED)
 
 <P><STRONG><a name="[71]"></a>__aeabi_memmove4</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, rt_memmove.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_memmove4
@@ -403,7 +409,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
 </UL>
 
-<P><STRONG><a name="[145]"></a>__aeabi_memmove8</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, rt_memmove.o(.text), UNUSED)
+<P><STRONG><a name="[14a]"></a>__aeabi_memmove8</STRONG> (Thumb, 0 bytes, Stack size 16 bytes, rt_memmove.o(.text), UNUSED)
 
 <P><STRONG><a name="[72]"></a>__aeabi_memmove</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, rt_memmove.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = __aeabi_memmove &rArr; __aeabi_memcpy
@@ -411,10 +417,10 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove4
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_rr_interval_add
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_rr_interval_add
 </UL>
 
-<P><STRONG><a name="[146]"></a>__rt_memmove</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, rt_memmove.o(.text), UNUSED)
+<P><STRONG><a name="[14b]"></a>__rt_memmove</STRONG> (Thumb, 0 bytes, Stack size 24 bytes, rt_memmove.o(.text), UNUSED)
 
 <P><STRONG><a name="[74]"></a>_memset_w</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, rt_memclr.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_memclr_w
@@ -430,67 +436,68 @@ Global Symbols
 <P><STRONG><a name="[75]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rt_memclr.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_memset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
+<BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
 </UL>
 
-<P><STRONG><a name="[147]"></a>__rt_memclr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memclr.o(.text), UNUSED)
+<P><STRONG><a name="[14c]"></a>__rt_memclr</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memclr.o(.text), UNUSED)
 
 <P><STRONG><a name="[92]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memclr.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_peer_address_clear
-<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable_get_default_config
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable_get_default_config
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_start
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_init
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_init
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
 <LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gatts_context_store
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;char_add
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;battery_level_char_add
 </UL>
 
-<P><STRONG><a name="[148]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memclr.o(.text), UNUSED)
+<P><STRONG><a name="[14d]"></a>__aeabi_memclr8</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, rt_memclr.o(.text), UNUSED)
 
 <P><STRONG><a name="[76]"></a>__rt_memclr_w</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rt_memclr.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_memset_w
 </UL>
 
-<P><STRONG><a name="[149]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text), UNUSED)
+<P><STRONG><a name="[14e]"></a>__aeabi_uidiv</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text), UNUSED)
 
-<P><STRONG><a name="[d8]"></a>__aeabi_uidivmod</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
+<P><STRONG><a name="[dd]"></a>__aeabi_uidivmod</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, aeabi_sdiv.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_swap_erase_entry_run
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_tail_entry_run
-<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;head_restore_state_run
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
 </UL>
 
-<P><STRONG><a name="[14a]"></a>__aeabi_idiv</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, aeabi_sdiv.o(.text), UNUSED)
+<P><STRONG><a name="[14f]"></a>__aeabi_idiv</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, aeabi_sdiv.o(.text), UNUSED)
 
-<P><STRONG><a name="[10c]"></a>__aeabi_idivmod</STRONG> (Thumb, 326 bytes, Stack size 8 bytes, aeabi_sdiv.o(.text))
+<P><STRONG><a name="[111]"></a>__aeabi_idivmod</STRONG> (Thumb, 326 bytes, Stack size 8 bytes, aeabi_sdiv.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __aeabi_idivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
+<BR>[Called By]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
 </UL>
 
-<P><STRONG><a name="[14b]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+<P><STRONG><a name="[150]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[b]"></a>__rt_heap_escrow</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[a]"></a>__rt_heap_expand</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
-<P><STRONG><a name="[14c]"></a>__semihosting$guard</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+<P><STRONG><a name="[151]"></a>__semihosting$guard</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
 
-<P><STRONG><a name="[14d]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+<P><STRONG><a name="[152]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
 
 <P><STRONG><a name="[64]"></a>__user_setup_stackheap</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, sys_stackheap_outer.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __user_setup_stackheap
@@ -511,17 +518,17 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[14e]"></a>__user_libspace</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
+<P><STRONG><a name="[153]"></a>__user_libspace</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
 
 <P><STRONG><a name="[77]"></a>__user_perproc_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__user_setup_stackheap
 </UL>
 
-<P><STRONG><a name="[14f]"></a>__user_perthread_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
+<P><STRONG><a name="[154]"></a>__user_perthread_libspace</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, libspace.o(.text), UNUSED)
 
-<P><STRONG><a name="[150]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[155]"></a>__decompress</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[151]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
+<P><STRONG><a name="[156]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
 <P><STRONG><a name="[1b]"></a>GPIOTE_IRQHandler</STRONG> (Thumb, 312 bytes, Stack size 64 bytes, nrf_drv_gpiote.o(i.GPIOTE_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = GPIOTE_IRQHandler
@@ -553,7 +560,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SEGGER_RTT_Write
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 <LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
 </UL>
 
@@ -586,10 +593,10 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> arm_startup_nrf51.o(RESET)
 </UL>
-<P><STRONG><a name="[d7]"></a>__ARM_common_switch8</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, bsp.o(i.__ARM_common_switch8))
+<P><STRONG><a name="[dc]"></a>__ARM_common_switch8</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, bsp.o(i.__ARM_common_switch8))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __ARM_common_switch8
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
 </UL>
 
 <P><STRONG><a name="[6d]"></a>_sys_exit</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, rtt_syscalls_keil.o(i._sys_exit))
@@ -622,7 +629,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beacon_adv_init
 </UL>
 
-<P><STRONG><a name="[115]"></a>app_beacon_on_sys_evt</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, advertiser_beacon.o(i.app_beacon_on_sys_evt))
+<P><STRONG><a name="[11a]"></a>app_beacon_on_sys_evt</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, advertiser_beacon.o(i.app_beacon_on_sys_evt))
 <BR><BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sys_evt_dispatch
 </UL>
 
@@ -631,11 +638,11 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;encode_adv_packet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 </UL>
 
-<P><STRONG><a name="[109]"></a>app_beacon_stop</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, advertiser_beacon.o(i.app_beacon_stop))
-<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<P><STRONG><a name="[10e]"></a>app_beacon_stop</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, advertiser_beacon.o(i.app_beacon_stop))
+<BR><BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 </UL>
 
 <P><STRONG><a name="[97]"></a>app_button_enable</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, app_button.o(i.app_button_enable))
@@ -643,7 +650,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_event_enable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
+<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
 </UL>
 
 <P><STRONG><a name="[99]"></a>app_button_init</STRONG> (Thumb, 100 bytes, Stack size 24 bytes, app_button.o(i.app_button_init))
@@ -654,7 +661,7 @@ Global Symbols
 <LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_init
 <LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
+<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
 </UL>
 
 <P><STRONG><a name="[9e]"></a>app_error_fault_handler</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, app_error_weak.o(i.app_error_fault_handler))
@@ -667,27 +674,29 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_fault_handler
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
+<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
 <LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_meas_timeout_handler
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
 <LI><a href="#[41]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_conn_params_evt
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_adv_evt
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gap_params_init
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gap_params_init
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
 <LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_evt_handler
 <LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;conn_params_error_handler
 <LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_event_handler
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 <LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beacon_advertiser_error_handler
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beacon_adv_init
 <LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;battery_level_meas_timeout_handler
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;application_timers_start
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_init
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pnp_id_encode
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;char_add
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;intern_softdevice_events_execute
 <LI><a href="#[2b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SWI2_IRQHandler
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_timeouts_check
@@ -695,18 +704,18 @@ Global Symbols
 
 <P><STRONG><a name="[9d]"></a>app_timer_create</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, app_timer.o(i.app_timer_create))
 <BR><BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_button_init
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_init
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
+<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
 </UL>
 
 <P><STRONG><a name="[a2]"></a>app_timer_init</STRONG> (Thumb, 126 bytes, Stack size 40 bytes, app_timer.o(i.app_timer_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = app_timer_init &rArr; rtc1_stop
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rtc1_stop
-<LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetPriority
+<BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NVIC_SetPriority
+<LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rtc1_stop
 </UL>
-<BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
+<BR>[Called By]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
 </UL>
 
 <P><STRONG><a name="[a5]"></a>app_timer_start</STRONG> (Thumb, 114 bytes, Stack size 32 bytes, app_timer.o(i.app_timer_start))
@@ -716,7 +725,7 @@ Global Symbols
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;user_id_get
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler_sched
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_button_event_handler
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;application_timers_start
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;conn_params_negotiation
@@ -730,7 +739,7 @@ Global Symbols
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;user_id_get
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler_sched
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
 <LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_button_event_handler
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_on_ble_evt
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gpiote_event_handler
@@ -797,7 +806,7 @@ Global Symbols
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_on_sys_evt
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_on_ble_evt
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 </UL>
 
 <P><STRONG><a name="[ae]"></a>ble_bas_battery_level_update</STRONG> (Thumb, 112 bytes, Stack size 48 bytes, ble_bas.o(i.ble_bas_battery_level_update))
@@ -811,10 +820,10 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;battery_level_char_add
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
 </UL>
 
-<P><STRONG><a name="[bf]"></a>ble_bas_on_ble_evt</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, ble_bas.o(i.ble_bas_on_ble_evt))
+<P><STRONG><a name="[c2]"></a>ble_bas_on_ble_evt</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, ble_bas.o(i.ble_bas_on_ble_evt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = ble_bas_on_ble_evt
 </UL>
 <BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
@@ -840,7 +849,16 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
 </UL>
 
-<P><STRONG><a name="[c2]"></a>ble_hrs_rr_interval_add</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, ble_hrs.o(i.ble_hrs_rr_interval_add))
+<P><STRONG><a name="[be]"></a>ble_dis_init</STRONG> (Thumb, 300 bytes, Stack size 32 bytes, ble_dis.o(i.ble_dis_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = ble_dis_init &rArr; char_add &rArr; app_error_handler_bare
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pnp_id_encode
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;char_add
+</UL>
+<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+</UL>
+
+<P><STRONG><a name="[c5]"></a>ble_hrs_rr_interval_add</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, ble_hrs.o(i.ble_hrs_rr_interval_add))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = ble_hrs_rr_interval_add &rArr; __aeabi_memmove &rArr; __aeabi_memcpy
 </UL>
 <BR>[Calls]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
@@ -848,83 +866,91 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rr_interval_timeout_handler
 </UL>
 
-<P><STRONG><a name="[10e]"></a>ble_hrs_sensor_contact_detected_update</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, ble_hrs.o(i.ble_hrs_sensor_contact_detected_update))
+<P><STRONG><a name="[113]"></a>ble_hrs_sensor_contact_detected_update</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, ble_hrs.o(i.ble_hrs_sensor_contact_detected_update))
 <BR><BR>[Called By]<UL><LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensor_contact_detected_timeout_handler
 </UL>
 
-<P><STRONG><a name="[c3]"></a>ble_slope_init</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, ble_slope.o(i.ble_slope_init))
+<P><STRONG><a name="[c6]"></a>ble_slope_init</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, ble_slope.o(i.ble_slope_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = ble_slope_init &rArr; slope_level_char_add
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
+<BR>[Calls]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
 </UL>
 
-<P><STRONG><a name="[c0]"></a>ble_slope_on_ble_evt</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, ble_slope.o(i.ble_slope_on_ble_evt))
+<P><STRONG><a name="[c3]"></a>ble_slope_on_ble_evt</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, ble_slope.o(i.ble_slope_on_ble_evt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = ble_slope_on_ble_evt
 </UL>
 <BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
 </UL>
 
-<P><STRONG><a name="[112]"></a>ble_slope_slope_level_update</STRONG> (Thumb, 112 bytes, Stack size 48 bytes, ble_slope.o(i.ble_slope_slope_level_update))
+<P><STRONG><a name="[117]"></a>ble_slope_slope_level_update</STRONG> (Thumb, 112 bytes, Stack size 48 bytes, ble_slope.o(i.ble_slope_slope_level_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = ble_slope_slope_level_update
 </UL>
 <BR>[Called By]<UL><LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_meas_timeout_handler
 </UL>
 
+<P><STRONG><a name="[c8]"></a>ble_srv_ascii_to_utf8</STRONG> (Thumb, 18 bytes, Stack size 16 bytes, ble_srv_common.o(i.ble_srv_ascii_to_utf8))
+<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = ble_srv_ascii_to_utf8 &rArr; strlen
+</UL>
+<BR>[Calls]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+</UL>
+<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+</UL>
+
 <P><STRONG><a name="[ac]"></a>ble_srv_report_ref_encode</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, ble_srv_common.o(i.ble_srv_report_ref_encode))
-<BR><BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
+<BR><BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_char_add
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;battery_level_char_add
 </UL>
 
-<P><STRONG><a name="[cc]"></a>bond_data_load</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.bond_data_load))
+<P><STRONG><a name="[d1]"></a>bond_data_load</STRONG> (Thumb, 58 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.bond_data_load))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = bond_data_load &rArr; pstorage_load &rArr; __aeabi_memcpy
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
+<BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[cf]"></a>bsp_btn_ble_init</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, bsp_btn_ble.o(i.bsp_btn_ble_init))
+<P><STRONG><a name="[d4]"></a>bsp_btn_ble_init</STRONG> (Thumb, 80 bytes, Stack size 24 bytes, bsp_btn_ble.o(i.bsp_btn_ble_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = bsp_btn_ble_init &rArr; advertising_buttons_configure &rArr; bsp_event_to_button_action_assign
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_buttons_configure
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_button_is_pressed
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_button_is_pressed
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d1]"></a>bsp_btn_ble_sleep_mode_prepare</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, bsp_btn_ble.o(i.bsp_btn_ble_sleep_mode_prepare))
+<P><STRONG><a name="[d6]"></a>bsp_btn_ble_sleep_mode_prepare</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, bsp_btn_ble.o(i.bsp_btn_ble_sleep_mode_prepare))
 <BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = bsp_btn_ble_sleep_mode_prepare &rArr; bsp_wakeup_buttons_set
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wakeup_buttons_set
+<BR>[Calls]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_wakeup_buttons_set
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
+<BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
 </UL>
 
-<P><STRONG><a name="[d0]"></a>bsp_button_is_pressed</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, bsp.o(i.bsp_button_is_pressed))
-<BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
+<P><STRONG><a name="[d5]"></a>bsp_button_is_pressed</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, bsp.o(i.bsp_button_is_pressed))
+<BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
 </UL>
 
 <P><STRONG><a name="[90]"></a>bsp_event_to_button_action_assign</STRONG> (Thumb, 66 bytes, Stack size 16 bytes, bsp.o(i.bsp_event_to_button_action_assign))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = bsp_event_to_button_action_assign
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_buttons_configure
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
 </UL>
 
-<P><STRONG><a name="[d4]"></a>bsp_indication_set</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, bsp.o(i.bsp_indication_set))
+<P><STRONG><a name="[d9]"></a>bsp_indication_set</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, bsp.o(i.bsp_indication_set))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = bsp_indication_set &rArr; bsp_led_indication &rArr; app_timer_start
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_adv_evt
 </UL>
 
-<P><STRONG><a name="[d6]"></a>bsp_init</STRONG> (Thumb, 134 bytes, Stack size 16 bytes, bsp.o(i.bsp_init))
+<P><STRONG><a name="[db]"></a>bsp_init</STRONG> (Thumb, 134 bytes, Stack size 16 bytes, bsp.o(i.bsp_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 92<LI>Call Chain = bsp_init &rArr; app_button_init &rArr; nrf_drv_gpiote_in_init &rArr; channel_port_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_button_init
@@ -935,57 +961,57 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d2]"></a>bsp_wakeup_buttons_set</STRONG> (Thumb, 50 bytes, Stack size 20 bytes, bsp.o(i.bsp_wakeup_buttons_set))
+<P><STRONG><a name="[d7]"></a>bsp_wakeup_buttons_set</STRONG> (Thumb, 50 bytes, Stack size 20 bytes, bsp.o(i.bsp_wakeup_buttons_set))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = bsp_wakeup_buttons_set
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_sleep_mode_prepare
+<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_sleep_mode_prepare
 </UL>
 
-<P><STRONG><a name="[be]"></a>dm_ble_evt_handler</STRONG> (Thumb, 946 bytes, Stack size 88 bytes, device_manager_peripheral.o(i.dm_ble_evt_handler))
+<P><STRONG><a name="[c1]"></a>dm_ble_evt_handler</STRONG> (Thumb, 946 bytes, Stack size 88 bytes, device_manager_peripheral.o(i.dm_ble_evt_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 264<LI>Call Chain = dm_ble_evt_handler &rArr; device_instance_free &rArr; pstorage_clear &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_handle_initialize
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
-<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_find
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_allocate
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_context_store
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_find
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_evt_notify
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_handle_initialize
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_find
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_allocate
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_context_store
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_find
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_evt_notify
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
 </UL>
 
-<P><STRONG><a name="[f2]"></a>dm_handle_initialize</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.dm_handle_initialize))
-<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<P><STRONG><a name="[f7]"></a>dm_handle_initialize</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.dm_handle_initialize))
+<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
 </UL>
 
-<P><STRONG><a name="[f0]"></a>dm_init</STRONG> (Thumb, 174 bytes, Stack size 40 bytes, device_manager_peripheral.o(i.dm_init))
+<P><STRONG><a name="[f5]"></a>dm_init</STRONG> (Thumb, 174 bytes, Stack size 40 bytes, device_manager_peripheral.o(i.dm_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 192<LI>Call Chain = dm_init &rArr; pstorage_clear &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
-<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
+<BR>[Calls]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;connection_instance_init
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
 </UL>
 
-<P><STRONG><a name="[f1]"></a>dm_register</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.dm_register))
+<P><STRONG><a name="[f6]"></a>dm_register</STRONG> (Thumb, 104 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.dm_register))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = dm_register &rArr; __aeabi_memcpy
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
 </UL>
 
 <P><STRONG><a name="[b7]"></a>fs_queued_op_count_get</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, fstorage.o(i.fs_queued_op_count_get))
@@ -1003,18 +1029,18 @@ Global Symbols
 <P><STRONG><a name="[68]"></a>main</STRONG> (Thumb, 190 bytes, Stack size 32 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 392<LI>Call Chain = main &rArr; advertising_init &rArr; ble_advertising_init &rArr; ble_advdata_set &rArr; adv_data_encode &rArr; uuid_list_encode &rArr; uuid_list_sized_encode
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
+<BR>[Calls]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_init
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_init
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_start
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SEGGER_RTT_WriteString
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
-<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensor_simulator_init
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gap_params_init
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timers_init
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;services_init
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensor_simulator_init
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gap_params_init
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beacon_adv_init
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;application_timers_start
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_init
@@ -1023,7 +1049,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[108]"></a>nrf_drv_common_irq_enable</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, nrf_drv_common.o(i.nrf_drv_common_irq_enable))
+<P><STRONG><a name="[10d]"></a>nrf_drv_common_irq_enable</STRONG> (Thumb, 78 bytes, Stack size 8 bytes, nrf_drv_common.o(i.nrf_drv_common_irq_enable))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = nrf_drv_common_irq_enable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_init
@@ -1032,8 +1058,8 @@ Global Symbols
 <P><STRONG><a name="[98]"></a>nrf_drv_gpiote_in_event_enable</STRONG> (Thumb, 138 bytes, Stack size 32 bytes, nrf_drv_gpiote.o(i.nrf_drv_gpiote_in_event_enable))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = nrf_drv_gpiote_in_event_enable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_in_use_by_te
-<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_in_use_by_port
+<BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_in_use_by_te
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pin_in_use_by_port
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_gpio_cfg_sense_set
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;channel_port_get
 </UL>
@@ -1043,13 +1069,13 @@ Global Symbols
 <P><STRONG><a name="[9c]"></a>nrf_drv_gpiote_in_init</STRONG> (Thumb, 146 bytes, Stack size 32 bytes, nrf_drv_gpiote.o(i.nrf_drv_gpiote_in_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = nrf_drv_gpiote_in_init &rArr; channel_port_alloc
 </UL>
-<BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_gpio_cfg
-<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;channel_port_alloc
+<BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_gpio_cfg
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;channel_port_alloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_button_init
 </UL>
 
-<P><STRONG><a name="[e6]"></a>nrf_drv_gpiote_in_is_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.nrf_drv_gpiote_in_is_set))
+<P><STRONG><a name="[eb]"></a>nrf_drv_gpiote_in_is_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.nrf_drv_gpiote_in_is_set))
 <BR><BR>[Called By]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gpiote_event_handler
 <LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;detection_delay_timeout_handler
 </UL>
@@ -1057,8 +1083,8 @@ Global Symbols
 <P><STRONG><a name="[9b]"></a>nrf_drv_gpiote_init</STRONG> (Thumb, 76 bytes, Stack size 16 bytes, nrf_drv_gpiote.o(i.nrf_drv_gpiote_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = nrf_drv_gpiote_init &rArr; nrf_drv_common_irq_enable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;channel_free
-<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_common_irq_enable
+<BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;channel_free
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_common_irq_enable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_button_init
 </UL>
@@ -1071,73 +1097,73 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_start
 </UL>
 
-<P><STRONG><a name="[cd]"></a>pstorage_block_identifier_get</STRONG> (Thumb, 74 bytes, Stack size 12 bytes, pstorage.o(i.pstorage_block_identifier_get))
+<P><STRONG><a name="[d2]"></a>pstorage_block_identifier_get</STRONG> (Thumb, 74 bytes, Stack size 12 bytes, pstorage.o(i.pstorage_block_identifier_get))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = pstorage_block_identifier_get
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_context_store
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_context_store
 </UL>
 
-<P><STRONG><a name="[ec]"></a>pstorage_clear</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, pstorage.o(i.pstorage_clear))
+<P><STRONG><a name="[f1]"></a>pstorage_clear</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, pstorage.o(i.pstorage_clear))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = pstorage_clear &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
 </UL>
 
-<P><STRONG><a name="[ef]"></a>pstorage_init</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, pstorage.o(i.pstorage_init))
+<P><STRONG><a name="[f4]"></a>pstorage_init</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, pstorage.o(i.pstorage_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = pstorage_init &rArr; pstorage_flash_page_end
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_element_init
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_element_init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
+<BR>[Called By]<UL><LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_manager_init
 </UL>
 
-<P><STRONG><a name="[ce]"></a>pstorage_load</STRONG> (Thumb, 158 bytes, Stack size 40 bytes, pstorage.o(i.pstorage_load))
+<P><STRONG><a name="[d3]"></a>pstorage_load</STRONG> (Thumb, 158 bytes, Stack size 40 bytes, pstorage.o(i.pstorage_load))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = pstorage_load &rArr; __aeabi_memcpy
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bond_data_load
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gatts_context_load
 </UL>
 
-<P><STRONG><a name="[f5]"></a>pstorage_register</STRONG> (Thumb, 180 bytes, Stack size 24 bytes, pstorage.o(i.pstorage_register))
+<P><STRONG><a name="[fa]"></a>pstorage_register</STRONG> (Thumb, 180 bytes, Stack size 24 bytes, pstorage.o(i.pstorage_register))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = pstorage_register &rArr; pstorage_flash_page_end
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_idivmod
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_idivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
 </UL>
 
 <P><STRONG><a name="[3d]"></a>pstorage_store</STRONG> (Thumb, 134 bytes, Stack size 24 bytes, pstorage.o(i.pstorage_store))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = pstorage_store &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
 </UL>
 <BR>[Address Reference Count : 2]<UL><LI> device_manager_peripheral.o(i.device_context_store)
 <LI> device_manager_peripheral.o(i.gatts_context_store)
 </UL>
-<P><STRONG><a name="[10d]"></a>pstorage_sys_event_handler</STRONG> (Thumb, 72 bytes, Stack size 8 bytes, pstorage.o(i.pstorage_sys_event_handler))
+<P><STRONG><a name="[112]"></a>pstorage_sys_event_handler</STRONG> (Thumb, 72 bytes, Stack size 8 bytes, pstorage.o(i.pstorage_sys_event_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = pstorage_sys_event_handler &rArr; flash_operation_success_run &rArr; clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify_error_state_transit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sys_evt_dispatch
@@ -1146,61 +1172,61 @@ Global Symbols
 <P><STRONG><a name="[3c]"></a>pstorage_update</STRONG> (Thumb, 134 bytes, Stack size 24 bytes, pstorage.o(i.pstorage_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = pstorage_update &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
+<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_word_aligned
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
 </UL>
 <BR>[Address Reference Count : 2]<UL><LI> device_manager_peripheral.o(i.device_context_store)
 <LI> device_manager_peripheral.o(i.gatts_context_store)
 </UL>
-<P><STRONG><a name="[c8]"></a>sd_check_ram_start</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, softdevice_handler.o(i.sd_check_ram_start))
+<P><STRONG><a name="[cd]"></a>sd_check_ram_start</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, softdevice_handler.o(i.sd_check_ram_start))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sd_check_ram_start
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 
-<P><STRONG><a name="[111]"></a>sensorsim_decrement</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, sensorsim.o(i.sensorsim_decrement))
+<P><STRONG><a name="[116]"></a>sensorsim_decrement</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, sensorsim.o(i.sensorsim_decrement))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sensorsim_decrement
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_measure
 </UL>
 
-<P><STRONG><a name="[110]"></a>sensorsim_increment</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, sensorsim.o(i.sensorsim_increment))
+<P><STRONG><a name="[115]"></a>sensorsim_increment</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, sensorsim.o(i.sensorsim_increment))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sensorsim_increment
 </UL>
 <BR>[Called By]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_measure
 </UL>
 
-<P><STRONG><a name="[10f]"></a>sensorsim_init</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, sensorsim.o(i.sensorsim_init))
-<BR><BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensor_simulator_init
+<P><STRONG><a name="[114]"></a>sensorsim_init</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, sensorsim.o(i.sensorsim_init))
+<BR><BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensor_simulator_init
 </UL>
 
 <P><STRONG><a name="[ad]"></a>sensorsim_measure</STRONG> (Thumb, 26 bytes, Stack size 8 bytes, sensorsim.o(i.sensorsim_measure))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = sensorsim_measure &rArr; sensorsim_increment
 </UL>
-<BR>[Calls]<UL><LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_increment
-<LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_decrement
+<BR>[Calls]<UL><LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_increment
+<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_decrement
 </UL>
 <BR>[Called By]<UL><LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slope_level_meas_timeout_handler
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rr_interval_timeout_handler
 <LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;battery_level_meas_timeout_handler
 </UL>
 
-<P><STRONG><a name="[ca]"></a>softdevice_ble_evt_handler_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, softdevice_handler.o(i.softdevice_ble_evt_handler_set))
-<BR><BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<P><STRONG><a name="[cf]"></a>softdevice_ble_evt_handler_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, softdevice_handler.o(i.softdevice_ble_evt_handler_set))
+<BR><BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 
-<P><STRONG><a name="[c9]"></a>softdevice_enable</STRONG> (Thumb, 14 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_enable))
+<P><STRONG><a name="[ce]"></a>softdevice_enable</STRONG> (Thumb, 14 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_enable))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = softdevice_enable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 
-<P><STRONG><a name="[c7]"></a>softdevice_enable_get_default_config</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_enable_get_default_config))
+<P><STRONG><a name="[cc]"></a>softdevice_enable_get_default_config</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_enable_get_default_config))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = softdevice_enable_get_default_config
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 
 <P><STRONG><a name="[43]"></a>softdevice_fault_handler</STRONG> (Thumb, 8 bytes, Stack size 8 bytes, softdevice_handler.o(i.softdevice_fault_handler))
@@ -1210,16 +1236,16 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> softdevice_handler.o(i.softdevice_handler_init)
 </UL>
-<P><STRONG><a name="[c6]"></a>softdevice_handler_init</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_handler_init))
+<P><STRONG><a name="[cb]"></a>softdevice_handler_init</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, softdevice_handler.o(i.softdevice_handler_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = softdevice_handler_init &rArr; sd_nvic_EnableIRQ
 </UL>
-<BR>[Calls]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sd_nvic_EnableIRQ
+<BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sd_nvic_EnableIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 
-<P><STRONG><a name="[cb]"></a>softdevice_sys_evt_handler_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, softdevice_handler.o(i.softdevice_sys_evt_handler_set))
-<BR><BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
+<P><STRONG><a name="[d0]"></a>softdevice_sys_evt_handler_set</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, softdevice_handler.o(i.softdevice_sys_evt_handler_set))
+<BR><BR>[Called By]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_stack_init
 </UL>
 <P>
 <H3>
@@ -1241,7 +1267,7 @@ Local Symbols
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 </UL>
 
 <P><STRONG><a name="[aa]"></a>application_timers_start</STRONG> (Thumb, 84 bytes, Stack size 16 bytes, main.o(i.application_timers_start))
@@ -1281,25 +1307,25 @@ Local Symbols
 <P><STRONG><a name="[36]"></a>ble_evt_dispatch</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, main.o(i.ble_evt_dispatch))
 <BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = ble_evt_dispatch &rArr; on_ble_evt &rArr; advertising_init &rArr; ble_advertising_init &rArr; ble_advdata_set &rArr; adv_data_encode &rArr; uuid_list_encode &rArr; uuid_list_sized_encode
 </UL>
-<BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
-<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_on_ble_evt
+<BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_on_ble_evt
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_on_ble_evt
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_bas_on_ble_evt
+<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_bas_on_ble_evt
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_on_ble_evt
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SEGGER_RTT_WriteString
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
+<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_ble_evt
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.ble_stack_init)
 </UL>
-<P><STRONG><a name="[c5]"></a>ble_stack_init</STRONG> (Thumb, 108 bytes, Stack size 32 bytes, main.o(i.ble_stack_init))
+<P><STRONG><a name="[ca]"></a>ble_stack_init</STRONG> (Thumb, 108 bytes, Stack size 32 bytes, main.o(i.ble_stack_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = ble_stack_init &rArr; softdevice_handler_init &rArr; sd_nvic_EnableIRQ
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_sys_evt_handler_set
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_handler_init
-<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable_get_default_config
-<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable
-<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_ble_evt_handler_set
-<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sd_check_ram_start
+<BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_sys_evt_handler_set
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_handler_init
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable_get_default_config
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_enable
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_ble_evt_handler_set
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sd_check_ram_start
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1310,7 +1336,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_restart_without_whitelist
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
@@ -1328,19 +1354,19 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.device_manager_init)
 </UL>
-<P><STRONG><a name="[ee]"></a>device_manager_init</STRONG> (Thumb, 96 bytes, Stack size 24 bytes, main.o(i.device_manager_init))
+<P><STRONG><a name="[f3]"></a>device_manager_init</STRONG> (Thumb, 96 bytes, Stack size 24 bytes, main.o(i.device_manager_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 216<LI>Call Chain = device_manager_init &rArr; dm_init &rArr; pstorage_clear &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_register
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<BR>[Calls]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_register
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[fd]"></a>gap_params_init</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, main.o(i.gap_params_init))
+<P><STRONG><a name="[102]"></a>gap_params_init</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, main.o(i.gap_params_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = gap_params_init &rArr; app_error_handler_bare
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
@@ -1351,21 +1377,21 @@ Local Symbols
 <P><STRONG><a name="[31]"></a>on_adv_evt</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, main.o(i.on_adv_evt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = on_adv_evt &rArr; sleep_mode_enter &rArr; bsp_indication_set &rArr; bsp_led_indication &rArr; app_timer_start
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sleep_mode_enter
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.advertising_init)
 </UL>
-<P><STRONG><a name="[c1]"></a>on_ble_evt</STRONG> (Thumb, 86 bytes, Stack size 8 bytes, main.o(i.on_ble_evt))
+<P><STRONG><a name="[c4]"></a>on_ble_evt</STRONG> (Thumb, 86 bytes, Stack size 8 bytes, main.o(i.on_ble_evt))
 <BR><BR>[Stack]<UL><LI>Max Depth = 368<LI>Call Chain = on_ble_evt &rArr; advertising_init &rArr; ble_advertising_init &rArr; ble_advdata_set &rArr; adv_data_encode &rArr; uuid_list_encode &rArr; uuid_list_sized_encode
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_start
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SEGGER_RTT_WriteString
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;advertising_init
-<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_stop
+<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_stop
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_start
 </UL>
 <BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_evt_dispatch
@@ -1382,29 +1408,31 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = rr_interval_timeout_handler &rArr; ble_hrs_rr_interval_add &rArr; __aeabi_memmove &rArr; __aeabi_memcpy
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_measure
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_rr_interval_add
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_rr_interval_add
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.timers_init)
 </UL>
 <P><STRONG><a name="[47]"></a>sensor_contact_detected_timeout_handler</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, main.o(i.sensor_contact_detected_timeout_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sensor_contact_detected_timeout_handler
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_sensor_contact_detected_update
+<BR>[Calls]<UL><LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_hrs_sensor_contact_detected_update
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.timers_init)
 </UL>
-<P><STRONG><a name="[102]"></a>sensor_simulator_init</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, main.o(i.sensor_simulator_init))
+<P><STRONG><a name="[107]"></a>sensor_simulator_init</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, main.o(i.sensor_simulator_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = sensor_simulator_init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_init
+<BR>[Calls]<UL><LI><a href="#[114]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[101]"></a>services_init</STRONG> (Thumb, 160 bytes, Stack size 56 bytes, main.o(i.services_init))
-<BR><BR>[Stack]<UL><LI>Max Depth = 168<LI>Call Chain = services_init &rArr; ble_slope_init &rArr; slope_level_char_add
+<P><STRONG><a name="[106]"></a>services_init</STRONG> (Thumb, 248 bytes, Stack size 128 bytes, main.o(i.services_init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 272<LI>Call Chain = services_init &rArr; ble_dis_init &rArr; char_add &rArr; app_error_handler_bare
 </UL>
-<BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_init
+<BR>[Calls]<UL><LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_srv_ascii_to_utf8
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_init
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_dis_init
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_bas_init
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
@@ -1412,11 +1440,11 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d3]"></a>sleep_mode_enter</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, main.o(i.sleep_mode_enter))
+<P><STRONG><a name="[d8]"></a>sleep_mode_enter</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, main.o(i.sleep_mode_enter))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = sleep_mode_enter &rArr; bsp_indication_set &rArr; bsp_led_indication &rArr; app_timer_start
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_sleep_mode_prepare
+<BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_sleep_mode_prepare
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 </UL>
 <BR>[Called By]<UL><LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;on_adv_evt
@@ -1427,7 +1455,7 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = slope_level_meas_timeout_handler &rArr; ble_slope_slope_level_update
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sensorsim_measure
-<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_slope_level_update
+<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_slope_level_update
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.timers_init)
@@ -1435,13 +1463,13 @@ Local Symbols
 <P><STRONG><a name="[37]"></a>sys_evt_dispatch</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, main.o(i.sys_evt_dispatch))
 <BR><BR>[Stack]<UL><LI>Max Depth = 304<LI>Call Chain = sys_evt_dispatch &rArr; ble_advertising_on_sys_evt &rArr; ble_advertising_start &rArr; ble_advdata_set &rArr; adv_data_encode &rArr; uuid_list_encode &rArr; uuid_list_sized_encode
 </UL>
-<BR>[Calls]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
+<BR>[Calls]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_advertising_on_sys_evt
-<LI><a href="#[115]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_on_sys_evt
+<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_beacon_on_sys_evt
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.ble_stack_init)
 </UL>
-<P><STRONG><a name="[100]"></a>timers_init</STRONG> (Thumb, 94 bytes, Stack size 8 bytes, main.o(i.timers_init))
+<P><STRONG><a name="[105]"></a>timers_init</STRONG> (Thumb, 94 bytes, Stack size 8 bytes, main.o(i.timers_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = timers_init &rArr; app_timer_init &rArr; rtc1_stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_init
@@ -1464,16 +1492,16 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> bsp.o(.constdata)
 </UL>
-<P><STRONG><a name="[d5]"></a>bsp_led_indication</STRONG> (Thumb, 492 bytes, Stack size 32 bytes, bsp.o(i.bsp_led_indication))
+<P><STRONG><a name="[da]"></a>bsp_led_indication</STRONG> (Thumb, 492 bytes, Stack size 32 bytes, bsp.o(i.bsp_led_indication))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = bsp_led_indication &rArr; app_timer_start
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_stop
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_common_switch8
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ARM_common_switch8
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_start
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;leds_timer_handler
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_indication_set
 </UL>
 
 <P><STRONG><a name="[38]"></a>button_timer_handler</STRONG> (Thumb, 12 bytes, Stack size 8 bytes, bsp.o(i.button_timer_handler))
@@ -1486,7 +1514,7 @@ Local Symbols
 <P><STRONG><a name="[39]"></a>leds_timer_handler</STRONG> (Thumb, 18 bytes, Stack size 8 bytes, bsp.o(i.leds_timer_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = leds_timer_handler &rArr; bsp_led_indication &rArr; app_timer_start
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
+<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_led_indication
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> bsp.o(i.bsp_init)
 </UL>
@@ -1495,7 +1523,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_event_to_button_action_assign
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
+<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;bsp_btn_ble_init
 </UL>
 
 <P><STRONG><a name="[88]"></a>ble_device_addr_encode</STRONG> (Thumb, 94 bytes, Stack size 24 bytes, ble_advdata.o(i.ble_device_addr_encode))
@@ -1554,12 +1582,12 @@ Local Symbols
 <P><STRONG><a name="[8a]"></a>uuid_list_encode</STRONG> (Thumb, 48 bytes, Stack size 48 bytes, ble_advdata.o(i.uuid_list_encode))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = uuid_list_encode &rArr; uuid_list_sized_encode
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uuid_list_sized_encode
+<BR>[Calls]<UL><LI><a href="#[123]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uuid_list_sized_encode
 </UL>
 <BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;adv_data_encode
 </UL>
 
-<P><STRONG><a name="[11e]"></a>uuid_list_sized_encode</STRONG> (Thumb, 174 bytes, Stack size 48 bytes, ble_advdata.o(i.uuid_list_sized_encode))
+<P><STRONG><a name="[123]"></a>uuid_list_sized_encode</STRONG> (Thumb, 174 bytes, Stack size 48 bytes, ble_advdata.o(i.uuid_list_sized_encode))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = uuid_list_sized_encode
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uuid_list_encode
@@ -1595,12 +1623,12 @@ Local Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = conn_params_negotiation &rArr; app_timer_start
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_start
-<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_conn_params_ok
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_conn_params_ok
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_conn_params_on_ble_evt
 </UL>
 
-<P><STRONG><a name="[e1]"></a>is_conn_params_ok</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, ble_conn_params.o(i.is_conn_params_ok))
+<P><STRONG><a name="[e6]"></a>is_conn_params_ok</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, ble_conn_params.o(i.is_conn_params_ok))
 <BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;conn_params_negotiation
 </UL>
 
@@ -1609,71 +1637,88 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> ble_conn_params.o(i.ble_conn_params_init)
 </UL>
-<P><STRONG><a name="[f4]"></a>app_evt_notify</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.app_evt_notify))
-<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<P><STRONG><a name="[bf]"></a>char_add</STRONG> (Thumb, 148 bytes, Stack size 96 bytes, ble_dis.o(i.char_add))
+<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = char_add &rArr; app_error_handler_bare
+</UL>
+<BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_dis_init
+</UL>
+
+<P><STRONG><a name="[c0]"></a>pnp_id_encode</STRONG> (Thumb, 54 bytes, Stack size 16 bytes, ble_dis.o(i.pnp_id_encode))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = pnp_id_encode &rArr; app_error_handler_bare
+</UL>
+<BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
+</UL>
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_dis_init
+</UL>
+
+<P><STRONG><a name="[f9]"></a>app_evt_notify</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.app_evt_notify))
+<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
 </UL>
 
-<P><STRONG><a name="[f3]"></a>connection_instance_find</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.connection_instance_find))
+<P><STRONG><a name="[f8]"></a>connection_instance_find</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.connection_instance_find))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = connection_instance_find
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[e2]"></a>connection_instance_init</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, device_manager_peripheral.o(i.connection_instance_init))
+<P><STRONG><a name="[e7]"></a>connection_instance_init</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, device_manager_peripheral.o(i.connection_instance_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = connection_instance_init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[e7]"></a>device_context_store</STRONG> (Thumb, 152 bytes, Stack size 32 bytes, device_manager_peripheral.o(i.device_context_store))
+<P><STRONG><a name="[ec]"></a>device_context_store</STRONG> (Thumb, 152 bytes, Stack size 32 bytes, device_manager_peripheral.o(i.device_context_store))
 <BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = device_context_store &rArr; pstorage_block_identifier_get
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
+<BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[e8]"></a>device_instance_allocate</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.device_instance_allocate))
+<P><STRONG><a name="[ed]"></a>device_instance_allocate</STRONG> (Thumb, 74 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.device_instance_allocate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = device_instance_allocate &rArr; __aeabi_memcpy
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[e9]"></a>device_instance_find</STRONG> (Thumb, 68 bytes, Stack size 32 bytes, device_manager_peripheral.o(i.device_instance_find))
+<P><STRONG><a name="[ee]"></a>device_instance_find</STRONG> (Thumb, 68 bytes, Stack size 32 bytes, device_manager_peripheral.o(i.device_instance_find))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = device_instance_find &rArr; memcmp
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<BR>[Calls]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
-<P><STRONG><a name="[eb]"></a>device_instance_free</STRONG> (Thumb, 40 bytes, Stack size 24 bytes, device_manager_peripheral.o(i.device_instance_free))
+<P><STRONG><a name="[f0]"></a>device_instance_free</STRONG> (Thumb, 40 bytes, Stack size 24 bytes, device_manager_peripheral.o(i.device_instance_free))
 <BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = device_instance_free &rArr; pstorage_clear &rArr; cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
+<BR>[Calls]<UL><LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
 </UL>
 
 <P><STRONG><a name="[3f]"></a>dm_pstorage_cb_handler</STRONG> (Thumb, 344 bytes, Stack size 104 bytes, device_manager_peripheral.o(i.dm_pstorage_cb_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = dm_pstorage_cb_handler &rArr; app_error_handler_bare
 </UL>
 <BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_error_handler_bare
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_handle_initialize
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;update_status_bit_reset
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_evt_notify
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_block_identifier_get
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_handle_initialize
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;update_status_bit_reset
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_evt_notify
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> device_manager_peripheral.o(i.dm_init)
 </UL>
@@ -1696,7 +1741,7 @@ Local Symbols
 <P><STRONG><a name="[4e]"></a>gatts_context_load</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.gatts_context_load))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = gatts_context_load &rArr; pstorage_load &rArr; __aeabi_memcpy
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
+<BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
 </UL>
 <BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gattsc_context_load
 </UL>
@@ -1707,7 +1752,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memcmp
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gattsc_context_store
 </UL>
@@ -1743,39 +1788,39 @@ Local Symbols
 <P><STRONG><a name="[49]"></a>no_service_context_store</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.no_service_context_store))
 <BR>[Address Reference Count : 1]<UL><LI> device_manager_peripheral.o(.constdata)
 </UL>
-<P><STRONG><a name="[ed]"></a>peer_instance_init</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.peer_instance_init))
+<P><STRONG><a name="[f2]"></a>peer_instance_init</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, device_manager_peripheral.o(i.peer_instance_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = peer_instance_init
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;update_status_bit_reset
+<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;update_status_bit_reset
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
+<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_init
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_ble_evt_handler
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;device_instance_free
 </UL>
 
 <P><STRONG><a name="[3b]"></a>storage_operation_dummy_handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.storage_operation_dummy_handler))
 <BR>[Address Reference Count : 1]<UL><LI> device_manager_peripheral.o(i.device_context_store)
 </UL>
-<P><STRONG><a name="[f6]"></a>update_status_bit_reset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.update_status_bit_reset))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
+<P><STRONG><a name="[fb]"></a>update_status_bit_reset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, device_manager_peripheral.o(i.update_status_bit_reset))
+<BR><BR>[Called By]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;peer_instance_init
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;dm_pstorage_cb_handler
 </UL>
 
-<P><STRONG><a name="[c4]"></a>slope_level_char_add</STRONG> (Thumb, 302 bytes, Stack size 96 bytes, ble_slope.o(i.slope_level_char_add))
+<P><STRONG><a name="[c7]"></a>slope_level_char_add</STRONG> (Thumb, 302 bytes, Stack size 96 bytes, ble_slope.o(i.slope_level_char_add))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = slope_level_char_add
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_srv_report_ref_encode
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_init
+<BR>[Called By]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ble_slope_init
 </UL>
 
-<P><STRONG><a name="[107]"></a>channel_free</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.channel_free))
+<P><STRONG><a name="[10c]"></a>channel_free</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.channel_free))
 <BR><BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_init
 </UL>
 
-<P><STRONG><a name="[105]"></a>channel_port_alloc</STRONG> (Thumb, 66 bytes, Stack size 20 bytes, nrf_drv_gpiote.o(i.channel_port_alloc))
+<P><STRONG><a name="[10a]"></a>channel_port_alloc</STRONG> (Thumb, 66 bytes, Stack size 20 bytes, nrf_drv_gpiote.o(i.channel_port_alloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = channel_port_alloc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_init
@@ -1786,7 +1831,7 @@ Local Symbols
 <LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOTE_IRQHandler
 </UL>
 
-<P><STRONG><a name="[106]"></a>nrf_gpio_cfg</STRONG> (Thumb, 32 bytes, Stack size 12 bytes, nrf_drv_gpiote.o(i.nrf_gpio_cfg))
+<P><STRONG><a name="[10b]"></a>nrf_gpio_cfg</STRONG> (Thumb, 32 bytes, Stack size 12 bytes, nrf_drv_gpiote.o(i.nrf_gpio_cfg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = nrf_gpio_cfg
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_init
@@ -1801,39 +1846,39 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOTE_IRQHandler
 </UL>
 
-<P><STRONG><a name="[103]"></a>pin_in_use_by_port</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.pin_in_use_by_port))
+<P><STRONG><a name="[108]"></a>pin_in_use_by_port</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.pin_in_use_by_port))
 <BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_event_enable
 </UL>
 
-<P><STRONG><a name="[104]"></a>pin_in_use_by_te</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.pin_in_use_by_te))
+<P><STRONG><a name="[109]"></a>pin_in_use_by_te</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, nrf_drv_gpiote.o(i.pin_in_use_by_te))
 <BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_event_enable
 </UL>
 
-<P><STRONG><a name="[119]"></a>nrf_uart_event_check</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.nrf_uart_event_check))
+<P><STRONG><a name="[11e]"></a>nrf_uart_event_check</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.nrf_uart_event_check))
 <BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
 </UL>
 
-<P><STRONG><a name="[118]"></a>nrf_uart_int_enable_check</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.nrf_uart_int_enable_check))
+<P><STRONG><a name="[11d]"></a>nrf_uart_int_enable_check</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.nrf_uart_int_enable_check))
 <BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
 </UL>
 
-<P><STRONG><a name="[11a]"></a>rx_byte</STRONG> (Thumb, 42 bytes, Stack size 12 bytes, nrf_drv_uart.o(i.rx_byte))
+<P><STRONG><a name="[11f]"></a>rx_byte</STRONG> (Thumb, 42 bytes, Stack size 12 bytes, nrf_drv_uart.o(i.rx_byte))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = rx_byte
 </UL>
 <BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
 </UL>
 
-<P><STRONG><a name="[11b]"></a>rx_done_event</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, nrf_drv_uart.o(i.rx_done_event))
+<P><STRONG><a name="[120]"></a>rx_done_event</STRONG> (Thumb, 22 bytes, Stack size 24 bytes, nrf_drv_uart.o(i.rx_done_event))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = rx_done_event
 </UL>
 <BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
 </UL>
 
-<P><STRONG><a name="[11c]"></a>tx_byte</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.tx_byte))
+<P><STRONG><a name="[121]"></a>tx_byte</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, nrf_drv_uart.o(i.tx_byte))
 <BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
 </UL>
 
-<P><STRONG><a name="[11d]"></a>tx_done_event</STRONG> (Thumb, 26 bytes, Stack size 24 bytes, nrf_drv_uart.o(i.tx_done_event))
+<P><STRONG><a name="[122]"></a>tx_done_event</STRONG> (Thumb, 26 bytes, Stack size 24 bytes, nrf_drv_uart.o(i.tx_done_event))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = tx_done_event
 </UL>
 <BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_irq_handler
@@ -1842,12 +1887,12 @@ Local Symbols
 <P><STRONG><a name="[85]"></a>uart_irq_handler</STRONG> (Thumb, 278 bytes, Stack size 40 bytes, nrf_drv_uart.o(i.uart_irq_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = uart_irq_handler &rArr; tx_done_event
 </UL>
-<BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tx_done_event
-<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tx_byte
-<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rx_done_event
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rx_byte
-<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_uart_int_enable_check
-<LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_uart_event_check
+<BR>[Calls]<UL><LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tx_done_event
+<LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tx_byte
+<LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rx_done_event
+<LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rx_byte
+<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_uart_int_enable_check
+<LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_uart_event_check
 </UL>
 <BR>[Called By]<UL><LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_IRQHandler
 </UL>
@@ -1855,7 +1900,7 @@ Local Symbols
 <P><STRONG><a name="[a0]"></a>app_notify</STRONG> (Thumb, 34 bytes, Stack size 16 bytes, pstorage.o(i.app_notify))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = app_notify
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
+<BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify_error_state_transit
 </UL>
 
@@ -1866,124 +1911,124 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
+<BR>[Called By]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
 </UL>
 
-<P><STRONG><a name="[d9]"></a>clear_operation_execute</STRONG> (Thumb, 252 bytes, Stack size 24 bytes, pstorage.o(i.clear_operation_execute))
+<P><STRONG><a name="[de]"></a>clear_operation_execute</STRONG> (Thumb, 252 bytes, Stack size 24 bytes, pstorage.o(i.clear_operation_execute))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
+<BR>[Called By]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
 </UL>
 
-<P><STRONG><a name="[db]"></a>clear_post_processing_run</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, pstorage.o(i.clear_post_processing_run))
+<P><STRONG><a name="[e0]"></a>clear_post_processing_run</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, pstorage.o(i.clear_post_processing_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tail_restore_state_run
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;head_restore_state_run
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_page_erase_state_run
 </UL>
 
-<P><STRONG><a name="[dd]"></a>cmd_process</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, pstorage.o(i.cmd_process))
+<P><STRONG><a name="[e2]"></a>cmd_process</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, pstorage.o(i.cmd_process))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
+<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_enqueue
 </UL>
 
-<P><STRONG><a name="[df]"></a>cmd_queue_element_init</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, pstorage.o(i.cmd_queue_element_init))
-<BR><BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
+<P><STRONG><a name="[e4]"></a>cmd_queue_element_init</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, pstorage.o(i.cmd_queue_element_init))
+<BR><BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
 </UL>
 
-<P><STRONG><a name="[de]"></a>cmd_queue_enqueue</STRONG> (Thumb, 68 bytes, Stack size 24 bytes, pstorage.o(i.cmd_queue_enqueue))
+<P><STRONG><a name="[e3]"></a>cmd_queue_enqueue</STRONG> (Thumb, 68 bytes, Stack size 24 bytes, pstorage.o(i.cmd_queue_enqueue))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = cmd_queue_enqueue &rArr; cmd_process &rArr; clear_operation_execute &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
+<BR>[Calls]<UL><LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_update
 <LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_store
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
 </UL>
 
-<P><STRONG><a name="[dc]"></a>command_end_procedure_run</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, pstorage.o(i.command_end_procedure_run))
+<P><STRONG><a name="[e1]"></a>command_end_procedure_run</STRONG> (Thumb, 56 bytes, Stack size 8 bytes, pstorage.o(i.command_end_procedure_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_element_init
+<LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_queue_element_init
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
 </UL>
 
 <P><STRONG><a name="[5c]"></a>data_page_erase_state_run</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, pstorage.o(i.data_page_erase_state_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = data_page_erase_state_run &rArr; clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[5b]"></a>data_to_swap_write_state_run</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, pstorage.o(i.data_to_swap_write_state_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = data_to_swap_write_state_run &rArr; swap_sub_state_err_busy_process
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
-<P><STRONG><a name="[f7]"></a>flash_api_err_code_process</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, pstorage.o(i.flash_api_err_code_process))
+<P><STRONG><a name="[fc]"></a>flash_api_err_code_process</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, pstorage.o(i.flash_api_err_code_process))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify_error_state_transit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
 </UL>
 
-<P><STRONG><a name="[f8]"></a>flash_operation_success_run</STRONG> (Thumb, 114 bytes, Stack size 8 bytes, pstorage.o(i.flash_operation_success_run))
+<P><STRONG><a name="[fd]"></a>flash_operation_success_run</STRONG> (Thumb, 114 bytes, Stack size 8 bytes, pstorage.o(i.flash_operation_success_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = flash_operation_success_run &rArr; clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
+<BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main_state_err_busy_process
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main_state_err_busy_process
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
+<BR>[Called By]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
 </UL>
 
-<P><STRONG><a name="[fb]"></a>flash_page_erase</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, pstorage.o(i.flash_page_erase))
+<P><STRONG><a name="[100]"></a>flash_page_erase</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, pstorage.o(i.flash_page_erase))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = flash_page_erase &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
+<BR>[Calls]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
 </UL>
 <BR>[Called By]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_swap_erase_entry_run
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_erase_data_page_entry_run
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
 </UL>
 
-<P><STRONG><a name="[fc]"></a>flash_write</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, pstorage.o(i.flash_write))
+<P><STRONG><a name="[101]"></a>flash_write</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, pstorage.o(i.flash_write))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = flash_write &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
+<BR>[Calls]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_api_err_code_process
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_write_data_swap_entry_run
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_tail_entry_run
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_head_entry_run
@@ -1992,95 +2037,95 @@ Local Symbols
 <P><STRONG><a name="[5e]"></a>head_restore_state_run</STRONG> (Thumb, 110 bytes, Stack size 16 bytes, pstorage.o(i.head_restore_state_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = head_restore_state_run &rArr; clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
-<P><STRONG><a name="[e3]"></a>is_page_erase_required</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, pstorage.o(i.is_page_erase_required))
+<P><STRONG><a name="[e8]"></a>is_page_erase_required</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, pstorage.o(i.is_page_erase_required))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = is_page_erase_required
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;head_restore_state_run
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_page_erase_state_run
 </UL>
 
-<P><STRONG><a name="[10a]"></a>is_word_aligned</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, pstorage.o(i.is_word_aligned))
+<P><STRONG><a name="[10f]"></a>is_word_aligned</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, pstorage.o(i.is_word_aligned))
 <BR><BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_update
 <LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_store
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_load
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_clear
 </UL>
 
-<P><STRONG><a name="[fa]"></a>main_state_err_busy_process</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, pstorage.o(i.main_state_err_busy_process))
+<P><STRONG><a name="[ff]"></a>main_state_err_busy_process</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, pstorage.o(i.main_state_err_busy_process))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = main_state_err_busy_process &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
 </UL>
 
-<P><STRONG><a name="[10b]"></a>pstorage_flash_page_end</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, pstorage.o(i.pstorage_flash_page_end))
+<P><STRONG><a name="[110]"></a>pstorage_flash_page_end</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, pstorage.o(i.pstorage_flash_page_end))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = pstorage_flash_page_end
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
+<BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_write_data_swap_entry_run
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_swap_erase_entry_run
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_tail_entry_run
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_head_entry_run
 </UL>
 
-<P><STRONG><a name="[da]"></a>pstorage_flash_page_size</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, pstorage.o(i.pstorage_flash_page_size))
-<BR><BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
+<P><STRONG><a name="[df]"></a>pstorage_flash_page_size</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, pstorage.o(i.pstorage_flash_page_size))
+<BR><BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_init
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_register
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_write_data_swap_entry_run
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_swap_erase_entry_run
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_tail_entry_run
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_restore_head_entry_run
-<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_page_erase_required
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;head_restore_state_run
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
 </UL>
 
 <P><STRONG><a name="[a1]"></a>sm_state_change</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, pstorage.o(i.sm_state_change))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64 + In Cycle
 <LI>Call Chain = sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
-<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
+<BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;store_cmd_flash_write_execute
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
 </UL>
-<BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main_state_err_busy_process
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
+<BR>[Called By]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main_state_err_busy_process
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;command_end_procedure_run
+<LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cmd_process
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_operation_execute
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_notify_error_state_transit
 </UL>
 
-<P><STRONG><a name="[113]"></a>state_data_erase_swap_entry_run</STRONG> (Thumb, 92 bytes, Stack size 24 bytes, pstorage.o(i.state_data_erase_swap_entry_run))
+<P><STRONG><a name="[118]"></a>state_data_erase_swap_entry_run</STRONG> (Thumb, 92 bytes, Stack size 24 bytes, pstorage.o(i.state_data_erase_swap_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = state_data_erase_swap_entry_run
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
 </UL>
@@ -2088,70 +2133,70 @@ Local Symbols
 <P><STRONG><a name="[57]"></a>state_erase_data_page_entry_run</STRONG> (Thumb, 12 bytes, Stack size 8 bytes, pstorage.o(i.state_erase_data_page_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = state_erase_data_page_entry_run &rArr; flash_page_erase &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
+<BR>[Calls]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[59]"></a>state_restore_head_entry_run</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, pstorage.o(i.state_restore_head_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = state_restore_head_entry_run &rArr; flash_write &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[58]"></a>state_restore_tail_entry_run</STRONG> (Thumb, 66 bytes, Stack size 24 bytes, pstorage.o(i.state_restore_tail_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = state_restore_tail_entry_run &rArr; flash_write &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[55]"></a>state_swap_erase_entry_run</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, pstorage.o(i.state_swap_erase_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = state_swap_erase_entry_run &rArr; flash_page_erase &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_page_erase
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[56]"></a>state_write_data_swap_entry_run</STRONG> (Thumb, 42 bytes, Stack size 16 bytes, pstorage.o(i.state_write_data_swap_entry_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = state_write_data_swap_entry_run &rArr; flash_write &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_end
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
-<P><STRONG><a name="[f9]"></a>store_cmd_flash_write_execute</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, pstorage.o(i.store_cmd_flash_write_execute))
+<P><STRONG><a name="[fe]"></a>store_cmd_flash_write_execute</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, pstorage.o(i.store_cmd_flash_write_execute))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = store_cmd_flash_write_execute &rArr; flash_write &rArr; flash_api_err_code_process &rArr; app_notify_error_state_transit &rArr;  sm_state_change (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
+<BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_flash_page_size
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_write
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sm_state_change
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;flash_operation_success_run
 </UL>
 
 <P><STRONG><a name="[5a]"></a>swap_erase_state_run</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, pstorage.o(i.swap_erase_state_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = swap_erase_state_run &rArr; swap_sub_state_err_busy_process
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
-<P><STRONG><a name="[e5]"></a>swap_sub_state_err_busy_process</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, pstorage.o(i.swap_sub_state_err_busy_process))
+<P><STRONG><a name="[ea]"></a>swap_sub_state_err_busy_process</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, pstorage.o(i.swap_sub_state_err_busy_process))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = swap_sub_state_err_busy_process
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
+<BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_state_change
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tail_restore_state_run
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_erase_state_run
@@ -2160,11 +2205,11 @@ Local Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_page_erase_state_run
 </UL>
 
-<P><STRONG><a name="[e4]"></a>swap_sub_state_state_change</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, pstorage.o(i.swap_sub_state_state_change))
-<BR><BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<P><STRONG><a name="[e9]"></a>swap_sub_state_state_change</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, pstorage.o(i.swap_sub_state_state_change))
+<BR><BR>[Called By]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pstorage_sys_event_handler
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_erase_state_run
-<LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
+<LI><a href="#[118]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;state_data_erase_swap_entry_run
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;head_restore_state_run
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_to_swap_write_state_run
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_page_erase_state_run
@@ -2173,15 +2218,15 @@ Local Symbols
 <P><STRONG><a name="[5d]"></a>tail_restore_state_run</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, pstorage.o(i.tail_restore_state_run))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = tail_restore_state_run &rArr; clear_post_processing_run &rArr; command_end_procedure_run &rArr; sm_state_change &rArr;  cmd_process (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
+<BR>[Calls]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;swap_sub_state_err_busy_process
+<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_post_processing_run
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> pstorage.o(.constdata)
 </UL>
 <P><STRONG><a name="[33]"></a>detection_delay_timeout_handler</STRONG> (Thumb, 90 bytes, Stack size 24 bytes, app_button.o(i.detection_delay_timeout_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = detection_delay_timeout_handler
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_is_set
+<BR>[Calls]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_is_set
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app_button.o(i.app_button_init)
 </UL>
@@ -2190,7 +2235,7 @@ Local Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_stop
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_start
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_is_set
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;nrf_drv_gpiote_in_is_set
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app_button.o(i.app_button_init)
 </UL>
@@ -2198,7 +2243,7 @@ Local Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_init
 </UL>
 
-<P><STRONG><a name="[e0]"></a>compare_reg_update</STRONG> (Thumb, 142 bytes, Stack size 24 bytes, app_timer.o(i.compare_reg_update))
+<P><STRONG><a name="[e5]"></a>compare_reg_update</STRONG> (Thumb, 142 bytes, Stack size 24 bytes, app_timer.o(i.compare_reg_update))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = compare_reg_update &rArr; rtc1_stop
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__asm___11_app_timer_c_cd27f9c3__nrf_delay_us
@@ -2207,22 +2252,22 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler
 </UL>
 
-<P><STRONG><a name="[116]"></a>elapsed_ticks_acquire</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, app_timer.o(i.elapsed_ticks_acquire))
+<P><STRONG><a name="[11b]"></a>elapsed_ticks_acquire</STRONG> (Thumb, 58 bytes, Stack size 8 bytes, app_timer.o(i.elapsed_ticks_acquire))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = elapsed_ticks_acquire
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler
 </UL>
 
-<P><STRONG><a name="[117]"></a>list_deletions_handler</STRONG> (Thumb, 180 bytes, Stack size 24 bytes, app_timer.o(i.list_deletions_handler))
+<P><STRONG><a name="[11c]"></a>list_deletions_handler</STRONG> (Thumb, 180 bytes, Stack size 24 bytes, app_timer.o(i.list_deletions_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = list_deletions_handler
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler
 </UL>
 
-<P><STRONG><a name="[fe]"></a>list_insertions_handler</STRONG> (Thumb, 202 bytes, Stack size 24 bytes, app_timer.o(i.list_insertions_handler))
+<P><STRONG><a name="[103]"></a>list_insertions_handler</STRONG> (Thumb, 202 bytes, Stack size 24 bytes, app_timer.o(i.list_insertions_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = list_insertions_handler &rArr; timer_list_insert
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_insert
+<BR>[Calls]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_insert
 </UL>
 <BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_list_handler
 </UL>
@@ -2233,16 +2278,16 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__asm___11_app_timer_c_cd27f9c3__nrf_delay_us
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_init
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
 </UL>
 
 <P><STRONG><a name="[81]"></a>timer_list_handler</STRONG> (Thumb, 128 bytes, Stack size 32 bytes, app_timer.o(i.timer_list_handler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = timer_list_handler &rArr; compare_reg_update &rArr; rtc1_stop
 </UL>
-<BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insertions_handler
-<LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_deletions_handler
-<LI><a href="#[116]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;elapsed_ticks_acquire
-<LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
+<BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insertions_handler
+<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_deletions_handler
+<LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;elapsed_ticks_acquire
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;compare_reg_update
 </UL>
 <BR>[Called By]<UL><LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SWI0_IRQHandler
 </UL>
@@ -2253,10 +2298,10 @@ Local Symbols
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_timeouts_check
 </UL>
 
-<P><STRONG><a name="[ff]"></a>timer_list_insert</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, app_timer.o(i.timer_list_insert))
+<P><STRONG><a name="[104]"></a>timer_list_insert</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, app_timer.o(i.timer_list_insert))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = timer_list_insert
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insertions_handler
+<BR>[Called By]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;list_insertions_handler
 </UL>
 
 <P><STRONG><a name="[7e]"></a>timer_timeouts_check</STRONG> (Thumb, 118 bytes, Stack size 24 bytes, app_timer.o(i.timer_timeouts_check))
@@ -2278,10 +2323,10 @@ Local Symbols
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_timer_start
 </UL>
 
-<P><STRONG><a name="[114]"></a>sd_nvic_EnableIRQ</STRONG> (Thumb, 116 bytes, Stack size 8 bytes, softdevice_handler.o(i.sd_nvic_EnableIRQ))
+<P><STRONG><a name="[119]"></a>sd_nvic_EnableIRQ</STRONG> (Thumb, 116 bytes, Stack size 8 bytes, softdevice_handler.o(i.sd_nvic_EnableIRQ))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sd_nvic_EnableIRQ
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_handler_init
+<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;softdevice_handler_init
 </UL>
 
 <P><STRONG><a name="[84]"></a>is_manual_peripheral_setup_needed</STRONG> (Thumb, 66 bytes, Stack size 0 bytes, system_nrf51.o(i.is_manual_peripheral_setup_needed))

@@ -32,6 +32,16 @@
 #include <stdint.h>
 #include "ble_srv_common.h"
 
+//Characteristic UUIDs:
+
+#define       SCOPE_CHAR_UUID_HW_REV		0x2A27
+#define				SCOPE_CHAR_UUID_SN				0x2A25
+#define       SCOPE_CHAR_UUID_MODEL			0x2A24
+#define				SCOPE_CHAR_UUID_MANU			0x2A29
+#define       SCOPE_CHAR_UUID_FW_REV		0x2A26
+#define				SCOPE_CHAR_UUID_SYS_ID		0x2A23
+
+
 /** @defgroup DIS_VENDOR_ID_SRC_VALUES Vendor ID Source values  
  * @{
  */
@@ -73,7 +83,7 @@ typedef struct
     ble_srv_utf8_str_t             hw_rev_str;                  /**< Hardware Revision String. */
     ble_srv_utf8_str_t             fw_rev_str;                  /**< Firmware Revision String. */
     ble_srv_utf8_str_t             sw_rev_str;                  /**< Software Revision String. */
-    ble_dis_sys_id_t *             p_sys_id;                    /**< System ID. */
+    ble_srv_utf8_str_t             sys_id_str;                    /**< System ID. */  //changed from id type to be a string
     ble_dis_reg_cert_data_list_t * p_reg_cert_data_list;        /**< IEEE 11073-20601 Regulatory Certification Data List. */
     ble_dis_pnp_id_t *             p_pnp_id;                    /**< PnP ID. */
     ble_srv_security_mode_t        dis_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
