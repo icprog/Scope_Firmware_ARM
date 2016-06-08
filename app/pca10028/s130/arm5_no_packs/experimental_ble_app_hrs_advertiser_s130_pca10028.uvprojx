@@ -332,7 +332,7 @@
               <MiscControls></MiscControls>
               <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10028 S130 NRF51 SOFTDEVICE_PRESENT SWI_DISABLE0 NRF_LOG_USES_UART=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\segger_rtt;..\..\..\..\components\ble\ble_services\ble_lbs;C:\Keil_v5\ARM\Pack\NordicSemiconductor</IncludePath>
+              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\segger_rtt;..\..\..\..\components\ble\ble_services\ble_lbs;C:\Keil_v5\ARM\Pack\NordicSemiconductor;..\..\..\..\components\ble\ble_services\ble_slope</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -1025,9 +1025,9 @@
               </FileOption>
             </File>
             <File>
-              <FileName>ble_dev_status.c</FileName>
+              <FileName>ble_slope.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.c</FilePath>
+              <FilePath>..\..\..\..\components\ble\ble_services\ble_slope\ble_slope.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3052,9 +3052,9 @@
               </FileOption>
             </File>
             <File>
-              <FileName>ble_dev_status.c</FileName>
+              <FileName>ble_slope.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.c</FilePath>
+              <FilePath>..\..\..\..\components\ble\ble_services\ble_slope\ble_slope.c</FilePath>
             </File>
           </Files>
         </Group>

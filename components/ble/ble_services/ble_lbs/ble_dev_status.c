@@ -437,145 +437,67 @@ uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_s
     return NRF_SUCCESS;
 }
 
-//uint32_t ble_dev_status_on_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state)
-//{
-//	
-//		uint8_t button_state2[3] = {1,2,3}; //DH test
-//    ble_gatts_hvx_params_t params;
-//    uint16_t len = sizeof(button_state2); //DH test
-//    
-//    memset(&params, 0, sizeof(params));
-//    params.type = BLE_GATT_HVX_NOTIFICATION;
-//   // params.handle = p_dev_status->button_char_handles.value_handle;
-//    params.p_data = button_state2; //had & DH
-//    params.p_len = &len;
-//    
-//    return sd_ble_gatts_hvx(p_dev_status->conn_handle, &params);
-//}
 
-//uint32_t ble_dev_status_on_other_button_change(ble_dev_status_t * p_dev_status, uint8_t button_state)
-//{
-//	
-//		uint8_t button_state2[3] = {5,6,7}; //DH test
-//    ble_gatts_hvx_params_t params;
-//    uint16_t len = sizeof(button_state2); //DH test
-//    
-//    memset(&params, 0, sizeof(params));
-//    params.type = BLE_GATT_HVX_NOTIFICATION;
-//    //params.handle = p_dev_status->button_char_handles.value_handle;
-//    params.p_data = button_state2; //had & DH
-//    params.p_len = &len;
-//    
-//    return sd_ble_gatts_hvx(p_dev_status->conn_handle, &params);
-//}
+
+
+
 //function for updating slope values:
-uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope2)
+uint32_t ble_slope_update(ble_dev_status_t * p_dev, uint8_t slope)
 {
-		uint8_t buffer_count;
-		uint8_t* p_count;
-		volatile uint32_t loop_counter = 0;
-		uint32_t err_code = NRF_SUCCESS;
-		SEGGER_RTT_WriteString(0, "Slope Update \n");
-		//uint8_t slope[3] = {5,6,7}; //DH test
-		uint8_t slope = 7;
-  	ble_gatts_hvx_params_t params;
-    uint16_t len = sizeof(slope); //DH test
+		if (p_dev == NULL)
+    {
+        return NRF_ERROR_NULL;
+    }
     
-    memset(&params, 0, sizeof(params));
-    params.type = BLE_GATT_HVX_NOTIFICATION;
-    params.handle = p_dev->service_handle;//p_dev->slope_char_handles.value_handle;
-    params.p_data = &slope; 
-    params.p_len = &len;
-		//ble_gatts_attr_t    attr_char_value;
-		ble_gatts_value_t char_value;
-		char_value.len = len;
-		char_value.offset = 0;
-		char_value.p_value = &slope;
-		sd_ble_gatts_value_set(p_dev->conn_handle,p_dev->service_handle, &char_value);
-		//err_code = sd_ble_tx_buffer_count_get(&buffer_count);
-    err_code = sd_ble_gatts_hvx(p_dev->service_handle, &params);  
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
 
-		if (err_code == NRF_SUCCESS)
+    if (slope == slope)
+    {
+        // Initialize value struct.
+        memset(&gatts_value, 0, sizeof(gatts_value));
+				slope = 7;
+        gatts_value.len     = sizeof(uint8_t);
+        gatts_value.offset  = 0;
+        gatts_value.p_value = &slope;
+
+        // Update database.
+        err_code = sd_ble_gatts_value_set(p_dev->conn_handle,
+                                          p_dev->slope_char_handles.value_handle, 
+                                          &gatts_value);
+        if (err_code == NRF_SUCCESS)
         {
-            SEGGER_RTT_WriteString(0, "Send success \n");
+						SEGGER_RTT_WriteString(0, "updated database successfully \n");
+            
         }
         else
         {
-					SEGGER_RTT_WriteString(0, "Send fail:  \n");
-					SEGGER_RTT_printf(0,"error %d",err_code);
+					SEGGER_RTT_printf(0, "databse update error: %d \n", err_code);
+            return err_code;
         }
-		return err_code;
-//    return sd_ble_gatts_hvx(p_dev->conn_handle, &params);
-////		uint32_t err_code = NRF_SUCCESS;
-//    ble_gatts_value_t gatts_value;
-//		memset(&gatts_value, 0, sizeof(gatts_value));
-//    gatts_value.len     = sizeof(slope);
-//    gatts_value.offset  = 0;
-//		
-//		 gatts_value.p_value = &slope;
 
-//     sd_ble_gatts_value_set(p_dev->conn_handle,
-//                                          0,
-//                                          &gatts_value);
+        // Send value if connected and notifying.
+        if ((p_dev->conn_handle != BLE_CONN_HANDLE_INVALID) && p_dev->is_notification_supported)
+        {
+            ble_gatts_hvx_params_t hvx_params;
 
-//    return err_code;
-		
+            memset(&hvx_params, 0, sizeof(hvx_params));
 
-	
-	
-//    if (p_dev == NULL)
-//    {
-//        return NRF_ERROR_NULL;
-//    }
-//    
-//    uint32_t err_code = NRF_SUCCESS;
-//    ble_gatts_value_t gatts_value;
+            hvx_params.handle = p_dev->slope_char_handles.value_handle;
+            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+            hvx_params.offset = gatts_value.offset;
+            hvx_params.p_len  = &gatts_value.len;
+            hvx_params.p_data = gatts_value.p_value;
 
-//    if (slope != p_dev->slope)
-//    {
-//        // Initialize value struct.
-//        memset(&gatts_value, 0, sizeof(gatts_value));
+            err_code = sd_ble_gatts_hvx(p_dev->conn_handle, &hvx_params);
+        }
+        else
+        {
+            err_code = NRF_ERROR_INVALID_STATE;
+        }
+    }
 
-//        gatts_value.len     = sizeof(uint8_t);
-//        gatts_value.offset  = 0;
-//        gatts_value.p_value = &slope;
-
-//        // Update database.
-//        err_code = sd_ble_gatts_value_set(p_dev->conn_handle,
-//                                          p_dev->slope_char_handles.value_handle,
-//                                          &gatts_value);
-//        if (err_code == NRF_SUCCESS)
-//        {
-//            // Save new battery value.
-//            p_dev->slope = slope;
-//        }
-//        else
-//        {
-//            return err_code;
-//        }
-
-//        // Send value if connected and notifying.
-//        if ((p_dev->conn_handle != BLE_CONN_HANDLE_INVALID))// && p_dev->is_notification_supported)
-//        {
-//            ble_gatts_hvx_params_t hvx_params;
-
-//            memset(&hvx_params, 0, sizeof(hvx_params));
-
-//            hvx_params.handle = p_dev->slope_char_handles.value_handle;
-//            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-//            hvx_params.offset = gatts_value.offset;
-//            hvx_params.p_len  = &gatts_value.len;
-//            hvx_params.p_data = gatts_value.p_value;
-
-//            err_code = sd_ble_gatts_hvx(p_dev->conn_handle, &hvx_params);
-//        }
-//        else
-//        {
-//            err_code = NRF_ERROR_INVALID_STATE;
-//        }
-//    }
-
-//    return err_code;
+    return err_code;
 }
 static void led_write_handler(ble_dev_status_t * p_dev, uint8_t slope)
 {

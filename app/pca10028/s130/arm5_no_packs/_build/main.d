@@ -39,6 +39,7 @@
 .\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_bas\ble_bas.h
 .\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_hrs\ble_hrs.h
 .\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_dis\ble_dis.h
+.\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_slope\ble_slope.h
 .\_build\main.o: ..\..\..\..\components\ble\common\ble_conn_params.h
 .\_build\main.o: ..\..\..\..\bsp\bsp.h
 .\_build\main.o: ..\..\..\..\bsp\boards.h
@@ -63,7 +64,6 @@
 .\_build\main.o: ..\..\..\..\components\drivers_nrf\pstorage\pstorage.h
 .\_build\main.o: ..\..\..\config\pstorage_platform.h
 .\_build\main.o: ..\..\..\..\components\libraries\trace\app_trace.h
-.\_build\main.o: ..\..\..\..\components\ble\ble_services\ble_lbs\ble_dev_status.h
 .\_build\main.o: ..\..\..\..\segger_rtt\SEGGER_RTT.h
 .\_build\main.o: ..\..\..\..\segger_rtt\SEGGER_RTT_Conf.h
 .\_build\main.o: ..\..\..\advertiser_beacon.h

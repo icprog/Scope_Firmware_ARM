@@ -59,6 +59,27 @@
 															
 static uint8_t             initial_slope = 0x13;
 															
+/**@brief Battery Service event type. */
+typedef enum
+{
+    BLE_DEV_STATUS_EVT_NOTIFICATION_ENABLED,                             /**< Battery value notification enabled event. */
+    BLE_DEV_STATUS_EVT_NOTIFICATION_DISABLED                             /**< Battery value notification disabled event. */
+} ble_dev_status_evt_type_t;
+
+/**@brief Battery Service event. */
+typedef struct
+{
+    ble_dev_status_evt_type_t evt_type;                                  /**< Type of event. */
+} ble_dev_status_evt_t;
+
+// Forward declaration of the ble_bas_t type. 
+typedef struct ble_dev_status_s ble_dev_status_t;
+
+/**@brief Battery Service event handler type. */
+typedef void (*ble_dev_status_evt_handler_t) (ble_dev_status_t * p_dev, ble_dev_status_evt_t * p_evt);
+
+
+															
 // Forward declaration of the ble_dev_status_t type. 
 typedef struct ble_dev_status_s ble_dev_status_t;
 
@@ -66,20 +87,28 @@ typedef void (*ble_dev_status_led_write_handler_t) (ble_dev_status_t * p_dev_sta
 
 /** @brief LED Button Service init structure. This structure contains all options and data needed for
  *        initialization of the service.*/
+
+
 typedef struct
 {
+		ble_dev_status_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+		bool                        support_notification;           /**< TRUE if notification of Battery Level measurement is supported. */
     ble_dev_status_led_write_handler_t led_write_handler; /**< Event handler to be called when the LED Characteristic is written. */
+		uint8_t                       initial_slope_level;             /**< Initial battery level */
+    ble_srv_cccd_security_mode_t  slope_char_attr_md;     /**< Initial security level for battery characteristics attribute */
+    ble_gap_conn_sec_mode_t       slope_report_read_perm; /**< Initial security level for battery report read attribute */
 } ble_dev_status_init_t;
 
 /**@brief LED Button Service structure. This structure contains various status information for the service. */
 struct ble_dev_status_s
 {
     uint16_t                    service_handle;      /**< Handle of LED Button Service (as provided by the BLE stack). */
-    //ble_gatts_char_handles_t    led_char_handles;    /**< Handles related to the LED Characteristic. */
+   
     ble_gatts_char_handles_t    slope_char_handles; /**< Handles related to the Button Characteristic. */
     uint8_t                     uuid_type;           /**< UUID type for the LED Button Service. */
 		uint8_t											slope;
     uint16_t                    conn_handle;         /**< Handle of the current connection (as provided by the BLE stack). BLE_CONN_HANDLE_INVALID if not in a connection. */
+	  bool                        is_notification_supported;      /**< TRUE if notification of Battery Level is supported. */
     ble_dev_status_led_write_handler_t dev_status_write_handler;   /**< Event handler to be called when the LED Characteristic is written. */
 };
 
