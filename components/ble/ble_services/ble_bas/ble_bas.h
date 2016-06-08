@@ -44,6 +44,9 @@
 #include "ble.h"
 #include "ble_srv_common.h"
 
+#define SCOPE_UUID_BATTERY  0x180F  // custom scope battery UUID
+
+
 /**@brief Battery Service event type. */
 typedef enum
 {

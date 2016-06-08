@@ -32,6 +32,8 @@
 #include <stdint.h>
 #include "ble_srv_common.h"
 
+//Service UUID:
+#define SCOPE_UUID_DEVICE_INFO 0x180A
 //Characteristic UUIDs:
 
 #define       SCOPE_CHAR_UUID_HW_REV		0x2A27

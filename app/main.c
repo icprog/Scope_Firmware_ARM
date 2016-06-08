@@ -56,8 +56,10 @@
 
 #define APP_COMPANY_IDENTIFIER               0x0059                                     /**< Company identifier for Nordic Semiconductor ASA. as per www.bluetooth.org. */
 
-#define BEACON_UUID 0xff, 0xfe, 0x2d, 0x12, 0x1e, 0x4b, 0x0f, 0xa4,\
+//#define BEACON_UUID 0xff, 0xfe, 0x2d, 0x12, 0x1e, 0x4b, 0x0f, 0xa4,\
                     0x99, 0x4e, 0xce, 0xb5, 0x31, 0xf4, 0x05, 0x45 
+#define BEACON_UUID 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 0x10, 0x00, 0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb			//put in place to match the app							
+										
 #define BEACON_ADV_INTERVAL                  400                                        /**< The Beacon's advertising interval, in milliseconds*/
 #define BEACON_MAJOR                         0x1234                                     /**< The Beacon's Major*/
 #define BEACON_MINOR                         0x5678                                     /**< The Beacon's Minor*/
@@ -155,8 +157,8 @@ static ble_uuid_t m_adv_uuids[] =                                               
 {
 		{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
     {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
-    {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
-    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
+    {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
+    {SCOPE_UUID_DEVICE_INFO, 							BLE_UUID_TYPE_BLE}
 		
 };
 
@@ -427,7 +429,7 @@ static void services_init(void)
 		ble_srv_ascii_to_utf8(&dis_init.fw_rev_str, (char *)FIRMWARE_VERSION);
 		ble_srv_ascii_to_utf8(&dis_init.sys_id_str, (char *)SYSTEM_ID);
 
-		
+		 
 		
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
