@@ -12,6 +12,7 @@
 ".\_build\ble_srv_common.o"
 ".\_build\device_manager_peripheral.o"
 ".\_build\ble_slope.o"
+".\_build\ble_status.o"
 ".\_build\app_uart_fifo.o"
 ".\_build\nrf_delay.o"
 ".\_build\nrf_drv_common.o"

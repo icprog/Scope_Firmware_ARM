@@ -148,6 +148,20 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     uint32_t   err_code;
     ble_uuid_t ble_uuid;
 
+		ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
+		
+		//add relevent data to 
+    ble_srv_ascii_to_utf8(&dis_init->manufact_name_str, (char *)MANUFACTURER_NAME);
+		ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)SERIAL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init->model_num_str, (char *)MODEL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init->hw_rev_str, (char *)HARDWARE_REVISION);
+		ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)FIRMWARE_VERSION);
+		ble_srv_ascii_to_utf8(&dis_init->sys_id_str, (char *)SYSTEM_ID);
+
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init->dis_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init->dis_attr_md.write_perm);
+	
+	
     // Add service
     BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_DEVICE_INFORMATION_SERVICE);
 
