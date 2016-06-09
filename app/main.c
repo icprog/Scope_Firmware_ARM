@@ -41,8 +41,11 @@
 #include "device_manager.h"
 #include "pstorage.h"
 #include "app_trace.h"
+
+//services
 #include "ble_dev_status.h"
 #include "probe_error.h"
+#include "profile_service.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -115,7 +118,8 @@ static ble_beacon_init_t beacon_init;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 						     m_pes;
+static ble_pes_t 						     m_pes; //probing error service
+static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_dev_status_t                      m_stat;
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
@@ -140,7 +144,8 @@ static ble_uuid_t m_adv_uuids[] =                                               
     {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
     {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
     {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
-	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE}
+	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+    {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE}
 		
 };
 
@@ -429,6 +434,9 @@ static void services_init(void)
 	
 	//initialize probe error service
 	ble_probe_error_service_init(&m_pes);
+    
+    //initialize profile service
+   ble_profile_service_init(&m_ps);
 
 }
 
