@@ -1,4 +1,4 @@
-#git ignore file for Keil uVision Project
+#git ignore file for Keil uVision C Project
 
 # Object files
 *.o
@@ -25,3 +25,18 @@
 *.i*86
 *.x86_64
 *.hex
+
+# files that are giving git a hard time
+*JLinkLog.txt
+*.lst
+*.crf
+*.d
+*.Dave
+*.joetrovato
+*.dep
+*.axf
+*.htm
+*.lnp
+*.map
+
+
