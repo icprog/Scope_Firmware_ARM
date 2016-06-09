@@ -148,6 +148,20 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     uint32_t   err_code;
     ble_uuid_t ble_uuid;
 
+		ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
+		
+		//add relevent data to 
+    ble_srv_ascii_to_utf8(&dis_init->manufact_name_str, (char *)MANUFACTURER_NAME);
+		ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)SERIAL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init->model_num_str, (char *)MODEL_NUMBER);
+		ble_srv_ascii_to_utf8(&dis_init->hw_rev_str, (char *)HARDWARE_REVISION);
+		ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)FIRMWARE_VERSION);
+		ble_srv_ascii_to_utf8(&dis_init->sys_id_str, (char *)SYSTEM_ID);
+
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init->dis_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init->dis_attr_md.write_perm);
+	
+	
     // Add service
     BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_DEVICE_INFORMATION_SERVICE);
 
@@ -158,9 +172,9 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     }
 
     // Add characteristics
-    if (p_dis_init->manufact_name_str.length > 0)
+    if (p_dis_init->manufact_name_str.length > 0) //Manufacturer ID
     {
-        err_code = char_add(BLE_UUID_MANUFACTURER_NAME_STRING_CHAR,
+        err_code = char_add(SCOPE_CHAR_UUID_MANU,
                             p_dis_init->manufact_name_str.p_str,
                             p_dis_init->manufact_name_str.length,
                             &p_dis_init->dis_attr_md,
@@ -170,9 +184,9 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
             return err_code;
         }
     }
-    if (p_dis_init->model_num_str.length > 0)
+    if (p_dis_init->model_num_str.length > 0) // Model #
     {
-        err_code = char_add(BLE_UUID_MODEL_NUMBER_STRING_CHAR,
+        err_code = char_add(SCOPE_CHAR_UUID_MODEL	,
                             p_dis_init->model_num_str.p_str,
                             p_dis_init->model_num_str.length,
                             &p_dis_init->dis_attr_md,
@@ -182,9 +196,9 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
             return err_code;
         }
     }
-    if (p_dis_init->serial_num_str.length > 0)
+    if (p_dis_init->serial_num_str.length > 0) // Serial number
     {
-        err_code = char_add(BLE_UUID_SERIAL_NUMBER_STRING_CHAR,
+        err_code = char_add(SCOPE_CHAR_UUID_SN,
                             p_dis_init->serial_num_str.p_str,
                             p_dis_init->serial_num_str.length,
                             &p_dis_init->dis_attr_md,
@@ -194,9 +208,9 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
             return err_code;
         }
     }
-    if (p_dis_init->hw_rev_str.length > 0)
+    if (p_dis_init->hw_rev_str.length > 0)  //Hardware revision
     {
-        err_code = char_add(BLE_UUID_HARDWARE_REVISION_STRING_CHAR,
+        err_code = char_add(SCOPE_CHAR_UUID_HW_REV,
                             p_dis_init->hw_rev_str.p_str,
                             p_dis_init->hw_rev_str.length,
                             &p_dis_init->dis_attr_md,
@@ -206,9 +220,9 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
             return err_code;
         }
     }
-    if (p_dis_init->fw_rev_str.length > 0)
+    if (p_dis_init->fw_rev_str.length > 0) // Firmware revision
     {
-        err_code = char_add(BLE_UUID_FIRMWARE_REVISION_STRING_CHAR,
+        err_code = char_add(SCOPE_CHAR_UUID_FW_REV,
                             p_dis_init->fw_rev_str.p_str,
                             p_dis_init->fw_rev_str.length,
                             &p_dis_init->dis_attr_md,
@@ -229,15 +243,15 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
         {
             return err_code;
         }
-    }
-    if (p_dis_init->p_sys_id != NULL)
+    }																						
+    if (p_dis_init->sys_id_str.length > 0)  //changed to use string //System ID
     {
-        uint8_t encoded_sys_id[BLE_DIS_SYS_ID_LEN];
+        //uint8_t encoded_sys_id[BLE_DIS_SYS_ID_LEN];
 
-        sys_id_encode(encoded_sys_id, p_dis_init->p_sys_id);
-        err_code = char_add(BLE_UUID_SYSTEM_ID_CHAR,
-                            encoded_sys_id,
-                            BLE_DIS_SYS_ID_LEN,
+        //sys_id_encode(encoded_sys_id, p_dis_init->p_sys_id);
+        err_code = char_add(SCOPE_CHAR_UUID_SYS_ID,
+                            p_dis_init->sys_id_str.p_str,
+                            p_dis_init->sys_id_str.length,
                             &p_dis_init->dis_attr_md,
                             &sys_id_handles);
         if (err_code != NRF_SUCCESS)

@@ -32,6 +32,8 @@
 #include "ble_bas.h"
 #include "ble_hrs.h"
 #include "ble_dis.h"
+#include "ble_slope.h"
+#include "ble_status.h"
 #include "ble_conn_params.h"
 #include "bsp.h"
 #include "sensorsim.h"
@@ -41,6 +43,8 @@
 #include "device_manager.h"
 #include "pstorage.h"
 #include "app_trace.h"
+//#include "ble_dev_status.h"
+#include "SEGGER_RTT.h"
 
 //services
 #include "ble_dev_status.h"
@@ -58,8 +62,10 @@
 
 #define APP_COMPANY_IDENTIFIER               0x0059                                     /**< Company identifier for Nordic Semiconductor ASA. as per www.bluetooth.org. */
 
-#define BEACON_UUID 0xff, 0xfe, 0x2d, 0x12, 0x1e, 0x4b, 0x0f, 0xa4,\
+//#define BEACON_UUID 0xff, 0xfe, 0x2d, 0x12, 0x1e, 0x4b, 0x0f, 0xa4,\
                     0x99, 0x4e, 0xce, 0xb5, 0x31, 0xf4, 0x05, 0x45 
+#define BEACON_UUID 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 0x10, 0x00, 0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb			//put in place to match the app							
+										
 #define BEACON_ADV_INTERVAL                  400                                        /**< The Beacon's advertising interval, in milliseconds*/
 #define BEACON_MAJOR                         0x1234                                     /**< The Beacon's Major*/
 #define BEACON_MINOR                         0x5678                                     /**< The Beacon's Minor*/
@@ -71,10 +77,10 @@ static ble_beacon_init_t beacon_init;
 
 /*end addition for beacon*/
 
-#define DEVICE_NAME                          "Scope Test Joe"                           /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
+
+
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS           180                                        /**< The advertising timeout in units of seconds. */
+#define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
 
 #define APP_TIMER_PRESCALER                  0                                          /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE              4                                          /**< Size of timer operation queues. */
@@ -83,6 +89,16 @@ static ble_beacon_init_t beacon_init;
 #define MIN_BATTERY_LEVEL                    81                                         /**< Minimum simulated battery level. */
 #define MAX_BATTERY_LEVEL                    100                                        /**< Maximum simulated battery level. */
 #define BATTERY_LEVEL_INCREMENT              1                                          /**< Increment between each simulated battery level measurement. */
+
+#define slope_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< slope level measurement interval (ticks). */
+#define MIN_slope_LEVEL                   	 81                                         /**< Minimum simulated slope level. */
+#define MAX_slope_LEVEL                      100                                        /**< Maximum simulated slope level. */
+#define slope_LEVEL_INCREMENT                1                                          /**< Increment between each simulated slope level measurement. */
+
+#define status_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< status level measurement interval (ticks). */
+#define MIN_status_LEVEL                   	 81                                         /**< Minimum simulated status level. */
+#define MAX_status_LEVEL                      100                                        /**< Maximum simulated status level. */
+#define status_LEVEL_INCREMENT                1                                          /**< Increment between each simulated status level measurement. */
 
 #define HEART_RATE_MEAS_INTERVAL             APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
 #define MIN_HEART_RATE                       140                                        /**< Minimum heart rate as returned by the simulated measurement function. */
@@ -121,17 +137,28 @@ static ble_bas_t                             m_bas;                             
 static ble_pes_t 						     m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
-static ble_dev_status_t                      m_stat;
+static ble_slope_t                           m_slope;
+static ble_status_t													 m_status;
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
 static sensorsim_state_t                     m_battery_sim_state;                       /**< Battery Level sensor simulator state. */
+
+static sensorsim_cfg_t                       m_slope_sim_cfg;                         /**< Slope sensor simulator configuration. */
+static sensorsim_state_t                     m_slope_sim_state;                       /**< Slope sensor simulator state. */
+
+static sensorsim_cfg_t                       m_status_sim_cfg;                         /**< status sensor simulator configuration. */
+static sensorsim_state_t                     m_status_sim_state;                       /**< status sensor simulator state. */
+
 static sensorsim_cfg_t                       m_heart_rate_sim_cfg;                      /**< Heart Rate sensor simulator configuration. */
 static sensorsim_state_t                     m_heart_rate_sim_state;                    /**< Heart Rate sensor simulator state. */
 static sensorsim_cfg_t                       m_rr_interval_sim_cfg;                     /**< RR Interval sensor simulator configuration. */
 static sensorsim_state_t                     m_rr_interval_sim_state;                   /**< RR Interval sensor simulator state. */
 
 APP_TIMER_DEF(m_battery_timer_id);                                                      /**< Battery timer. */
+
+APP_TIMER_DEF(m_slope_timer_id);                                                        /**< Slope timer. */
+APP_TIMER_DEF(m_status_timer_id);                                                        /**< Status timer. */
 APP_TIMER_DEF(m_heart_rate_timer_id);                                                   /**< Heart rate measurement timer. */
 APP_TIMER_DEF(m_rr_interval_timer_id);                                                  /**< RR interval timer. */
 APP_TIMER_DEF(m_sensor_contact_timer_id);                                               /**< Sensor contact detected timer. */
@@ -140,8 +167,11 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-	{SCOPE_UUID_DEVICE_STATUS,            BLE_UUID_TYPE_BLE},
+		{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
     {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
+    {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
+    {SCOPE_UUID_DEVICE_INFO, 							BLE_UUID_TYPE_BLE},
+		{SCOPE_UUID_STATUS, 							    BLE_UUID_TYPE_BLE}
     {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
     {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
 	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
@@ -201,10 +231,52 @@ static void battery_level_update(void)
     }
 }
 
+/**@brief Function for performing status measurement and updating the status Level characteristic
+ *        in status Service.
+ */
+static void status_level_update(void)
+{
+    uint32_t err_code;
+    uint8_t  status_level;
+
+    status_level = (uint8_t)sensorsim_measure(&m_status_sim_state, &m_status_sim_cfg);
+
+    err_code = ble_status_status_level_update(&m_status, status_level);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+}
+
+/**@brief Function for performing slope measurement and updating the slope Level characteristic
+ *        in slope Service.
+ */
+static void slope_level_update(void)
+{
+    uint32_t err_code;
+    uint8_t  slope_level;
+
+    slope_level = (uint8_t)sensorsim_measure(&m_slope_sim_state, &m_slope_sim_cfg);
+
+    err_code = ble_slope_slope_level_update(&m_slope, slope_level);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+}
+
 
 /**@brief Function for handling the Battery measurement timer timeout.
  *
- * @details This function will be called each time the battery level measurement timer expires.
+ * @details This function will be called each time the battery level measurement timer expires. 
  *
  * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
  *                          app_start_timer() call to the timeout handler.
@@ -215,41 +287,33 @@ static void battery_level_meas_timeout_handler(void * p_context)
     battery_level_update();
 }
 
-
-/**@brief Function for handling the Heart rate measurement timer timeout.
+/**@brief Function for handling the slope measurement timer timeout.
  *
- * @details This function will be called each time the heart rate measurement timer expires.
- *          It will exclude RR Interval data from every third measurement.
+ * @details This function will be called each time the slope level measurement timer expires.
  *
  * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
  *                          app_start_timer() call to the timeout handler.
  */
-static void heart_rate_meas_timeout_handler(void * p_context)
+static void slope_level_meas_timeout_handler(void * p_context)
 {
-    static uint32_t cnt = 0;
-    uint32_t        err_code;
-    uint16_t        heart_rate;
-
     UNUSED_PARAMETER(p_context);
-
-    heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-
-    cnt++;
-    err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
-    if ((err_code != NRF_SUCCESS) &&
-        (err_code != NRF_ERROR_INVALID_STATE) &&
-        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
-        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    )
-    {
-        APP_ERROR_HANDLER(err_code);
-    }
-
-    // Disable RR Interval recording every third heart rate measurement.
-    // NOTE: An application will normally not do this. It is done here just for testing generation
-    //       of messages without RR Interval measurements.
-    m_rr_interval_enabled = ((cnt % 3) != 0);
+    slope_level_update();
 }
+
+
+/**@brief Function for handling the status measurement timer timeout.
+ *
+ * @details This function will be called each time the status level measurement timer expires.
+ *
+ * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
+ *                          app_start_timer() call to the timeout handler.
+ */
+static void status_level_meas_timeout_handler(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    status_level_update();
+}
+
 
 
 /**@brief Function for handling the RR interval timer timeout.
@@ -306,12 +370,19 @@ static void timers_init(void)
     err_code = app_timer_create(&m_battery_timer_id,
                                 APP_TIMER_MODE_REPEATED,
                                 battery_level_meas_timeout_handler);
+	  err_code = app_timer_create(&m_slope_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                slope_level_meas_timeout_handler);
+		err_code = app_timer_create(&m_status_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                status_level_meas_timeout_handler);
+	
     APP_ERROR_CHECK(err_code);
 
-    err_code = app_timer_create(&m_heart_rate_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                heart_rate_meas_timeout_handler);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_create(&m_heart_rate_timer_id,
+//                                APP_TIMER_MODE_REPEATED,
+//                                heart_rate_meas_timeout_handler);
+//    APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_create(&m_rr_interval_timer_id,
                                 APP_TIMER_MODE_REPEATED,
@@ -360,76 +431,36 @@ static void gap_params_init(void)
 
 /**@brief Function for initializing services that will be used by the application.
  *
- * @details Initialize the Heart Rate, Battery and Device Information services.
+ * @details Initialize the Heart Rate, Battery, Slope and Device Information services.
  */
 static void services_init(void)
 {
     uint32_t       err_code;
-    ble_hrs_init_t hrs_init;
-    ble_bas_init_t bas_init;
-    ble_dis_init_t dis_init;
-	ble_dev_status_init_t dev_init;
-	ble_dev_status_t dev_status;
     uint8_t        body_sensor_location;
-
-    // Initialize Heart Rate Service.
-    body_sensor_location = BLE_HRS_BODY_SENSOR_LOCATION_FINGER;
-
-    memset(&hrs_init, 0, sizeof(hrs_init));
-
-    hrs_init.evt_handler                 = NULL;
-    hrs_init.is_sensor_contact_supported = true;
-    hrs_init.p_body_sensor_location      = &body_sensor_location;
-
-    // Here the sec level for the Heart Rate Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_hrm_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.write_perm);
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_bsl_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_bsl_attr_md.write_perm);
-
-    err_code = ble_hrs_init(&m_hrs, &hrs_init);
+	
+		//battery service init:
+		ble_bas_init_t bas_init;
+		memset(&bas_init, 0, sizeof(bas_init));
+		err_code = ble_bas_init(&m_bas, &bas_init);
     APP_ERROR_CHECK(err_code);
-
-    // Initialize Battery Service.
-    memset(&bas_init, 0, sizeof(bas_init));
-
-    // Here the sec level for the Battery Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
-
-    bas_init.evt_handler          = NULL;
-    bas_init.support_notification = true;
-    bas_init.p_report_ref         = NULL;
-    bas_init.initial_batt_level   = 100;
-
-    err_code = ble_bas_init(&m_bas, &bas_init);
+	
+	
+    // Initialize Slope Service.
+		ble_slope_init_t slope_init;
+		memset(&slope_init, 0, sizeof(slope_init));
+    err_code = ble_slope_init(&m_slope, &slope_init);
     APP_ERROR_CHECK(err_code);
-
-    // Initialize Device Information Service.
+		
+		// Initialize Device Information Service.
+		ble_dis_init_t dis_init;
     memset(&dis_init, 0, sizeof(dis_init));
-
-    ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, (char *)MANUFACTURER_NAME);
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
-
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
 		
-		// Initialize Device Status Service.
-    memset(&dev_init, 0, sizeof(dev_init));
-
-    //ble_srv_ascii_to_utf8(&dev_init.manufact_name_str, (char *)MANUFACTURER_NAME);
-
-   // BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dev_init.dev_attr_md.read_perm);
-   // BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
-
-    err_code = ble_device_status_init(&dev_status, &dev_init);
+		// Initialize Device Information Service.
+		ble_status_init_t status_init;
+    memset(&status_init, 0, sizeof(status_init));
+    err_code = ble_status_init(&m_status, &status_init);
     APP_ERROR_CHECK(err_code);
 	
 	//initialize probe error service
@@ -441,8 +472,9 @@ static void services_init(void)
 }
 
 
-/**@brief Function for initializing the sensor simulators.
- */
+
+///**@brief Function for initializing the sensor simulators.
+// */
 static void sensor_simulator_init(void)
 {
     m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
@@ -451,6 +483,20 @@ static void sensor_simulator_init(void)
     m_battery_sim_cfg.start_at_max = true;
 
     sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+	
+		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
+    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
+    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
+    m_slope_sim_cfg.start_at_max = true;
+
+    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
+	
+		m_status_sim_cfg.min          = MIN_status_LEVEL;
+    m_status_sim_cfg.max          = MAX_status_LEVEL;
+    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
+    m_status_sim_cfg.start_at_max = true;
+
+    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
 
     m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
     m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
@@ -477,9 +523,15 @@ static void application_timers_start(void)
     // Start application timers.
     err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-
-    err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
+	
+		err_code = app_timer_start(m_slope_timer_id, slope_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+	
+		err_code = app_timer_start(m_status_timer_id, status_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+
+//    err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
+//    APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_start(m_rr_interval_timer_id, RR_INTERVAL_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
@@ -619,7 +671,7 @@ static void advertising_init(void)
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t err_code;
-
+SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
@@ -660,15 +712,18 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
+	SEGGER_RTT_WriteString(0, "ble dispatch \n");
     dm_ble_evt_handler(p_ble_evt);
-    ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
+    //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+	  ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	  ble_status_on_ble_evt(&m_status, p_ble_evt);
 	
 	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
 	
 	ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
-    bsp_btn_ble_on_ble_evt(p_ble_evt);
+   // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
 }
@@ -882,8 +937,8 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
     gap_params_init();
-	services_init();
     advertising_init();
+    services_init();
     sensor_simulator_init();
     conn_params_init();
 
@@ -891,7 +946,7 @@ int main(void)
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-
+		SEGGER_RTT_WriteString(0, "Hello World!\n");
     // Enter main loop.
     for (;;)
     {
