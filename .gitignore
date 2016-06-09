@@ -27,7 +27,7 @@
 *.hex
 
 # files that are giving git a hard time
-*.JLinkLog.txt
+*JLinkLog.txt
 *.lst
 *.crf
 *.d
