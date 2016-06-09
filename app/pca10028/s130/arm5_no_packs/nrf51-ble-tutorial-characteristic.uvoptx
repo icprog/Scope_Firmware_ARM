@@ -132,7 +132,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>JL2CM3</Key>
-          <Name>-U681298660 -O78 -S2 -ZTIFSpeedSel5000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(0BB11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC2000 -FN1 -FF0nrf51xxx.flm -FS00 -FL0200000 -FP0($$Device:nRF51422_xxAC$Flash\nrf51xxx.flm)</Name>
+          <Name>-U681666518 -O78 -S2 -ZTIFSpeedSel5000 -A0 -C0 -JU1 -JI127.0.0.1 -JP0 -RST0 -N00("ARM CoreSight SW-DP") -D00(0BB11477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -TB1 -TFE0 -FO15 -FD20000000 -FC2000 -FN1 -FF0nrf51xxx.flm -FS00 -FL0200000 -FP0($$Device:nRF51422_xxAC$Flash\nrf51xxx.flm)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -144,7 +144,23 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>14</LineNumber>
+          <LineNumber>120</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>129820</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\..\..\our_service.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\nrf51422_xxac_s130\../../../our_service.c\120</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>115</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -153,7 +169,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\..\..\probe_error.h</Filename>
+          <Filename>..\..\..\our_service.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -275,7 +291,7 @@
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <nTsel>7</nTsel>
+        <nTsel>6</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -304,7 +320,7 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>14</LineNumber>
+          <LineNumber>120</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -313,7 +329,23 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>..\..\..\probe_error.h</Filename>
+          <Filename>..\..\..\our_service.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression></Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>115</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>0</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>..\..\..\our_service.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -358,25 +390,13 @@
 
   <Group>
     <GroupName>Application</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>1</GroupNumber>
       <FileNumber>1</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\advertiser_beacon.c</PathWithFileName>
-      <FilenameWithoutPath>advertiser_beacon.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>1</GroupNumber>
-      <FileNumber>2</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -388,25 +408,13 @@
     </File>
     <File>
       <GroupNumber>1</GroupNumber>
-      <FileNumber>3</FileNumber>
+      <FileNumber>2</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\probe_error.c</PathWithFileName>
-      <FilenameWithoutPath>probe_error.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>1</GroupNumber>
-      <FileNumber>4</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\probe_error.h</PathWithFileName>
-      <FilenameWithoutPath>probe_error.h</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\our_service.c</PathWithFileName>
+      <FilenameWithoutPath>our_service.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -420,24 +428,24 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>2</GroupNumber>
-      <FileNumber>5</FileNumber>
+      <FileNumber>3</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\bsp\bsp.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\bsp\bsp.c</PathWithFileName>
       <FilenameWithoutPath>bsp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
-      <FileNumber>6</FileNumber>
+      <FileNumber>4</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\bsp\bsp_btn_ble.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\bsp\bsp_btn_ble.c</PathWithFileName>
       <FilenameWithoutPath>bsp_btn_ble.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -452,7 +460,7 @@
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>3</GroupNumber>
-      <FileNumber>7</FileNumber>
+      <FileNumber>5</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -464,7 +472,7 @@
     </File>
     <File>
       <GroupNumber>3</GroupNumber>
-      <FileNumber>8</FileNumber>
+      <FileNumber>6</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -478,10 +486,34 @@
 
   <Group>
     <GroupName>nRF_BLE</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>7</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\ble\common\ble_advdata.c</PathWithFileName>
+      <FilenameWithoutPath>ble_advdata.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>4</GroupNumber>
+      <FileNumber>8</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\ble\ble_advertising\ble_advertising.c</PathWithFileName>
+      <FilenameWithoutPath>ble_advertising.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
     <File>
       <GroupNumber>4</GroupNumber>
       <FileNumber>9</FileNumber>
@@ -489,8 +521,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\common\ble_advdata.c</PathWithFileName>
-      <FilenameWithoutPath>ble_advdata.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\ble\common\ble_conn_params.c</PathWithFileName>
+      <FilenameWithoutPath>ble_conn_params.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -501,8 +533,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_advertising\ble_advertising.c</PathWithFileName>
-      <FilenameWithoutPath>ble_advertising.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\ble\common\ble_srv_common.c</PathWithFileName>
+      <FilenameWithoutPath>ble_srv_common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -513,92 +545,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_services\ble_bas\ble_bas.c</PathWithFileName>
-      <FilenameWithoutPath>ble_bas.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>12</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\common\ble_conn_params.c</PathWithFileName>
-      <FilenameWithoutPath>ble_conn_params.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>13</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_services\ble_dis\ble_dis.c</PathWithFileName>
-      <FilenameWithoutPath>ble_dis.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>14</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_services\ble_hrs\ble_hrs.c</PathWithFileName>
-      <FilenameWithoutPath>ble_hrs.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>15</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\common\ble_srv_common.c</PathWithFileName>
-      <FilenameWithoutPath>ble_srv_common.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>16</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\device_manager\device_manager_peripheral.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\ble\device_manager\device_manager_peripheral.c</PathWithFileName>
       <FilenameWithoutPath>device_manager_peripheral.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>17</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_services\ble_slope\ble_slope.c</PathWithFileName>
-      <FilenameWithoutPath>ble_slope.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>4</GroupNumber>
-      <FileNumber>16</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\ble\ble_services\ble_status\ble_status.c</PathWithFileName>
-      <FilenameWithoutPath>ble_status.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -606,78 +554,66 @@
 
   <Group>
     <GroupName>nRF_Drivers</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
       <GroupNumber>5</GroupNumber>
-      <FileNumber>18</FileNumber>
+      <FileNumber>12</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\uart\app_uart_fifo.c</PathWithFileName>
-      <FilenameWithoutPath>app_uart_fifo.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>5</GroupNumber>
-      <FileNumber>19</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\drivers_nrf\delay\nrf_delay.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\drivers_nrf\delay\nrf_delay.c</PathWithFileName>
       <FilenameWithoutPath>nrf_delay.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>5</GroupNumber>
-      <FileNumber>20</FileNumber>
+      <FileNumber>13</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\drivers_nrf\common\nrf_drv_common.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\drivers_nrf\common\nrf_drv_common.c</PathWithFileName>
       <FilenameWithoutPath>nrf_drv_common.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>5</GroupNumber>
-      <FileNumber>21</FileNumber>
+      <FileNumber>14</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\drivers_nrf\gpiote\nrf_drv_gpiote.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\drivers_nrf\gpiote\nrf_drv_gpiote.c</PathWithFileName>
       <FilenameWithoutPath>nrf_drv_gpiote.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>5</GroupNumber>
-      <FileNumber>22</FileNumber>
+      <FileNumber>15</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\drivers_nrf\uart\nrf_drv_uart.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\drivers_nrf\uart\nrf_drv_uart.c</PathWithFileName>
       <FilenameWithoutPath>nrf_drv_uart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>5</GroupNumber>
-      <FileNumber>23</FileNumber>
+      <FileNumber>16</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\drivers_nrf\pstorage\pstorage.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\drivers_nrf\pstorage\pstorage.c</PathWithFileName>
       <FilenameWithoutPath>pstorage.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -686,10 +622,94 @@
 
   <Group>
     <GroupName>nRF_Libraries</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>17</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\button\app_button.c</PathWithFileName>
+      <FilenameWithoutPath>app_button.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>18</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\util\app_error.c</PathWithFileName>
+      <FilenameWithoutPath>app_error.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>19</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\util\app_error_weak.c</PathWithFileName>
+      <FilenameWithoutPath>app_error_weak.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>20</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\timer\app_timer.c</PathWithFileName>
+      <FilenameWithoutPath>app_timer.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>21</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\trace\app_trace.c</PathWithFileName>
+      <FilenameWithoutPath>app_trace.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>22</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\util\app_util_platform.c</PathWithFileName>
+      <FilenameWithoutPath>app_util_platform.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>6</GroupNumber>
+      <FileNumber>23</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\fstorage\fstorage.c</PathWithFileName>
+      <FilenameWithoutPath>fstorage.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
     <File>
       <GroupNumber>6</GroupNumber>
       <FileNumber>24</FileNumber>
@@ -697,8 +717,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\button\app_button.c</PathWithFileName>
-      <FilenameWithoutPath>app_button.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\util\nrf_assert.c</PathWithFileName>
+      <FilenameWithoutPath>nrf_assert.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -709,8 +729,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\util\app_error.c</PathWithFileName>
-      <FilenameWithoutPath>app_error.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\util\nrf_log.c</PathWithFileName>
+      <FilenameWithoutPath>nrf_log.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -721,8 +741,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\util\app_error_weak.c</PathWithFileName>
-      <FilenameWithoutPath>app_error_weak.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\uart\retarget.c</PathWithFileName>
+      <FilenameWithoutPath>retarget.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -733,8 +753,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\fifo\app_fifo.c</PathWithFileName>
-      <FilenameWithoutPath>app_fifo.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\sensorsim\sensorsim.c</PathWithFileName>
+      <FilenameWithoutPath>sensorsim.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -745,8 +765,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\timer\app_timer.c</PathWithFileName>
-      <FilenameWithoutPath>app_timer.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\fifo\app_fifo.c</PathWithFileName>
+      <FilenameWithoutPath>app_fifo.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -757,80 +777,52 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\trace\app_trace.c</PathWithFileName>
-      <FilenameWithoutPath>app_trace.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\components\libraries\uart\app_uart_fifo.c</PathWithFileName>
+      <FilenameWithoutPath>app_uart_fifo.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
+  </Group>
+
+  <Group>
+    <GroupName>nRF_Segger_RTT</GroupName>
+    <tvExp>0</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>6</GroupNumber>
+      <GroupNumber>7</GroupNumber>
       <FileNumber>30</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\util\app_util_platform.c</PathWithFileName>
-      <FilenameWithoutPath>app_util_platform.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\external\segger_rtt\RTT_Syscalls_KEIL.c</PathWithFileName>
+      <FilenameWithoutPath>RTT_Syscalls_KEIL.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>6</GroupNumber>
+      <GroupNumber>7</GroupNumber>
       <FileNumber>31</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\fstorage\fstorage.c</PathWithFileName>
-      <FilenameWithoutPath>fstorage.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\external\segger_rtt\SEGGER_RTT.c</PathWithFileName>
+      <FilenameWithoutPath>SEGGER_RTT.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>6</GroupNumber>
+      <GroupNumber>7</GroupNumber>
       <FileNumber>32</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\util\nrf_assert.c</PathWithFileName>
-      <FilenameWithoutPath>nrf_assert.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>6</GroupNumber>
-      <FileNumber>33</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\util\nrf_log.c</PathWithFileName>
-      <FilenameWithoutPath>nrf_log.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>6</GroupNumber>
-      <FileNumber>34</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\uart\retarget.c</PathWithFileName>
-      <FilenameWithoutPath>retarget.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>6</GroupNumber>
-      <FileNumber>35</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\libraries\sensorsim\sensorsim.c</PathWithFileName>
-      <FilenameWithoutPath>sensorsim.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\..\external\segger_rtt\SEGGER_RTT_printf.c</PathWithFileName>
+      <FilenameWithoutPath>SEGGER_RTT_printf.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -843,70 +835,26 @@
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
     <File>
-      <GroupNumber>7</GroupNumber>
-      <FileNumber>36</FileNumber>
-      <FileType>1</FileType>
+      <GroupNumber>8</GroupNumber>
+      <FileNumber>33</FileNumber>
+      <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\softdevice\s130\doc\s130_nrf51_2.0.0_licence_agreement.txt</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\softdevice\s130\doc\s130_nrf51_2.0.0_licence_agreement.txt</PathWithFileName>
       <FilenameWithoutPath>s130_nrf51_2.0.0_licence_agreement.txt</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
-      <GroupNumber>7</GroupNumber>
-      <FileNumber>37</FileNumber>
+      <GroupNumber>8</GroupNumber>
+      <FileNumber>34</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\components\softdevice\common\softdevice_handler\softdevice_handler.c</PathWithFileName>
       <FilenameWithoutPath>softdevice_handler.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-  </Group>
-
-  <Group>
-    <GroupName>RTT</GroupName>
-    <tvExp>0</tvExp>
-    <tvExpOptDlg>0</tvExpOptDlg>
-    <cbSel>0</cbSel>
-    <RteFlg>0</RteFlg>
-    <File>
-      <GroupNumber>7</GroupNumber>
-      <FileNumber>38</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT.c</PathWithFileName>
-      <FilenameWithoutPath>SEGGER_RTT.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>8</GroupNumber>
-      <FileNumber>39</FileNumber>
-      <FileType>5</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT_printf.c</PathWithFileName>
-      <FilenameWithoutPath>SEGGER_RTT_printf.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>8</GroupNumber>
-      <FileNumber>40</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>C:\Keil_v5\ARM\Pack\NordicSemiconductor\Syscalls\RTT_Syscalls_KEIL.c</PathWithFileName>
-      <FilenameWithoutPath>RTT_Syscalls_KEIL.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

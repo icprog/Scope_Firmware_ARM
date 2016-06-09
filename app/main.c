@@ -14,7 +14,7 @@
  * @brief Heart Rate Service Sample Application main file.
  *
  * This file contains the source code for a sample application using the Heart Rate service
- * (and also Battery, Slope and Device Information services). This application uses the
+ * (and also Battery and Device Information services). This application uses the
  * @ref srvlib_conn_params module.
  */
 
@@ -45,6 +45,11 @@
 #include "app_trace.h"
 //#include "ble_dev_status.h"
 #include "SEGGER_RTT.h"
+
+//services
+#include "ble_dev_status.h"
+#include "probe_error.h"
+#include "profile_service.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -129,6 +134,8 @@ static ble_beacon_init_t beacon_init;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
+static ble_pes_t 						     m_pes; //probing error service
+static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
@@ -165,8 +172,13 @@ static ble_uuid_t m_adv_uuids[] =                                               
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_DEVICE_INFO, 							BLE_UUID_TYPE_BLE},
 		{SCOPE_UUID_STATUS, 							    BLE_UUID_TYPE_BLE}
+    {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
+    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
+	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+    {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE}
 		
 };
+
 
 
 /**@brief Callback function for asserts in the SoftDevice.
@@ -197,6 +209,18 @@ static void battery_level_update(void)
     battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
 
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+    
+    //TESTING THE PROBE ERROR UPDATE
+    uint8_t probe_error_code = battery_level;
+    err_code = ble_probe_error_update(&m_pes, probe_error_code);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != BLE_ERROR_NO_TX_PACKETS) &&
@@ -412,11 +436,6 @@ static void gap_params_init(void)
 static void services_init(void)
 {
     uint32_t       err_code;
-    //ble_hrs_init_t hrs_init;
-    
-    
-		//ble_dev_status_init_t dev_init;
-	  
     uint8_t        body_sensor_location;
 	
 		//battery service init:
@@ -443,7 +462,13 @@ static void services_init(void)
     memset(&status_init, 0, sizeof(status_init));
     err_code = ble_status_init(&m_status, &status_init);
     APP_ERROR_CHECK(err_code);
-		
+	
+	//initialize probe error service
+	ble_probe_error_service_init(&m_pes);
+    
+    //initialize profile service
+   ble_profile_service_init(&m_ps);
+
 }
 
 
@@ -693,6 +718,10 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 	  ble_slope_on_ble_evt(&m_slope, p_ble_evt);
 	  ble_status_on_ble_evt(&m_status, p_ble_evt);
+	
+	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+	
+	ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);

@@ -416,20 +416,20 @@ uint32_t ble_device_status_init(ble_dev_status_t * p_dev_status, const ble_dev_s
 
     // Add characteristics.
 		
-		err_code = snow_profile_char_add(p_dev_status, p_dev_status_init);
+    err_code = snow_profile_char_add(p_dev_status, p_dev_status_init);
+    VERIFY_SUCCESS(err_code);
+    
+    err_code = slope_char_add(p_dev_status, p_dev_status_init);
+    VERIFY_SUCCESS(err_code);
+    
+    err_code = probing_errors_char_add(p_dev_status, p_dev_status_init);
     VERIFY_SUCCESS(err_code);
 		
-		err_code = slope_char_add(p_dev_status, p_dev_status_init);
-		VERIFY_SUCCESS(err_code);
-		
-		err_code = probing_errors_char_add(p_dev_status, p_dev_status_init);
+    err_code = hardware_rev_char_add(p_dev_status, p_dev_status_init);
     VERIFY_SUCCESS(err_code);
-		
-		err_code = hardware_rev_char_add(p_dev_status, p_dev_status_init);
-		VERIFY_SUCCESS(err_code);
-		
-		err_code = battery_char_add(p_dev_status, p_dev_status_init);
-		VERIFY_SUCCESS(err_code);
+    
+    err_code = battery_char_add(p_dev_status, p_dev_status_init);
+    VERIFY_SUCCESS(err_code);
 		
 		
 	
