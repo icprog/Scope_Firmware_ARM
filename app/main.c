@@ -47,7 +47,6 @@
 #include "SEGGER_RTT.h"
 
 //services
-#include "ble_dev_status.h"
 #include "probe_error.h"
 #include "profile_service.h"
 
@@ -138,7 +137,7 @@ static ble_pes_t 						     m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
-static ble_status_t													 m_status;
+static ble_status_t							 m_status;
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -167,13 +166,10 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-		{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
-    {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
+		{SCOPE_UUID_SLOPE,                BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
-    {SCOPE_UUID_DEVICE_INFO, 							BLE_UUID_TYPE_BLE},
-		{SCOPE_UUID_STATUS, 							    BLE_UUID_TYPE_BLE}
-    {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
-    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
+    {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
+	{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE}
 		
@@ -457,7 +453,7 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
 		
-		// Initialize Device Information Service.
+		// Initialize Device Status Service.
 		ble_status_init_t status_init;
     memset(&status_init, 0, sizeof(status_init));
     err_code = ble_status_init(&m_status, &status_init);
@@ -716,12 +712,9 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	  ble_slope_on_ble_evt(&m_slope, p_ble_evt);
-	  ble_status_on_ble_evt(&m_status, p_ble_evt);
-	
+	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	ble_status_on_ble_evt(&m_status, p_ble_evt);
 	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-	
-	ble_slope_on_ble_evt(&m_stat, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
