@@ -45,6 +45,8 @@
 #include "app_trace.h"
 //#include "ble_dev_status.h"
 #include "SEGGER_RTT.h"
+#include "probe_error.h"
+#include "profile_service.h"
 
 //services
 #include "probe_error.h"
