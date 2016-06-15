@@ -922,37 +922,30 @@ static void power_manage(void)
  */
 int main(void)
 {
-//    uint32_t err_code;
-//    bool erase_bonds;
+    uint32_t err_code;
+    bool erase_bonds;
 
-//    // Initialize.
-//    timers_init();
-//    buttons_leds_init(&erase_bonds);
-//    ble_stack_init();
-//    beacon_adv_init();
-//    device_manager_init(erase_bonds);
-//    gap_params_init();
-//    advertising_init();
-//    services_init();
-//    sensor_simulator_init();
-//    conn_params_init();
+    // Initialize.
+    timers_init();
+    buttons_leds_init(&erase_bonds);
+    ble_stack_init();
+    beacon_adv_init();
+    device_manager_init(erase_bonds);
+    gap_params_init();
+    advertising_init();
+    services_init();
+    sensor_simulator_init();
+    conn_params_init();
 
-//    // Start execution.
-//    application_timers_start();
-//    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-//    APP_ERROR_CHECK(err_code);
-//		SEGGER_RTT_WriteString(0, "Hello World!\n");
-//    // Enter main loop.
-//    for (;;)
-//    {
-//        power_manage();
-//    }
-    int i =0;
-    int j = 1;
-    int k =3;
-    while(1)
+    // Start execution.
+    application_timers_start();
+    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+    APP_ERROR_CHECK(err_code);
+		SEGGER_RTT_WriteString(0, "Hello World!\n");
+    // Enter main loop.
+    for (;;)
     {
-        i++;
+        power_manage();
     }
 
 }
