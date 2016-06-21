@@ -64,6 +64,8 @@
 #include "nrf_drv_spis.h"
 #include "SEGGER_RTT.h" 
 #include "app.h"
+#include "SPI_utils.h"
+#include "nrf_drv_config.h"
 
 
 // *****************************************************************************
