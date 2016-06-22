@@ -24,6 +24,7 @@
 #include "nrf.h"
 #include "app_error.h"
 #include "nrf_gpio.h"
+#include "nrf_drv_gpiote.h"
 #include "ble.h"
 #include "ble_hci.h"
 #include "ble_srv_common.h"
@@ -922,6 +923,49 @@ static void shutdown_pins_init(void)
     nrf_gpio_cfg_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLDOWN); //no need to pull up or down becauase AND gate is always driving pin (maybe)
     nrf_gpio_cfg_output(SCOPE_3V3_ENABLE_PIN);
 }
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+{
+    nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
+}
+/**
+ * @brief Function for configuring: PIN_IN pin for input, PIN_OUT pin for output, 
+ * and configures GPIOTE to give an interrupt on pin change.
+ */
+static void shutdown_gpio_init(void)
+{
+    ret_code_t err_code;
+
+    //init gpiote module if not already initialized
+    if (!nrf_drv_gpiote_is_init())
+    {
+        err_code = nrf_drv_gpiote_init();
+        APP_ERROR_CHECK(err_code);
+    }
+    
+    uint32_t out_pin_initial_state = 0; //for the 3v3 enable
+    
+    /********** HALL INPUT PIN  *******/
+    nrf_drv_gpiote_in_config_t in_config = GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
+    in_config.pull = NRF_GPIO_PIN_PULLDOWN;
+
+    err_code = nrf_drv_gpiote_in_init(SCOPE_HALL_PIN, &in_config, in_pin_handler); //set pin and event handler
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_gpiote_in_event_enable(SCOPE_HALL_PIN, true); //enable event handling
+    
+    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
+    {
+        out_pin_initial_state = 1; //if HALL is high then the bullet is out of the pole so enable the supply
+    }
+    
+    /********** 3V3 ENABLE OUTPUT PIN   **********/
+    nrf_drv_gpiote_out_config_t out_config = GPIOTE_CONFIG_OUT_SIMPLE(out_pin_initial_state); //config output with with correct initial state
+
+    err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
+    APP_ERROR_CHECK(err_code);
+
+
+}
 
 /**@brief Function for application main entry.
  */
@@ -932,6 +976,7 @@ int main(void)
 
     // Initialize.
     timers_init();
+    shutdown_gpio_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
     beacon_adv_init();
@@ -941,7 +986,7 @@ int main(void)
     services_init();
     sensor_simulator_init();
     conn_params_init();
-    shutdown_pins_init();
+    
 
     // Start execution.
     application_timers_start();
@@ -949,18 +994,8 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 		SEGGER_RTT_WriteString(0, "Hello World!\n");
     // Enter main loop.
-    for (;;)
+    while(true)
     {
-        if(nrf_gpio_pin_read(SCOPE_HALL_PIN))
-        {
-            nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN);
-        }
-        else
-        {
-            nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
-        }
-        power_manage();
-        
     }
 
 }
