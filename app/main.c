@@ -919,7 +919,8 @@ static void power_manage(void)
 
 static void shutdown_pins_init(void)
 {
-    
+    nrf_gpio_cfg_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLDOWN); //no need to pull up or down becauase AND gate is always driving pin (maybe)
+    nrf_gpio_cfg_output(SCOPE_3V3_ENABLE_PIN);
 }
 
 /**@brief Function for application main entry.
@@ -950,6 +951,14 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
+        if(nrf_gpio_pin_read(SCOPE_HALL_PIN))
+        {
+            nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN);
+        }
+        else
+        {
+            nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+        }
         power_manage();
         
     }
