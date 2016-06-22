@@ -139,6 +139,11 @@
 #define ARDUINO_A4_PIN              5     // Analog channel 4
 #define ARDUINO_A5_PIN              6     // Analog channel 5
 
+
+/**************** Scope Pin Mappings  *************/
+#define SCOPE_HALL_PIN              7
+#define SCOPE_3V3_ENABLE_PIN        30
+
 // Low frequency clock source to be used by the SoftDevice
 #ifdef S210
 #define NRF_CLOCK_LFCLKSRC      NRF_CLOCK_LFCLKSRC_XTAL_20_PPM

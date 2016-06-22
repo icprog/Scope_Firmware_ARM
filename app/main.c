@@ -917,6 +917,10 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void shutdown_pins_init(void)
+{
+    
+}
 
 /**@brief Function for application main entry.
  */
@@ -936,6 +940,7 @@ int main(void)
     services_init();
     sensor_simulator_init();
     conn_params_init();
+    shutdown_pins_init();
 
     // Start execution.
     application_timers_start();
@@ -946,6 +951,7 @@ int main(void)
     for (;;)
     {
         power_manage();
+        
     }
 
 }
