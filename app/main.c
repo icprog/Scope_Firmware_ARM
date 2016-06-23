@@ -47,6 +47,11 @@
 #include "SEGGER_RTT.h"
 #include "probe_error.h"
 #include "profile_service.h"
+#include "LSM303drv.h"
+#include "nrf_delay.h"
+#include "spi_utils.h"
+#include "app.h"
+//#include "SEGGER_RTT_printf.h"
 
 //services
 #include "probe_error.h"
@@ -177,7 +182,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 		
 };
 
-
+uint8_t SLOPE_GLOBAL = 0;
 
 /**@brief Callback function for asserts in the SoftDevice.
  *
@@ -204,8 +209,8 @@ static void battery_level_update(void)
     uint32_t err_code;
     uint8_t  battery_level;
 
-    battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
-
+    //battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
+		battery_level = SLOPE_GLOBAL;
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
@@ -257,14 +262,19 @@ static void slope_level_update(void)
 {
     uint32_t err_code;
     uint8_t  slope_level;
-
+		LSM303_DATA test_data_303;
+		
     slope_level = (uint8_t)sensorsim_measure(&m_slope_sim_state, &m_slope_sim_cfg);
-
+	//set slope based on lsm303 data:
+//		test_data_303 = getLSM303data();
+//		slope_level = 0;
+//		slope_level = (uint8_t)test_data_303.X;
+	slope_level = SLOPE_GLOBAL;
     err_code = ble_slope_slope_level_update(&m_slope, slope_level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != BLE_ERROR_NO_TX_PACKETS) &&
-        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING) 
     )
     {
         APP_ERROR_HANDLER(err_code);
@@ -924,7 +934,9 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-
+		uint8_t slope_level;
+		LSM303_DATA test_data_303;
+	
     // Initialize.
     timers_init();
     buttons_leds_init(&erase_bonds);
@@ -936,16 +948,40 @@ int main(void)
     services_init();
     sensor_simulator_init();
     conn_params_init();
+	
+	//init spi:
+//		spi_init();
 
+//		// init lsm 303
+//		 init_LSM303();
+		
+		//app init stuff:
+		//APP_Initialize();
+	
+	
     // Start execution.
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 		SEGGER_RTT_WriteString(0, "Hello World!\n");
+	
+		//APP_Tasks();
+		
+		//LSM303_DATA test_data_303;
+		APP_Initialize();
+		APP_Tasks();
+		init_LSM303();
     // Enter main loop.
     for (;;)
     {
+
         power_manage();
+				test_data_303 = getLSM303data();
+				slope_level = 0;
+				slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
+			
+				SLOPE_GLOBAL = slope_level;
+				SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
     }
 
 }

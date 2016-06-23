@@ -40,6 +40,7 @@
 #include <stdint.h>
 #include "LSM303drv.h"
 #include "nrf51.h"
+#include "nrf_delay.h"
 
 
 // *****************************************************************************
@@ -72,8 +73,38 @@ uint8_t getLSM303ID(void)
 
 void init_LSM303(void)
 {
+		
 		uint8_t address, SPIData;
-			
+//		nrf_gpio_cfg_output(ACC_CS_PIN);
+		nrf_gpio_cfg_input(4,GPIO_PIN_CNF_PULL_Disabled);
+//		nrf_gpio_cfg_output(5);
+//		nrf_gpio_cfg_output(6);
+		//nrf_gpio_cfg_output(ACC_CS_PIN); //cs is taken care of in "SPIWriteReg()"
+//		nrf_gpio_pin_set(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	nrf_gpio_pin_clear(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	nrf_gpio_pin_set(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	nrf_gpio_pin_clear(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	nrf_gpio_pin_set(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	nrf_gpio_pin_clear(4);
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+//	SEGGER_RTT_WriteString(0, "Hello World!\n");
+		//nrf_delay_us(1);
 		address = LSM_CTRL1;
 		SPIData = LSM_DATA_RATE_800HZ | LSM_AZEN | LSM_AYEN | LSM_AXEN;
 		
@@ -81,8 +112,10 @@ void init_LSM303(void)
     
     address = LSM_CTRL2;
     SPIData = LSM_RANGE_16G;
+		
+		SPIWriteReg(address, SPIData, LSM_DEVICE); 
 	
-		SPIWriteReg(address, SPIData, LSM_DEVICE);
+		//nrf_gpio_pin_clear(ACC_CS_PIN);
 }
 
 
@@ -98,6 +131,10 @@ LSM303_DATA getLSM303data(void)
 {
     LSM303_DATA data;
     uint8_t address, tx_buf[7], rx_buf[7];
+	
+		nrf_gpio_cfg_output(ACC_CS_PIN);
+		nrf_gpio_pin_set(ACC_CS_PIN);
+		nrf_delay_us(1);
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
@@ -108,6 +145,8 @@ LSM303_DATA getLSM303data(void)
 		data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
 	  data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
 	  data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
+	
+		nrf_gpio_pin_clear(ACC_CS_PIN);
     
     return(data);
 }

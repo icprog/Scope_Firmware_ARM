@@ -52,6 +52,8 @@
 #define LSM303_READ_BIT         0x80
 #define LSM303_CONTINUOUS_BIT   0x40
 
+#define ACC_CS_PIN              2
+
 
 // *****************************************************************************
 /* LSM303D Registers

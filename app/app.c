@@ -124,12 +124,14 @@ APP_DATA appData;
 
 void APP_Initialize(void)
 {
+		SEGGER_RTT_WriteString(0, "Init Start \n");
     /* Place the App state machine in its initial state. */
     appData.state = APP_STATE_INIT;		
 	
 		spi_init();	
-		spis_init();
-		spis_xfer_done = false;
+		//spis_init();
+		spis_xfer_done = true;//false;
+		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
 
@@ -143,20 +145,24 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
+		SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
-						prompt();
+						SEGGER_RTT_WriteString(0, "init state \n");
+						//prompt();
 						appData.state = APP_STATE_POLLING;
 						break;
 				}
 				case APP_STATE_POLLING:
 				{
+						SEGGER_RTT_WriteString(0, "polling state \n");
 						if(~NRF_GPIO->IN & 1<<17)
 						{
-								printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
+								//printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
+							SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
 							  init_LSM303();
 							  LEDS_INVERT(BSP_LED_0_MASK);
 								while(~NRF_GPIO->IN & 1<<17);
@@ -170,7 +176,7 @@ void APP_Tasks(void)
 										printf("\n\r SPIS buffer set failed.");
 						}
 						
-						monitor();
+						//monitor();
 						break;
 				}
 		}

@@ -38,8 +38,8 @@
 
 #define SPI_CS_PIN   7
 #define SPIS_CS_PIN 12
-#define SPI_CS_ACC	 5
-#define SPI_CS_GYRO  6
+#define SPI_CS_ACC	 2
+#define SPI_CS_GYRO  15 // TODO: change for our ble pcb
 #define SPI_INSTANCE  0 /**< SPI instance index. */
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */
 

@@ -98,12 +98,12 @@ void spi_init(void)
 	  NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
 	  NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
 		
-		printf("\n\r\n\rSPI Master Configuration:");
-		printf("\n\r  SCK pin: %d", spi_config.sck_pin);
-		printf("\n\r  MOSI pin: %d", spi_config.mosi_pin);
-		printf("\n\r  MISO pin: %d", spi_config.miso_pin);
-		printf("\n\r  Chip Select pin: %d", spi_config.ss_pin);
-		printf("\n\r  SPI Mode: %d", spi_config.mode);
+//		printf("\n\r\n\rSPI Master Configuration:");
+//		printf("\n\r  SCK pin: %d", spi_config.sck_pin);
+//		printf("\n\r  MOSI pin: %d", spi_config.mosi_pin);
+//		printf("\n\r  MISO pin: %d", spi_config.miso_pin);
+//		printf("\n\r  Chip Select pin: %d", spi_config.ss_pin);
+//		printf("\n\r  SPI Mode: %d", spi_config.mode);
 }
 
 
