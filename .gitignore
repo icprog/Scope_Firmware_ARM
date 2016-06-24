@@ -39,4 +39,5 @@
 *.lnp
 *.map
 
-# Project files
+# MAC files
+*DS_Store
