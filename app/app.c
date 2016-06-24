@@ -74,11 +74,11 @@
 // *****************************************************************************
 // *****************************************************************************
 
-extern volatile bool spis_xfer_done; 																			/**< Flag used to indicate that SPIS instance completed the transfer. */
+extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
-static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	/**< SPIS instance. */
-extern uint8_t       m_tx_buf_s[2];           														/**< TX buffer. */
-extern uint8_t       m_rx_buf_s[3];    																		/**< RX buffer. */
+static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
+extern uint8_t       m_tx_buf_s[2];           											/**< TX buffer. */
+extern uint8_t       m_rx_buf_s[3];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
 
 
@@ -125,8 +125,8 @@ APP_DATA appData;
 void APP_Initialize(void)
 {
 		SEGGER_RTT_WriteString(0, "Init Start \n");
-    /* Place the App state machine in its initial state. */
-    appData.state = APP_STATE_INIT;		
+        /* Place the App state machine in its initial state. */
+        appData.state = APP_STATE_INIT;		
 	
 		spi_init();	
 		//spis_init();
@@ -151,35 +151,36 @@ void APP_Tasks(void)
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
-						SEGGER_RTT_WriteString(0, "init state \n");
-						//prompt();
-						appData.state = APP_STATE_POLLING;
-						break;
-				}
-				case APP_STATE_POLLING:
-				{
-						SEGGER_RTT_WriteString(0, "polling state \n");
-						if(~NRF_GPIO->IN & 1<<17)
-						{
-								//printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
-							SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
-							  init_LSM303();
-							  LEDS_INVERT(BSP_LED_0_MASK);
-								while(~NRF_GPIO->IN & 1<<17);
-						}
-						
-			      if (spis_xfer_done)
-						{
-								printf("\n\rReceived SPI data: 0x%x, 0x%x", m_rx_buf_s[0], m_rx_buf_s[1]);
-								spis_xfer_done = false;
-								if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
-										printf("\n\r SPIS buffer set failed.");
-						}
-						
-						//monitor();
-						break;
-				}
-		}
+            SEGGER_RTT_WriteString(0, "init state \n");
+            //prompt();
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_POLLING:
+        {
+            SEGGER_RTT_WriteString(0, "polling state \n");
+            if(~NRF_GPIO->IN & 1<<17)
+            {
+                    //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
+                SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
+                  init_LSM303();
+                  LEDS_INVERT(BSP_LED_0_MASK);
+                    while(~NRF_GPIO->IN & 1<<17);
+            }
+                
+            if (spis_xfer_done)
+            {
+                printf("\n\rReceived SPI data: 0x%x, 0x%x", m_rx_buf_s[0], m_rx_buf_s[1]);
+                spis_xfer_done = false;
+                if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
+                {
+                        printf("\n\r SPIS buffer set failed.");
+                }
+            }
+            //monitor();
+            break;
+        }
+    }
 }
 
 

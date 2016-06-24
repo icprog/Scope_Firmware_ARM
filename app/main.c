@@ -998,8 +998,6 @@ int main(void)
     services_init();
     sensor_simulator_init();
     conn_params_init();
-
-	
 	
     // Start execution.
     application_timers_start();
@@ -1007,24 +1005,23 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
 
-	//APP_Tasks();
-	
-	//LSM303_DATA test_data_303;
 	APP_Initialize();
-	APP_Tasks();
-	init_LSM303();
-    // Enter main loop.
+	//init_LSM303();
+
     while(true)
     {
-
-
+        
+        APP_Tasks();
+        
         power_manage();
-		test_data_303 = getLSM303data();
-		slope_level = 0;
-		slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
-	
-		SLOPE_GLOBAL = slope_level;
-		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
+        
+        /********   Dave's test:   ********/
+//		test_data_303 = getLSM303data();
+//		slope_level = 0;
+//		slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
+//	
+//		SLOPE_GLOBAL = slope_level;
+//		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
 
 
     }

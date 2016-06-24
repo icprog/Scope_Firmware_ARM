@@ -114,25 +114,25 @@ void spi_init(void)
 
 void spis_init(void)
 {
-	  spis_config.csn_pin               = SPIS_CS_PIN;
-		spis_config.mode 									= NRF_DRV_SPIS_MODE_3;
+    spis_config.csn_pin         = SPIS_CS_PIN;
+    spis_config.mode 			= NRF_DRV_SPIS_MODE_3;
 	
-	  printf("\n\r\n\rSPI Slave Configuration:");
-		printf("\n\r  SCK pin: %d", spis_config.sck_pin);
-		printf("\n\r  MOSI pin: %d", spis_config.mosi_pin);
-		printf("\n\r  MISO pin: %d", spis_config.miso_pin);
-		printf("\n\r  Chip Select pin: %d", spis_config.csn_pin);
-		printf("\n\r  SPI Mode: %d", spis_config.mode);
-	
-		if (nrf_drv_spis_init(&spis, &spis_config, spis_event_handler) == NRF_SUCCESS)
-				printf("\n\rSPI Slave Initialization Succeded");
-		else
-			printf("\n\rSPI Slave Initialization Failed");
-				
-		if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) == NRF_SUCCESS)
-			  printf("\n\rSPI Slave Buffer Set Succeded");
-		else
-			printf("\n\rSPI Slave Buffer Set Failed");
+	printf("\n\r\n\rSPI Slave Configuration:");
+	printf("\n\r  SCK pin: %d", spis_config.sck_pin);
+    printf("\n\r  MOSI pin: %d", spis_config.mosi_pin);
+    printf("\n\r  MISO pin: %d", spis_config.miso_pin);
+    printf("\n\r  Chip Select pin: %d", spis_config.csn_pin);
+    printf("\n\r  SPI Mode: %d", spis_config.mode);
+
+    if (nrf_drv_spis_init(&spis, &spis_config, spis_event_handler) == NRF_SUCCESS)
+            printf("\n\rSPI Slave Initialization Succeded");
+    else
+        printf("\n\rSPI Slave Initialization Failed");
+            
+    if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) == NRF_SUCCESS)
+          printf("\n\rSPI Slave Buffer Set Succeded");
+    else
+        printf("\n\rSPI Slave Buffer Set Failed");
 }
 
 
