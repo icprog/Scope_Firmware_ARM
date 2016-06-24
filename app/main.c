@@ -166,7 +166,6 @@ APP_TIMER_DEF(m_battery_timer_id);                                              
 
 APP_TIMER_DEF(m_slope_timer_id);                                                        /**< Slope timer. */
 APP_TIMER_DEF(m_status_timer_id);                                                        /**< Status timer. */
-APP_TIMER_DEF(m_heart_rate_timer_id);                                                   /**< Heart rate measurement timer. */
 APP_TIMER_DEF(m_rr_interval_timer_id);                                                  /**< RR interval timer. */
 APP_TIMER_DEF(m_sensor_contact_timer_id);                                               /**< Sensor contact detected timer. */
 
@@ -263,7 +262,7 @@ static void slope_level_update(void)
 {
     uint32_t err_code;
     uint8_t  slope_level;
-		LSM303_DATA test_data_303;
+	//LSM303_DATA test_data_303;
 		
     slope_level = (uint8_t)sensorsim_measure(&m_slope_sim_state, &m_slope_sim_cfg);
 	//set slope based on lsm303 data:
@@ -445,7 +444,6 @@ static void gap_params_init(void)
 static void services_init(void)
 {
     uint32_t       err_code;
-    uint8_t        body_sensor_location;
 	
 		//battery service init:
 		ble_bas_init_t bas_init;
@@ -928,11 +926,6 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
-static void shutdown_pins_init(void)
-{
-    nrf_gpio_cfg_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLDOWN); //no need to pull up or down becauase AND gate is always driving pin (maybe)
-    nrf_gpio_cfg_output(SCOPE_3V3_ENABLE_PIN);
-}
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
     nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
@@ -983,8 +976,8 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-		uint8_t slope_level;
-		LSM303_DATA test_data_303;
+//    uint8_t slope_level;
+//    LSM303_DATA test_data_303;
 	
     // Initialize.
     timers_init();
