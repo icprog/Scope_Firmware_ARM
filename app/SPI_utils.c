@@ -53,8 +53,8 @@ static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPI
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
 static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
 volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance completed the transfer. */
-uint8_t       m_tx_buf_s[2];
-uint8_t       m_rx_buf_s[3];
+uint8_t       m_tx_buf_s[4] = {0xb0, 0x0b, 0x55, 0x55};
+uint8_t       m_rx_buf_s[5];
 static const uint8_t m_length = sizeof(m_tx_buf_s);        /**< Transfer length. */
 
 /**
@@ -74,13 +74,18 @@ void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
  */
 void spis_event_handler(nrf_drv_spis_event_t event)
 {
-    SEGGER_RTT_printf(0, "\nSPIS event handler\n");
     if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
     {
         spis_xfer_done = true;
 		if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
 			LEDS_ON(BSP_LED_3_MASK);
 		LEDS_INVERT(BSP_LED_2_MASK);
+        SEGGER_RTT_printf(0, "\nreceived ");
+        for(int i = 0; i < m_length; i++)
+        {
+             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
+        }
+
     }
 }
 

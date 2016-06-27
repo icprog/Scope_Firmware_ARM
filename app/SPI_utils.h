@@ -37,7 +37,7 @@
 #include "nrf_drv_spis.h"
 
 #define SPI_CS_PIN   7 //chips select for the SPI module for the IMU
-#define SPIS_CS_PIN 10 //REQN on ARM, RDYN on PIC
+#define SPIS_CS_PIN 12 //REQN on ARM, RDYN on PIC
 #define SPI_CS_ACC	 2
 #define SPI_CS_GYRO  15 // TODO: change for our ble pcb
 #define SPI_INSTANCE  0 /**< SPI instance index. */

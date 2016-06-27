@@ -260,8 +260,8 @@
 #define SPIS1_ENABLED 1
 
 #if (SPIS1_ENABLED == 1)
-#define SPIS1_CONFIG_SCK_PIN         8
-#define SPIS1_CONFIG_MOSI_PIN        9
+#define SPIS1_CONFIG_SCK_PIN         9
+#define SPIS1_CONFIG_MOSI_PIN        8
 #define SPIS1_CONFIG_MISO_PIN        11
 #define SPIS1_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
 

@@ -296,7 +296,6 @@ ret_code_t nrf_drv_spis_buffers_set(nrf_drv_spis_t const * const  p_instance,
                                     uint8_t   rx_buffer_length)
 {
     
-    SEGGER_RTT_printf(0, "doing some SPIS shit!/n");
     spis_cb_t * p_cb = &m_cb[p_instance->instance_id];
     uint32_t err_code;
 

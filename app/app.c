@@ -77,8 +77,8 @@
 extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
-extern uint8_t       m_tx_buf_s[2];           											/**< TX buffer. */
-extern uint8_t       m_rx_buf_s[3];    													/**< RX buffer. */
+extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
+extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
 
 
@@ -145,7 +145,7 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
-    int count;
+    uint32_t count;
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -160,10 +160,6 @@ void APP_Tasks(void)
         }
         case APP_STATE_POLLING:
         {
-            if(count++ % 500 == 0)
-            {
-                SEGGER_RTT_WriteString(0, "polling state \n");
-            }
             if(~NRF_GPIO->IN & 1<<17)
             {
                     //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
@@ -172,7 +168,6 @@ void APP_Tasks(void)
                   LEDS_INVERT(BSP_LED_0_MASK);
                     while(~NRF_GPIO->IN & 1<<17);
             }
-                
             if (spis_xfer_done)
             {
                 printf("\n\rReceived SPI data: 0x%x, 0x%x", m_rx_buf_s[0], m_rx_buf_s[1]);
