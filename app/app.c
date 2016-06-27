@@ -129,8 +129,8 @@ void APP_Initialize(void)
         appData.state = APP_STATE_INIT;		
 	
 		spi_init();	
-		//spis_init();
-		spis_xfer_done = true;//false;
+		spis_init();
+		spis_xfer_done = false;
 		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
@@ -145,12 +145,14 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
-		SEGGER_RTT_WriteString(0, "App tasks start \n");
+    int count;
+	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
+            count = 0;
             SEGGER_RTT_WriteString(0, "init state \n");
             //prompt();
             appData.state = APP_STATE_POLLING;
@@ -158,7 +160,10 @@ void APP_Tasks(void)
         }
         case APP_STATE_POLLING:
         {
-            SEGGER_RTT_WriteString(0, "polling state \n");
+            if(count++ % 500 == 0)
+            {
+                SEGGER_RTT_WriteString(0, "polling state \n");
+            }
             if(~NRF_GPIO->IN & 1<<17)
             {
                     //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");

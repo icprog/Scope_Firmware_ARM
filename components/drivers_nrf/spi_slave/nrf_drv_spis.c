@@ -22,6 +22,8 @@
 #include "nordic_common.h"
 #include "sdk_common.h"
 #include "nrf_assert.h"
+#include "SEGGER_RTT.h"
+
 
 #if !SPIS_COUNT
     #warning No SPIS instances enabled.
@@ -293,6 +295,8 @@ ret_code_t nrf_drv_spis_buffers_set(nrf_drv_spis_t const * const  p_instance,
                                     uint8_t * p_rx_buffer,
                                     uint8_t   rx_buffer_length)
 {
+    
+    SEGGER_RTT_printf(0, "doing some SPIS shit!/n");
     spis_cb_t * p_cb = &m_cb[p_instance->instance_id];
     uint32_t err_code;
 
@@ -340,6 +344,7 @@ static void spis_irq_handler(NRF_SPIS_Type * p_spis, spis_cb_t * p_cb)
     // is as follows:
     // - SPI semaphore acquired event.
     // - SPI transaction complete event.
+    
     
     // Check for SPI semaphore acquired event.
     if (nrf_spis_event_check(p_spis, NRF_SPIS_EVENT_ACQUIRED))

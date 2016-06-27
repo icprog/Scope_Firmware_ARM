@@ -997,15 +997,14 @@ int main(void)
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
+    SEGGER_RTT_printf(0, "HELLO WORLD!\n");
 
 	APP_Initialize();
-	//init_LSM303();
 
     while(true)
     {
         
         APP_Tasks();
-        
         power_manage();
         
         /********   Dave's test:   ********/

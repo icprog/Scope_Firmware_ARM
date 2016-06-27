@@ -45,6 +45,8 @@
 #include "nrf_log.h"
 #include "boards.h"
 #include <string.h>
+#include "SEGGER_RTT.h"
+
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
@@ -61,6 +63,7 @@ static const uint8_t m_length = sizeof(m_tx_buf_s);        /**< Transfer length.
  */
 void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
 {
+    SEGGER_RTT_printf(0, "SPI event handler");
     spi_xfer_done = true;
 }
 
@@ -71,12 +74,13 @@ void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
  */
 void spis_event_handler(nrf_drv_spis_event_t event)
 {
+    SEGGER_RTT_printf(0, "\nSPIS event handler\n");
     if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
     {
         spis_xfer_done = true;
-				if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
-						LEDS_ON(BSP_LED_3_MASK);
-				LEDS_INVERT(BSP_LED_2_MASK);
+		if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
+			LEDS_ON(BSP_LED_3_MASK);
+		LEDS_INVERT(BSP_LED_2_MASK);
     }
 }
 
@@ -115,24 +119,24 @@ void spi_init(void)
 void spis_init(void)
 {
     spis_config.csn_pin         = SPIS_CS_PIN;
-    spis_config.mode 			= NRF_DRV_SPIS_MODE_3;
+    spis_config.mode 			= NRF_DRV_SPIS_MODE_1; //NRF_DRV_SPIS_MODE_3;
 	
-	printf("\n\r\n\rSPI Slave Configuration:");
-	printf("\n\r  SCK pin: %d", spis_config.sck_pin);
-    printf("\n\r  MOSI pin: %d", spis_config.mosi_pin);
-    printf("\n\r  MISO pin: %d", spis_config.miso_pin);
-    printf("\n\r  Chip Select pin: %d", spis_config.csn_pin);
-    printf("\n\r  SPI Mode: %d", spis_config.mode);
+	/*printf*/SEGGER_RTT_printf(0,"\n\r\n\rSPI Slave Configuration:");
+	/*printf*/SEGGER_RTT_printf(0,"\n\r  SCK pin: %d", spis_config.sck_pin);
+    /*printf*/SEGGER_RTT_printf(0,"\n\r  MOSI pin: %d", spis_config.mosi_pin);
+    /*printf*/SEGGER_RTT_printf(0,"\n\r  MISO pin: %d", spis_config.miso_pin);
+    /*printf*/SEGGER_RTT_printf(0,"\n\r  Chip Select pin: %d", spis_config.csn_pin);
+    /*printf*/SEGGER_RTT_printf(0,"\n\r  SPI Mode: %d", spis_config.mode);
 
     if (nrf_drv_spis_init(&spis, &spis_config, spis_event_handler) == NRF_SUCCESS)
-            printf("\n\rSPI Slave Initialization Succeded");
+            /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Succeeded");
     else
-        printf("\n\rSPI Slave Initialization Failed");
+        /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Failed");
             
     if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) == NRF_SUCCESS)
-          printf("\n\rSPI Slave Buffer Set Succeded");
+          /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
     else
-        printf("\n\rSPI Slave Buffer Set Failed");
+        /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");
 }
 
 
