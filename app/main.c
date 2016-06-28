@@ -1021,8 +1021,8 @@ int main(void)
         power_manage();
 		test_data_303 = getLSM303data();
 		slope_level = 0;
-		slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
-	
+		//slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
+		slope_level = (uint8_t)((test_data_303.X & 0x00FF));
 		SLOPE_GLOBAL = slope_level;
 		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
 
