@@ -142,6 +142,9 @@ void spis_init(void)
           /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
     else
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");
+    
+    /******* initialize RDY pin  ********/
+    nrf_gpio_cfg_output(SPIS_RDY_PIN);
 }
 
 
@@ -204,4 +207,12 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		}
 }
 
+void set_RDY(void)
+{
+    nrf_gpio_pin_set(SPIS_RDY_PIN);
+}
+void clear_RDY(void)
+{
+    nrf_gpio_pin_clear(SPIS_RDY_PIN);
+}
 

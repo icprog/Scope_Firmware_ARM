@@ -37,9 +37,10 @@
 #include "nrf_drv_spis.h"
 
 #define SPI_CS_PIN   7 //chips select for the SPI module for the IMU
-#define SPIS_CS_PIN 12 //REQN on ARM, RDYN on PIC
+#define SPIS_CS_PIN 12 //CSN generated on PIC (active low)
+#define SPIS_RDY_PIN 10 //RDY pin to signal to PIC that data is ready to be sent (active high)
 #define SPI_CS_ACC	 2
-#define SPI_CS_GYRO  15 // TODO: change for our ble pcb
+#define SPI_CS_GYRO  15 //TODO: change for our ble pcb
 #define SPI_INSTANCE  0 /**< SPI instance index. */
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */
 
@@ -56,6 +57,8 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device);
 void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, uint8_t length);
 void spis_init(void);
 void spis_event_handler(nrf_drv_spis_event_t event);
+void set_RDY(void);
+void clear_RDY(void);
 
 #endif	/* SPI_UTILS_H */
 
