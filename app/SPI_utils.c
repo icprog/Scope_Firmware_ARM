@@ -53,9 +53,75 @@ static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPI
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
 static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
 volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance completed the transfer. */
-uint8_t       m_tx_buf_s[4] = {0xb0, 0x0b, 0x55, 0x55};
-uint8_t       m_rx_buf_s[5];
-static const uint8_t m_length = sizeof(m_tx_buf_s);        /**< Transfer length. */
+uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
+uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
+
+/********  global variable for building a tx packet for PIC   **********/
+uint16_t spis_rx_transfer_length;
+uint16_t spis_tx_transfer_length;
+
+
+
+uint8_t  prep_packet_for_PIC(pic_arm_code_t pa_code, uint16_t pa_tx_length, uint8_t * pa_data, uint8_t * tx_buffer)
+{
+    tx_buffer[0] = PIC_ARM_START_BYTE;
+    tx_buffer[1] = (uint8_t)pa_code;
+    tx_buffer[2] = pa_tx_length;
+    memcpy((void *)(&tx_buffer[3]), (void *)pa_data, pa_tx_length);
+    tx_buffer[pa_tx_length + PIC_ARM_HEADER_SIZE] = PIC_ARM_STOP_BYTE;
+}
+
+
+/*
+ * function to parse packets coming from PIC 
+ */
+uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
+{
+    uint8_t length;
+    header_packet_t * packet = (header_packet_t *)rx_buffer;
+    
+    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte && spis_transfer_length == 0)
+    {
+        spis_rx_transfer_length = packet->length
+        switch(packet->code)
+        {
+            case PA_DEVICE_STATUS:
+            {
+                SEGGER_RTT_printf(0, "DEV STATUS\n");
+                break;
+            }
+            case PA_PROFILE:
+            {
+                SEGGER_RTT_printf(0, "PROFILE\n");
+                break;
+            }
+            default:
+            {
+                SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
+            }
+        }
+    }
+    else if(spis_rx_transfer_length != 0)
+    {
+        /***********  DATA Packet ************/
+        if(spis_rx_transfer_length > SPIS_DATA_LENGTH_MAX)
+        {
+            length = SPIS_DATA_LENGTH_MAX;
+        }
+        else
+        {
+            length = spis_rx_transfer_length;
+        }
+        //TODO sort out where to put the data from the buffer
+        //TODO check the checksum
+        spis_rx_transfer_length -= length;
+    }
+    else
+    {
+        return 1; //ERROR
+    }
+    
+}
 
 /**
  * @brief SPI user event handler.
@@ -68,24 +134,34 @@ void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
 }
 
 /**
- * @brief SPIS user event handler.
+ * @brief SPIS user event handler. This function can basically only be used for reading from 
+ * PIC as this is triggered on the SS line going high after being low. 
  *
  * @param event
  */
 void spis_event_handler(nrf_drv_spis_event_t event)
 {
+    uint8_t rx_length, tx_length;
+    uint8_t error_code = 0;
+    
     if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
     {
-        spis_xfer_done = true;
-		if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
-			LEDS_ON(BSP_LED_3_MASK);
-		LEDS_INVERT(BSP_LED_2_MASK);
-        SEGGER_RTT_printf(0, "\nreceived ");
-        for(int i = 0; i < m_length; i++)
+        /**********  detemine length of the packets to be received and sent  *********/
+        rx_length = buffer_size_calc(spis_rx_transfer_length);
+        tx_length = buffer_size_calc(spis_tx_transfer_length);
+        
+        spis_xfer_done = true; //TODO remove
+        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)
         {
-             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
+            SEGGER_RTT_printf(0, "SPIS error");
         }
-
+        
+//        SEGGER_RTT_printf(0, "\nreceived ");
+//        for(int i = 0; i < m_length; i++)
+//        {
+//             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
+//        }
+        parse_packet_from_PIC(m_rx_buf_s);
     }
 }
 
@@ -138,13 +214,14 @@ void spis_init(void)
     else
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Failed");
             
-    if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) == NRF_SUCCESS)
+    if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, 1, m_rx_buf_s, 1) == NRF_SUCCESS) //dummy lengths
           /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
     else
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");
     
     /******* initialize RDY pin  ********/
     nrf_gpio_cfg_output(SPIS_RDY_PIN);
+    SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
 }
 
 
@@ -215,4 +292,25 @@ void clear_RDY(void)
 {
     nrf_gpio_pin_clear(SPIS_RDY_PIN);
 }
+bool isRDY(void)
+{
+    return (bool)(NRF_GPIO->OUT & (1 << SPIS_RDY_PIN));
+}
 
+uint8_t buffer_size_calc(uint16_t spis_transfer_length)
+{
+    uint8_t buffer_size;
+    if(spis_transfer_length == 0)
+    {
+        buffer_size = PIC_ARM_HEADER_SIZE;
+    }
+    else if(spis_transfer_length > SPIS_DATA_LENGTH_MAX)
+    {
+        buffer_size = SPIS_DATA_LENGTH_MAX;
+    }
+    else
+    {
+        buffer_size = spis_transfer_length;
+    }
+    return buffer_size;
+}
