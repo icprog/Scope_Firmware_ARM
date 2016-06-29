@@ -58,17 +58,36 @@ uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 
 /********  global variable for building a tx packet for PIC   **********/
 uint16_t spis_rx_transfer_length;
-uint16_t spis_tx_transfer_length;
+uint16_t spis_tx_transfer_length = 0;
+pic_arm_code_t pa_rx_code;
+pic_arm_code_t pa_rx_code;
 
-
-
-uint8_t  prep_packet_for_PIC(pic_arm_code_t pa_code, uint16_t pa_tx_length, uint8_t * pa_data, uint8_t * tx_buffer)
+/*
+ * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
+ * Then handle the subsequent data packets in the spis_event_handler.
+ */
+uint8_t  send_packet_to_PIC(pic_arm_code_t pa_code, uint8_t * pa_data, uint16_t pa_length)
 {
-    tx_buffer[0] = PIC_ARM_START_BYTE;
-    tx_buffer[1] = (uint8_t)pa_code;
-    tx_buffer[2] = pa_tx_length;
-    memcpy((void *)(&tx_buffer[3]), (void *)pa_data, pa_tx_length);
-    tx_buffer[pa_tx_length + PIC_ARM_HEADER_SIZE] = PIC_ARM_STOP_BYTE;
+    //TODO while(spis_tx_transfer_length) 
+    if(spis_tx_transfer_length == 0) /* Header packet */
+    {
+        header_packet_t packet;
+        packet.start_byte = PIC_ARM_START_BYTE;
+        packet.stop_byte = PIC_ARM_STOP_BYTE;
+        packet.code = pa_code;
+        spis_tx_transfer_length = pa_length;
+        packet.length = pa_length;
+        
+        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        {
+            SEGGER_RTT_printf(0, "SPIS error");
+        }
+        set_RDY();
+    }
+    else
+    {
+        //ERROR
+    }
 }
 
 
@@ -80,9 +99,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
     uint8_t length;
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     
-    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte && spis_transfer_length == 0)
+    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && spis_rx_transfer_length == 0)
     {
-        spis_rx_transfer_length = packet->length
+        spis_rx_transfer_length = packet->length;
         switch(packet->code)
         {
             case PA_DEVICE_STATUS:
@@ -114,7 +133,6 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
         }
         //TODO sort out where to put the data from the buffer
         //TODO check the checksum
-        spis_rx_transfer_length -= length;
     }
     else
     {
@@ -146,14 +164,23 @@ void spis_event_handler(nrf_drv_spis_event_t event)
     
     if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
     {
-        /**********  detemine length of the packets to be received and sent  *********/
+        /**********  determine length of the packet received and packet to send *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);
         tx_length = buffer_size_calc(spis_tx_transfer_length);
+        
         
         spis_xfer_done = true; //TODO remove
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
+        }
+        
+        /******* update lengths ******/
+        spis_rx_transfer_length -= rx_length;
+        spis_tx_transfer_length -= tx_length;
+        if(spis_tx_transfer_length == 0)
+        {
+            clear_RDY();
         }
         
 //        SEGGER_RTT_printf(0, "\nreceived ");
@@ -180,8 +207,8 @@ void spi_init(void)
 		nrf_gpio_cfg_output(SPI_CS_ACC);
 		nrf_gpio_cfg_output(SPI_CS_GYRO);
 	
-	  NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
-	  NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
+        NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
+        NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
 		
 //		printf("\n\r\n\rSPI Master Configuration:");
 //		printf("\n\r  SCK pin: %d", spi_config.sck_pin);

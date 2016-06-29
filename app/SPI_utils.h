@@ -84,7 +84,7 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device);
 void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, uint8_t length);
 void spis_init(void);
 void spis_event_handler(nrf_drv_spis_event_t event);
-uint8_t  prep_packet_for_PIC(pic_arm_code_t pa_code, uint16_t pa_tx_length, uint8_t * pa_data, uint8_t * tx_buffer)
+uint8_t send_packet_to_PIC(pic_arm_code_t pa_code, uint8_t * pa_data, uint16_t pa_tx_length);
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer);
 void set_RDY(void);
 void clear_RDY(void);
