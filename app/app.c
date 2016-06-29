@@ -81,7 +81,6 @@ extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
 extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
 
-
 // *****************************************************************************
 /* Application Data
 

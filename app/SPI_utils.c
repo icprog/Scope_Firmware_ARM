@@ -57,10 +57,12 @@ uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 
 /********  global variable for building a tx packet for PIC   **********/
-uint16_t spis_rx_transfer_length;
-uint16_t spis_tx_transfer_length = 0;
-pic_arm_code_t pa_rx_code;
-pic_arm_code_t pa_rx_code;
+uint16_t spis_rx_transfer_length = PIC_ARM_HEADER_SIZE;
+uint16_t spis_tx_transfer_length = PIC_ARM_HEADER_SIZE;
+void * rx_data_ptr; //where to put the data received from the PIC
+uint16_t force_cal_consts[5]; //TESTING
+uint16_t force_cal_consts[] = {500, 750, 1000, 1250, 1500}; //TESTING
+
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -102,11 +104,17 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
     if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && spis_rx_transfer_length == 0)
     {
         spis_rx_transfer_length = packet->length;
+        //TODO sort out where to put the data from the buffer
         switch(packet->code)
         {
+            case PA_FORCE_CAL_DATA:
+            {
+                rx_data_ptr = &force_cal_consts;
+            }
             case PA_DEVICE_STATUS:
             {
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
+                
                 break;
             }
             case PA_PROFILE:
@@ -122,16 +130,8 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
     }
     else if(spis_rx_transfer_length != 0)
     {
-        /***********  DATA Packet ************/
-        if(spis_rx_transfer_length > SPIS_DATA_LENGTH_MAX)
-        {
-            length = SPIS_DATA_LENGTH_MAX;
-        }
-        else
-        {
-            length = spis_rx_transfer_length;
-        }
-        //TODO sort out where to put the data from the buffer
+        length = buffer_size_calc(spis_rx_transfer_length);
+        memcpy(rx_data_ptr, (void *)rx_buffer, length);
         //TODO check the checksum
     }
     else
@@ -241,7 +241,7 @@ void spis_init(void)
     else
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Failed");
             
-    if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, 1, m_rx_buf_s, 1) == NRF_SUCCESS) //dummy lengths
+    if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, PIC_ARM_HEADER_SIZE) == NRF_SUCCESS) //dummy lengths
           /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
     else
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");

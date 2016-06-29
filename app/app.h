@@ -57,7 +57,7 @@
 typedef enum
 {
 	/* Application's state machine's initial state. */
-		APP_STATE_INIT = 0,
+	APP_STATE_INIT = 0,
     APP_STATE_POLLING = 1,
 
 } APP_STATES;

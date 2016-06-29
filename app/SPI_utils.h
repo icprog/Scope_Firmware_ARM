@@ -66,7 +66,9 @@ typedef enum
 typedef enum
 {
     PA_DEVICE_STATUS,
-    PA_PROFILE
+    PA_PROFILE,
+    PA_FORCE_CAL_DATA,
+    PA_FORCE_CAL_INIT,
 } pic_arm_code_t;
 
 typedef struct
