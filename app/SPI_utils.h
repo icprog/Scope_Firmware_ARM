@@ -49,12 +49,12 @@
 
 #define PIC_ARM_START_BYTE 0x5C
 #define PIC_ARM_STOP_BYTE 0xC5
-#define PIC_ARM_HEADER_SIZE 5 //in bytes --- start byte + cmd + length(2) + stop byte
+
 
 //#define PIC_ARM_DATA_START_BYTE 0xDA
 //#define PIC_ARM_DATA_STOP_BYTE 0xAD
 
-
+extern uint16_t force_cal_consts[5];
 
 
 typedef enum
@@ -65,6 +65,7 @@ typedef enum
 
 typedef enum
 {
+    TEST_CODE,
     PA_DEVICE_STATUS,
     PA_PROFILE,
     PA_FORCE_CAL_DATA,
@@ -73,11 +74,23 @@ typedef enum
 
 typedef struct
 {
+    pic_arm_code_t code;
+    uint8_t * data;
+    uint16_t data_size;
+}pic_arm_pack_t;
+
+extern pic_arm_pack_t test_code_pack;
+extern pic_arm_pack_t force_cal_init_pack;
+extern pic_arm_pack_t force_cal_data_pack;
+
+typedef struct
+{
     uint8_t start_byte;
     pic_arm_code_t code;
     uint16_t length;
     uint8_t stop_byte;
 } header_packet_t;
+#define PIC_ARM_HEADER_SIZE sizeof(header_packet_t)
 
 void spi_init(void);
 uint8_t getLSMID(void);
@@ -86,7 +99,7 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device);
 void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, uint8_t length);
 void spis_init(void);
 void spis_event_handler(nrf_drv_spis_event_t event);
-uint8_t send_packet_to_PIC(pic_arm_code_t pa_code, uint8_t * pa_data, uint16_t pa_tx_length);
+uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack);
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer);
 void set_RDY(void);
 void clear_RDY(void);

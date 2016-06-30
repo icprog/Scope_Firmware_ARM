@@ -144,14 +144,12 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
-    uint32_t count;
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
         /* Application's initial state. */
         case APP_STATE_INIT:
         {
-            count = 0;
             SEGGER_RTT_WriteString(0, "init state \n");
             //prompt();
             appData.state = APP_STATE_POLLING;
@@ -167,17 +165,23 @@ void APP_Tasks(void)
                   LEDS_INVERT(BSP_LED_0_MASK);
                     while(~NRF_GPIO->IN & 1<<17);
             }
-            if (spis_xfer_done)
-            {
-                printf("\n\rReceived SPI data: 0x%x, 0x%x", m_rx_buf_s[0], m_rx_buf_s[1]);
-                spis_xfer_done = false;
-                if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, m_length, m_rx_buf_s, m_length) != NRF_SUCCESS)
-                {
-                        printf("\n\r SPIS buffer set failed.");
-                }
-            }
+            
             //monitor();
             break;
+        }
+        case APP_STATE_FORCE_CAL_INIT:
+        {
+            
+            send_data_to_PIC(force_cal_init_pack);
+        }
+        case APP_STATE_FORCE_CAL_DATA:
+        {
+            SEGGER_RTT_printf(0, "received force cal: ");
+            for(int i = 0; i < 5; i++)
+            {
+                SEGGER_RTT_printf(0, "  %d", force_cal_consts[i]);
+            }
+                
         }
     }
 }

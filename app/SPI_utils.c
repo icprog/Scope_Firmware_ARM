@@ -46,6 +46,7 @@
 #include "boards.h"
 #include <string.h>
 #include "SEGGER_RTT.h"
+#include "app.h"
 
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
@@ -55,20 +56,25 @@ static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instanc
 volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance completed the transfer. */
 uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
+uint8_t       dummy_buf[32];
 
 /********  global variable for building a tx packet for PIC   **********/
 uint16_t spis_rx_transfer_length = PIC_ARM_HEADER_SIZE;
 uint16_t spis_tx_transfer_length = PIC_ARM_HEADER_SIZE;
 void * rx_data_ptr; //where to put the data received from the PIC
 uint16_t force_cal_consts[5]; //TESTING
-uint16_t force_cal_consts[] = {500, 750, 1000, 1250, 1500}; //TESTING
+
+pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
+pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
+pic_arm_pack_t force_cal_data_pack = {PA_FORCE_CAL_DATA, (uint8_t *)force_cal_consts, 10};
+
 
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
  * Then handle the subsequent data packets in the spis_event_handler.
  */
-uint8_t  send_packet_to_PIC(pic_arm_code_t pa_code, uint8_t * pa_data, uint16_t pa_length)
+uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 {
     //TODO while(spis_tx_transfer_length) 
     if(spis_tx_transfer_length == 0) /* Header packet */
@@ -76,9 +82,9 @@ uint8_t  send_packet_to_PIC(pic_arm_code_t pa_code, uint8_t * pa_data, uint16_t 
         header_packet_t packet;
         packet.start_byte = PIC_ARM_START_BYTE;
         packet.stop_byte = PIC_ARM_STOP_BYTE;
-        packet.code = pa_code;
-        spis_tx_transfer_length = pa_length;
-        packet.length = pa_length;
+        packet.code = pa_pack.code;
+        spis_tx_transfer_length = pa_pack.data_size;
+        packet.length = pa_pack.data_size;
         
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
         {
@@ -107,9 +113,14 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
         //TODO sort out where to put the data from the buffer
         switch(packet->code)
         {
+            case TEST_CODE:
+            {
+                appData.state = APP_STATE_FORCE_CAL_INIT;
+            }
             case PA_FORCE_CAL_DATA:
             {
                 rx_data_ptr = &force_cal_consts;
+                appData.state = APP_STATE_FORCE_CAL_DATA;
             }
             case PA_DEVICE_STATUS:
             {
