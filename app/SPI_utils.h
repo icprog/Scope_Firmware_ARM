@@ -50,6 +50,8 @@
 #define PIC_ARM_START_BYTE 0x5C
 #define PIC_ARM_STOP_BYTE 0xC5
 
+#define  BYTE_SWAP(X) (X>>8)|(X<<8)
+
 
 //#define PIC_ARM_DATA_START_BYTE 0xDA
 //#define PIC_ARM_DATA_STOP_BYTE 0xAD
