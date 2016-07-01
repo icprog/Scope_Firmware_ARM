@@ -86,7 +86,7 @@ extern pic_arm_pack_t force_cal_data_pack;
 typedef struct
 {
     uint8_t start_byte;
-    pic_arm_code_t code;
+    uint8_t code;
     uint16_t length;
     uint8_t stop_byte;
 } header_packet_t;

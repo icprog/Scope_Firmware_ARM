@@ -59,8 +59,8 @@ uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
 
 /********  global variable for building a tx packet for PIC   **********/
-uint16_t spis_rx_transfer_length = PIC_ARM_HEADER_SIZE;
-uint16_t spis_tx_transfer_length = PIC_ARM_HEADER_SIZE;
+uint16_t spis_rx_transfer_length = 0;
+uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
 uint16_t force_cal_consts[5]; //TESTING
 
@@ -86,7 +86,15 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         spis_tx_transfer_length = pa_pack.data_size;
         packet.length = pa_pack.data_size;
         
-        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        //TODO: something weird with timing here. need the print statement to get correct values
+        
+        SEGGER_RTT_printf(0, "sending:");
+        for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
+        {
+            SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
+        }
+       
+        if (nrf_drv_spis_buffers_set(&spis, (uint8_t *)&packet, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }
@@ -104,6 +112,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
  */
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
 {
+    SEGGER_RTT_printf(0, "parsing packet\n");
     uint8_t length;
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     
@@ -116,11 +125,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
             case TEST_CODE:
             {
                 appData.state = APP_STATE_FORCE_CAL_INIT;
+                break;
             }
             case PA_FORCE_CAL_DATA:
             {
                 rx_data_ptr = &force_cal_consts;
                 appData.state = APP_STATE_FORCE_CAL_DATA;
+                break;
             }
             case PA_DEVICE_STATUS:
             {
@@ -136,6 +147,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer)
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
+                break;
             }
         }
     }
@@ -185,20 +197,28 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }
+        /********** update transfer lengths   *********/
+        if(spis_tx_transfer_length != 0)
+        {
+            spis_tx_transfer_length -= tx_length;
+        }
+        if(spis_rx_transfer_length != 0)
+        {
+            spis_rx_transfer_length -= rx_length;
+        }
         
-        /******* update lengths ******/
-        spis_rx_transfer_length -= rx_length;
-        spis_tx_transfer_length -= tx_length;
+        /*********  clear RDY line if done transferring ******/
         if(spis_tx_transfer_length == 0)
         {
             clear_RDY();
         }
         
-//        SEGGER_RTT_printf(0, "\nreceived ");
-//        for(int i = 0; i < m_length; i++)
-//        {
-//             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
-//        }
+        SEGGER_RTT_printf(0, "\nreceived ");
+        for(int i = 0; i < rx_length; i++)
+        {
+             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
+        }
+        SEGGER_RTT_printf(0, "\n");
         parse_packet_from_PIC(m_rx_buf_s);
     }
 }
@@ -325,10 +345,12 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 void set_RDY(void)
 {
     nrf_gpio_pin_set(SPIS_RDY_PIN);
+    SEGGER_RTT_printf(0, "\n setting RDY ");
 }
 void clear_RDY(void)
 {
     nrf_gpio_pin_clear(SPIS_RDY_PIN);
+    SEGGER_RTT_printf(0, "\n clearing RDY ");
 }
 bool isRDY(void)
 {

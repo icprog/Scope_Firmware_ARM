@@ -171,8 +171,10 @@ void APP_Tasks(void)
         }
         case APP_STATE_FORCE_CAL_INIT:
         {
-            
+            SEGGER_RTT_printf(0, "FORCE_CAL_INIT\n");
             send_data_to_PIC(force_cal_init_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
         }
         case APP_STATE_FORCE_CAL_DATA:
         {
@@ -181,7 +183,9 @@ void APP_Tasks(void)
             {
                 SEGGER_RTT_printf(0, "  %d", force_cal_consts[i]);
             }
-                
+            SEGGER_RTT_printf(0, "\n");
+            appData.state = APP_STATE_POLLING;
+            break;
         }
     }
 }
