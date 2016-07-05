@@ -139,11 +139,16 @@
 #define ARDUINO_A4_PIN              5     // Analog channel 4
 #define ARDUINO_A5_PIN              6     // Analog channel 5
 
+
+/**************** Scope Pin Mappings  *************/
+#define SCOPE_HALL_PIN              7
+#define SCOPE_3V3_ENABLE_PIN        30
+
 // Low frequency clock source to be used by the SoftDevice
 #ifdef S210
 #define NRF_CLOCK_LFCLKSRC      NRF_CLOCK_LFCLKSRC_XTAL_20_PPM
 #else
-#define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_XTAL,            \
+#define NRF_CLOCK_LFCLKSRC      {.source        = NRF_CLOCK_LF_SRC_XTAL,      \
                                  .rc_ctiv       = 0,                                \
                                  .rc_temp_ctiv  = 0,                                \
                                  .xtal_accuracy = NRF_CLOCK_LF_XTAL_ACCURACY_20_PPM}

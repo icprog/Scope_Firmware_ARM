@@ -230,6 +230,26 @@ static uint32_t battery_level_char_add(ble_bas_t * p_bas, const ble_bas_init_t *
 
 uint32_t ble_bas_init(ble_bas_t * p_bas, const ble_bas_init_t * p_bas_init)
 {
+		//    // Initialize Battery Service.
+	
+	//recover bas_init:
+		ble_bas_init_t * bas_init = (ble_bas_init_t *)p_bas_init;  //undo const declaration
+		//ble_bas_init_t bas_init = *ptr;  //get back to ble_bas_init_t
+    
+
+    // Here the sec level for the Battery Service can be changed/increased.
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init->battery_level_char_attr_md.cccd_write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init->battery_level_char_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init->battery_level_char_attr_md.write_perm);
+
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init->battery_level_report_read_perm);
+
+    bas_init->evt_handler          = NULL;
+    bas_init->support_notification = true;
+    bas_init->p_report_ref         = NULL;
+    bas_init->initial_batt_level   = 100;
+
+    
     if (p_bas == NULL || p_bas_init == NULL)
     {
         return NRF_ERROR_NULL;
@@ -314,3 +334,4 @@ uint32_t ble_bas_battery_level_update(ble_bas_t * p_bas, uint8_t battery_level)
 
     return err_code;
 }
+
