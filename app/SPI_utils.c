@@ -64,12 +64,12 @@ uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
 uint16_t force_cal_consts[5]; //TESTING
+uint16_t force_cal_weights[5] = {0, 1, 3, 9, 18}; //in newtons
 
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
-pic_arm_pack_t force_cal_data_pack = {PA_FORCE_CAL_DATA, (uint8_t *)force_cal_consts, 10};
-
-
+pic_arm_pack_t force_cal_rdy_pack = {PA_FORCE_CAL_RDY, dummy_buf, 0};
+pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)force_cal_weights, sizeof(force_cal_weights)};
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -84,7 +84,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         packet.start_byte = PIC_ARM_START_BYTE;
         packet.stop_byte = PIC_ARM_STOP_BYTE;
         packet.code = pa_pack.code;
-        spis_tx_transfer_length = pa_pack.data_size;
+        spis_tx_transfer_length = pa_pack.data_size; //TODO make this a regular variable
         packet.length = pa_pack.data_size;
         
         //TODO: something weird with timing here. need the print statement to get correct values
@@ -103,8 +103,9 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
     }
     else
     {
-        //ERROR
+        return 1;//ERROR
     }
+    return 0;
 }
 
 
@@ -115,12 +116,16 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 {
     
     header_packet_t * packet = (header_packet_t *)rx_buffer;
-    APP_STATES next_state = APP_STATE_POLLING;
+    static APP_STATES next_state = APP_STATE_POLLING;
     
-    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && spis_rx_transfer_length == 0)
+    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE)
     {
         SEGGER_RTT_printf(0, "parsing header packet\n");
         spis_rx_transfer_length = packet->length;
+        if(spis_rx_transfer_length > 0)
+        {
+            transfer_in_progress = true;
+        }
         //SEGGER_RTT_printf(0, "setting spis_rx_trasnfer_length to %d", spis_rx_transfer_length);
         
         //TODO sort out where to put the data from the buffer
@@ -128,7 +133,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
-                appData.state = APP_STATE_FORCE_CAL_INIT;
+                appData.state = APP_STATE_FORCE_CAL_RDY;
                 break;
             }
             case PA_FORCE_CAL_DATA:
@@ -144,6 +149,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_DEVICE_STATUS:
             {
+                rx_data_ptr = optical_cal_consts;
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
                 
                 break;
@@ -160,19 +166,21 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
         }
     }
-    else if(spis_rx_transfer_length != 0) //Data packet
+    else if(transfer_in_progress) //Data packet
     {
         SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
         //TODO check the checksum
-    }
-    else if(spis_rx_transfer_length == 0) //finished transferring
-    {
-        SEGGER_RTT_printf(0, "finished transferring\n");
-        appData.state = next_state;
+        if(spis_rx_transfer_length == 0) //finished transferring
+        {
+            SEGGER_RTT_printf(0, "finished transferring\n");
+            transfer_in_progress = false;
+            appData.state = next_state;
 
+        }
     }
+
     else
     {
         return 1; //ERROR
@@ -209,39 +217,46 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         {
             spis_rx_transfer_length -= rx_length;
         }
-//        SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
-//        for(int i = 0; i < rx_length; i++)
-//        {
-//             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
-//        }
-//        SEGGER_RTT_printf(0, "\n");
+        
+        SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
+        for(int i = 0; i < rx_length; i++)
+        {
+             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
+        }
+        SEGGER_RTT_printf(0, "\n");
         
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
-        
-        /**********  determine length of the packet to send *********/
-        tx_length = buffer_size_calc(spis_tx_transfer_length);
-        rx_length = buffer_size_calc(spis_rx_transfer_length);
 
-    
+        
+        /**********  determine length of the packet to send and new one to receive *********/
+        rx_length = buffer_size_calc(spis_rx_transfer_length);
+        tx_length = buffer_size_calc(spis_tx_transfer_length);
+
+        if(spis_tx_transfer_length != 0)
+        {
+            //TODO: assign pointer
+            //TODO: increment pointer
+            
+            SEGGER_RTT_printf(0, "sending:");
+            for(int i = 0; i < tx_length; i++)
+            {
+                SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&m_tx_buf_s)[i]);
+            }
+            spis_tx_transfer_length -= tx_length;
+        }
+        
         //SEGGER_RTT_printf(0, "\nplanning on receiving %d bytes: ", rx_length);
         spis_xfer_done = true; //TODO remove
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
-        }
-        /********** update transfer lengths   *********/
-        if(spis_tx_transfer_length != 0)
-        {
-            spis_tx_transfer_length -= tx_length;
-        }
+        }  
         
-        /*********  clear RDY line if done transferring ******/
-        if(spis_tx_transfer_length == 0) //TODO put in a flag for is it was transferring and now is not
+        if(spis_tx_transfer_length == 0)
         {
             clear_RDY();
         }
-        
     }
 }
 

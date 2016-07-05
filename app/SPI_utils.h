@@ -70,13 +70,12 @@ typedef enum
     TEST_CODE,
     PA_DEVICE_STATUS,
     PA_PROFILE,
-    PA_FORCE_CAL_DATA,
     PA_FORCE_CAL_INIT,
     
     /******************  calibration codes  ****************/
     PA_FORCE_CAL_RDY, //ARM -> PIC
     PA_FORCE_CAL_WEIGHTS, //ARM -> PIC
-    //PA_FORCE_CAL_DATA, //PIC -> ARM
+    PA_FORCE_CAL_DATA, //PIC -> ARM
     
     PA_OPTICAL_CAL_RDY, //ARM -> PIC
     PA_OPTICAL_CAL_LENGTH, //ARM -> PIC
