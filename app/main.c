@@ -481,14 +481,14 @@ static void services_init(void)
 //    //initialize profile service
 //   ble_profile_service_init(&m_ps);
 
-		// Initialize Optical Cal.
-		cal_optical_init_t optical_init;
+    // Initialize Optical Cal.
+    cal_optical_init_t optical_init;
     memset(&optical_init, 0, sizeof(optical_init));
     err_code = cal_optical_init(&m_optical, &optical_init);
     APP_ERROR_CHECK(err_code);
 
-		// Initialize Force Cal.
-		cal_force_init_t force_init;
+    // Initialize Force Cal.
+    cal_force_init_t force_init;
     memset(&force_init, 0, sizeof(force_init));
     err_code = cal_force_init(&m_force, &force_init);
     APP_ERROR_CHECK(err_code);
@@ -1023,7 +1023,6 @@ int main(void)
         
         APP_Tasks();
         power_manage();
-<<<<<<< HEAD
         
         /********   Dave's test:   ********/
 //		test_data_303 = getLSM303data();
@@ -1032,14 +1031,7 @@ int main(void)
 //	
 //		SLOPE_GLOBAL = slope_level;
 //		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
-=======
-		test_data_303 = getLSM303data();
-		slope_level = 0;
-		//slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
-		slope_level = (uint8_t)((test_data_303.X & 0x00FF));
-		SLOPE_GLOBAL = slope_level;
-		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
->>>>>>> ac1defa2c379a46dc33c9eb8c390f822529d9bad
+
 
 
     }
