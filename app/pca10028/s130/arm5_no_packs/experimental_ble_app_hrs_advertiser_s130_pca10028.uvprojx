@@ -515,6 +515,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\profile_service.c</FilePath>
             </File>
+            <File>
+              <FileName>calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\calibration.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2653,6 +2658,11 @@
               <FileName>profile_service.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\profile_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\calibration.c</FilePath>
             </File>
           </Files>
         </Group>
