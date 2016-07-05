@@ -187,6 +187,11 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_OPTICAL_CAL_DATA:
+        {
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
     }
 }
 

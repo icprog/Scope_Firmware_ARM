@@ -72,6 +72,22 @@ typedef enum
     PA_PROFILE,
     PA_FORCE_CAL_DATA,
     PA_FORCE_CAL_INIT,
+    
+    /******************  calibration codes  ****************/
+    PA_FORCE_CAL_RDY, //ARM -> PIC
+    PA_FORCE_CAL_WEIGHTS, //ARM -> PIC
+    //PA_FORCE_CAL_DATA, //PIC -> ARM
+    
+    PA_OPTICAL_CAL_RDY, //ARM -> PIC
+    PA_OPTICAL_CAL_LENGTH, //ARM -> PIC
+    PA_OPTICAL_CAL_DATA, //PIC -> ARM
+    
+    PA_VIB_CAL_RDY,  //ARM -> PIC
+    PA_VIB_CAL_PASS, //ARM -> PIC
+    PA_VIB_CAL_FAIL  //ARM -> PIC
+    
+    //NOTE: no hall effect codes because the hall effect happen completely on the ARM
+    
 } pic_arm_code_t;
 
 typedef struct
@@ -102,7 +118,7 @@ void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, u
 void spis_init(void);
 void spis_event_handler(nrf_drv_spis_event_t event);
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack);
-uint8_t parse_packet_from_PIC(uint8_t * rx_buffer);
+uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length);
 void set_RDY(void);
 void clear_RDY(void);
 bool isRDY(void);
