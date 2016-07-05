@@ -129,8 +129,8 @@ void APP_Initialize(void)
     appData.state = APP_STATE_INIT;		
 	
 		spi_init();	
-		//spis_init();
-		spis_xfer_done = true;//false;
+		spis_init();
+		spis_xfer_done = false;  //set to true initially?  DH
 		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
