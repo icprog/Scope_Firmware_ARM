@@ -20,7 +20,7 @@ typedef struct{
     uint8_t hall_status;
     uint8_t vib_status;
 }cal_data_t;
-cal_data_t cal_data;
+extern cal_data_t cal_data;
 
 uint8_t hall_effect_calibration(void);
 

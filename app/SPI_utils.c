@@ -133,20 +133,17 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
-                appData.state = APP_STATE_FORCE_CAL_RDY;
                 break;
             }
             case PA_FORCE_CAL_DATA:
             {
                 rx_data_ptr = cal_data.force_data;
-                next_state = APP_STATE_FORCE_CAL_DATA;
                 break;
             }
             case PA_OPTICAL_CAL_DATA:
             {
                 //set up a place to store data and change state
                 rx_data_ptr = &(cal_data.optical_data);
-                next_state = 
                 break;
             }
             case PA_DEVICE_STATUS:
