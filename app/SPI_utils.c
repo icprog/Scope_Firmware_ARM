@@ -47,7 +47,7 @@
 #include <string.h>
 #include "SEGGER_RTT.h"
 #include "app.h"
-
+#include "calibration.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
@@ -138,18 +138,19 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_FORCE_CAL_DATA:
             {
-                rx_data_ptr = force_cal_consts;
+                rx_data_ptr = cal_data.force_data;
                 next_state = APP_STATE_FORCE_CAL_DATA;
                 break;
             }
             case PA_OPTICAL_CAL_DATA:
             {
                 //set up a place to store data and change state
+                rx_data_ptr = &(cal_data.optical_data);
+                next_state = 
                 break;
             }
             case PA_DEVICE_STATUS:
             {
-                rx_data_ptr = optical_cal_consts;
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
                 
                 break;
@@ -177,7 +178,6 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             SEGGER_RTT_printf(0, "finished transferring\n");
             transfer_in_progress = false;
             appData.state = next_state;
-
         }
     }
 

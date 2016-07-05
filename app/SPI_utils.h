@@ -83,7 +83,9 @@ typedef enum
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
     PA_VIB_CAL_PASS, //ARM -> PIC
-    PA_VIB_CAL_FAIL  //ARM -> PIC
+    PA_VIB_CAL_FAIL,  //ARM -> PIC
+    
+    PA_CAL_COMPLETE, //PIC -> ARM
     
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
