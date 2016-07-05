@@ -58,6 +58,9 @@
 #include "probe_error.h"
 #include "profile_service.h"
 
+#include "cal_optical.h"
+#include "cal_force.h"
+
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
 
@@ -141,11 +144,13 @@ static ble_beacon_init_t beacon_init;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 						     m_pes; //probing error service
+static ble_pes_t 						     						 m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
-static ble_status_t							 m_status;
+static ble_status_t													 m_status;
+static cal_optical_t												 m_optical;
+static cal_force_t													 m_force;
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -455,10 +460,10 @@ static void services_init(void)
 	
 	
     // Initialize Slope Service.
-		ble_slope_init_t slope_init;
-		memset(&slope_init, 0, sizeof(slope_init));
-    err_code = ble_slope_init(&m_slope, &slope_init);
-    APP_ERROR_CHECK(err_code);
+//		ble_slope_init_t slope_init;
+//		memset(&slope_init, 0, sizeof(slope_init));
+//    err_code = ble_slope_init(&m_slope, &slope_init);
+//    APP_ERROR_CHECK(err_code);
 		
 		// Initialize Device Information Service.
 		ble_dis_init_t dis_init;
@@ -466,17 +471,29 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
 		
-		// Initialize Device Status Service.
-		ble_status_init_t status_init;
-    memset(&status_init, 0, sizeof(status_init));
-    err_code = ble_status_init(&m_status, &status_init);
+//		// Initialize Device Status Service.
+//		ble_status_init_t status_init;
+//    memset(&status_init, 0, sizeof(status_init));
+//    err_code = ble_status_init(&m_status, &status_init);
+//    APP_ERROR_CHECK(err_code);
+//	
+//	//initialize probe error service
+//	ble_probe_error_service_init(&m_pes);
+//    
+//    //initialize profile service
+//   ble_profile_service_init(&m_ps);
+
+		// Initialize Optical Cal.
+		cal_optical_init_t optical_init;
+    memset(&optical_init, 0, sizeof(optical_init));
+    err_code = cal_optical_init(&m_optical, &optical_init);
     APP_ERROR_CHECK(err_code);
-	
-	//initialize probe error service
-	ble_probe_error_service_init(&m_pes);
-    
-    //initialize profile service
-   ble_profile_service_init(&m_ps);
+
+		// Initialize Force Cal.
+		cal_force_init_t force_init;
+    memset(&force_init, 0, sizeof(force_init));
+    err_code = cal_force_init(&m_force, &force_init);
+    APP_ERROR_CHECK(err_code);
 
 }
 

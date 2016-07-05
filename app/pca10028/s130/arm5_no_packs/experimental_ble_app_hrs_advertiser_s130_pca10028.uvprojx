@@ -332,7 +332,7 @@
               <MiscControls></MiscControls>
               <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10028 S130 NRF51 SOFTDEVICE_PRESENT SWI_DISABLE0 NRF_LOG_USES_UART=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\segger_rtt;..\..\..\..\components\drivers_nrf\spi_slave;..\..\..\..\components\drivers_nrf\spi_master;..\..\..\..\components\ble\ble_services\ble_slope;..\..\..\..\components\ble\ble_services\ble_status;..\..\..\..\app;..\..\..\..\SeggerRTT;C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT</IncludePath>
+              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\segger_rtt;..\..\..\..\components\drivers_nrf\spi_slave;..\..\..\..\components\drivers_nrf\spi_master;..\..\..\..\components\ble\ble_services\ble_slope;..\..\..\..\components\ble\ble_services\ble_status;..\..\..\..\app;..\..\..\..\SeggerRTT;C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT;..\..\..\..\components\cal_services</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2073,6 +2073,21 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Cal_Services</GroupName>
+          <Files>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4150,6 +4165,21 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Cal_Services</GroupName>
+          <Files>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
             </File>
           </Files>
         </Group>
