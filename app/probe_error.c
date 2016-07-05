@@ -5,9 +5,9 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 
-static void on_ble_write(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
-{
-    
+//static void on_ble_write(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
+//{
+//    
 //    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
 //    if (
@@ -66,7 +66,7 @@ static void on_ble_write(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
 //            //printf("Notification disabled\r\n");
 //        }
 //    }
-}
+//}
 
 
 void ble_probe_error_service_on_ble_evt(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
@@ -97,7 +97,6 @@ void probe_error_char_add(ble_pes_t * p_pes)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROBE_ERROR_BASE_UUID;
     char_uuid.uuid      = PROBE_ERROR_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
 //    sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);

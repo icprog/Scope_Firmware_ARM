@@ -13,7 +13,6 @@ void profile_char_add(ble_ps_t * p_ps)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid      = PROFILE_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, PROFILE_CHAR_UUID); //TODO might be redundant witht he previous line
 
@@ -66,7 +65,6 @@ void profile_ids_char_add(ble_ps_t * p_ps)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid      = PROFILE_IDS_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, PROFILE_IDS_CHAR_UUID); //TODO might be redundant witht he previous line
 
@@ -118,7 +116,6 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid      = TRANSFER_IDS_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, TRANSFER_IDS_CHAR_UUID); //TODO might be redundant witht he previous line
 
@@ -170,7 +167,6 @@ void delete_ids_char_add(ble_ps_t * p_ps)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid      = DELETE_IDS_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, DELETE_IDS_CHAR_UUID); //TODO might be redundant witht he previous line
 
@@ -222,7 +218,6 @@ void profile_error_char_add(ble_ps_t * p_ps)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t       base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid      = PROFILE_ERROR_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, PROFILE_ERROR_CHAR_UUID); //TODO might be redundant witht he previous line
 

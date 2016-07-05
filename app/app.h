@@ -57,8 +57,12 @@
 typedef enum
 {
 	/* Application's state machine's initial state. */
-		APP_STATE_INIT = 0,
+	APP_STATE_INIT = 0,
     APP_STATE_POLLING = 1,
+    APP_STATE_FORCE_CAL_INIT,
+    APP_STATE_FORCE_CAL_DATA,
+    APP_STATE_OPTICAL_CAL_DATA,
+    APP_STATE_FORCE_CAL_RDY,
 
 } APP_STATES;
 
@@ -83,7 +87,7 @@ typedef struct
     APP_STATES state;
 
 } APP_DATA;
-
+extern APP_DATA appData;
 	
 // *****************************************************************************
 // *****************************************************************************

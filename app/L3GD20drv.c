@@ -96,13 +96,13 @@ L3GD_DATA getL3GDdata(void)
     
     address = L3GD_OUT_X_L | L3GD_READ_BIT | L3GD_CONTINUOUS_BIT; 
 	
-	  NRF_GPIO->OUTCLR = (1<<SPI_CS_GYRO);
-		SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
-	  NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
-	
-		data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
-	  data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
-	  data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
+	 NRF_GPIO->OUTCLR = (1<<SPI_CS_GYRO);
+	 SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
+	 NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
+
+    data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
+    data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
+    data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
     
     return(data);
 }
