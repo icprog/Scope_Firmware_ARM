@@ -76,6 +76,7 @@ pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)force_
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
  * Then handle the subsequent data packets in the spis_event_handler.
  */
+static const uint8_t blah[] = {0xBA, 0xAB, 0x55, 0x33, 0x5A, 0xA5};
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 {
     //TODO while(spis_tx_transfer_length) 
@@ -87,16 +88,18 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         packet.code = pa_pack.code;
         spis_tx_transfer_length = pa_pack.data_size; //TODO make this a regular variable
         packet.length = pa_pack.data_size;
-        
+        if((pa_pack.code) == PA_FORCE_CAL_RDY)
+        {
+            memcpy(&packet, blah, 6);
+        }
         //TODO: something weird with timing here. need the print statement to get correct values
-        
         SEGGER_RTT_printf(0, "sending:");
         for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
         {
             SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
         }
-       
-        if (nrf_drv_spis_buffers_set(&spis, (uint8_t *)&packet, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        SEGGER_RTT_printf(0, "size of header = %d\n", PIC_ARM_HEADER_SIZE);
+        if (nrf_drv_spis_buffers_set(&spis, blah, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }
@@ -134,8 +137,8 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
-                send_data_to_PIC(vib_cal_rdy_pack);
-                break;
+               appData.state = APP_STATE_FORCE_CAL_INIT;
+               break;
             }
             case PA_FORCE_CAL_DATA:
             {
@@ -179,7 +182,6 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             appData.state = next_state;
         }
     }
-
     else
     {
         return 1; //ERROR

@@ -73,6 +73,8 @@ typedef enum
     PA_FORCE_CAL_INIT,
     
     /******************  calibration codes  ****************/
+    PA_CAL_START, //dummy code used to amrk where cal codes start
+            
     PA_FORCE_CAL_RDY, //ARM -> PIC
     PA_FORCE_CAL_WEIGHTS, //ARM -> PIC
     PA_FORCE_CAL_DATA, //PIC -> ARM
@@ -84,7 +86,7 @@ typedef enum
     PA_VIB_CAL_RDY,  //ARM -> PIC
     PA_VIB_CAL_PASS, //ARM -> PIC
     PA_VIB_CAL_FAIL,  //ARM -> PIC
-    
+            
     PA_CAL_COMPLETE, //PIC -> ARM
     
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
@@ -101,6 +103,7 @@ typedef struct
 extern pic_arm_pack_t test_code_pack;
 extern pic_arm_pack_t force_cal_init_pack;
 extern pic_arm_pack_t force_cal_data_pack;
+extern pic_arm_pack_t force_cal_rdy_pack;
 
 typedef struct
 {

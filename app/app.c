@@ -169,6 +169,12 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
+        case APP_STATE_FORCE_CAL_INIT:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_RDY");
+            send_data_to_PIC(force_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+        }
         default:
         {
             break;
