@@ -746,6 +746,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	//ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
+    cal_optical_on_ble_evt(&m_optical, p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
 }

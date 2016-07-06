@@ -20,6 +20,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
+#include "SEGGER_RTT.h"
 
 
 #define INVALID_BATTERY_LEVEL 255
@@ -62,12 +63,9 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
     if (p_optical->is_notification_supported)
     {
         ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-
-        if (
-            (p_evt_write->handle == p_optical->cal_result_handles.cccd_handle)
-            &&
-            (p_evt_write->len == 2)
-           )
+        SEGGER_RTT_printf(0, "made a write struct\n");
+        
+        if ((p_evt_write->handle == p_optical->cal_result_handles.cccd_handle) && (p_evt_write->len == 2))
         {
             // CCCD written, call application event handler
             if (p_optical->evt_handler != NULL)
@@ -119,7 +117,7 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
     {
         return;
     }
-    
+    SEGGER_RTT_printf(0, "optical cal event handler \n");
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
@@ -131,6 +129,7 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
             break;
 
         case BLE_GATTS_EVT_WRITE:
+            SEGGER_RTT_printf(0, "optical on write\n");
             on_write(p_optical, p_ble_evt);
             break;
 
@@ -508,14 +507,15 @@ static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_i
         // According to OPTICAL_SPEC_V10, the read operation on cccd should be possible without
         // authentication.
         BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-        cccd_md.write_perm = p_optical_init->cal_result_char_attr_md.cccd_write_perm;
+        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+        //cccd_md.write_perm =  p_optical_init->cal_result_char_attr_md.cccd_write_perm;
         cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
     }
 
     memset(&char_md, 0, sizeof(char_md));
 
     char_md.char_props.read   = 0;
-		char_md.char_props.write   = 1;
+    char_md.char_props.write   = 1;
     char_md.char_props.notify = 0;//(p_optical->is_notification_supported) ? 1 : 0;
     char_md.p_char_user_desc  = NULL;
     char_md.p_char_pf         = NULL;
@@ -527,8 +527,11 @@ static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_i
 
     memset(&attr_md, 0, sizeof(attr_md));
 
-    attr_md.read_perm  = p_optical_init->cal_result_char_attr_md.read_perm;
-    attr_md.write_perm = p_optical_init->cal_result_char_attr_md.write_perm;
+    //attr_md.read_perm  = p_optical_init->cal_result_char_attr_md.read_perm;
+    //attr_md.write_perm = p_optical_init->cal_result_char_attr_md.write_perm;
+    /****Set read/write security levels to our characteristic ***/
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
     attr_md.vloc       = BLE_GATTS_VLOC_STACK;
     attr_md.rd_auth    = 0;
     attr_md.wr_auth    = 1;

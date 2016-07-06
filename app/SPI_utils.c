@@ -69,6 +69,7 @@ uint16_t force_cal_weights[5] = {0, 1, 3, 9, 18}; //in newtons
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_rdy_pack = {PA_FORCE_CAL_RDY, dummy_buf, 0};
+pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)force_cal_weights, sizeof(force_cal_weights)};
 
 /*
@@ -133,6 +134,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
+                send_data_to_PIC(vib_cal_rdy_pack);
                 break;
             }
             case PA_FORCE_CAL_DATA:
