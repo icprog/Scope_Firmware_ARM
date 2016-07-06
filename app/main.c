@@ -483,16 +483,16 @@ static void services_init(void)
 //   ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
-//    cal_optical_init_t optical_init;
-//    memset(&optical_init, 0, sizeof(optical_init));
-//    err_code = cal_optical_init(&m_optical, &optical_init);
-//    APP_ERROR_CHECK(err_code);
+    cal_optical_init_t optical_init;
+    memset(&optical_init, 0, sizeof(optical_init));
+    err_code = cal_optical_init(&m_optical, &optical_init);
+    APP_ERROR_CHECK(err_code);
 
     // Initialize Force Cal.
-//    cal_force_init_t force_init;
-//    memset(&force_init, 0, sizeof(force_init));
-//    err_code = cal_force_init(&m_force, &force_init);
-//    APP_ERROR_CHECK(err_code);
+    cal_force_init_t force_init;
+    memset(&force_init, 0, sizeof(force_init));
+    err_code = cal_force_init(&m_force, &force_init);
+    APP_ERROR_CHECK(err_code);
 
 }
 
@@ -502,40 +502,40 @@ static void services_init(void)
 // */
 static void sensor_simulator_init(void)
 {
-    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-    m_battery_sim_cfg.start_at_max = true;
+//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
+//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
+//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
+//    m_battery_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
-	
-		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
-    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
-    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
-    m_slope_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+//	
+//		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
+//    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
+//    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
+//    m_slope_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
-	
-		m_status_sim_cfg.min          = MIN_status_LEVEL;
-    m_status_sim_cfg.max          = MAX_status_LEVEL;
-    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
-    m_status_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
+//	
+//		m_status_sim_cfg.min          = MIN_status_LEVEL;
+//    m_status_sim_cfg.max          = MAX_status_LEVEL;
+//    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
+//    m_status_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
+//    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
 
-    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-    m_heart_rate_sim_cfg.start_at_max = false;
+//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
+//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
+//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
+//    m_heart_rate_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
-    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-    m_rr_interval_sim_cfg.start_at_max = false;
+//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
+//    m_rr_interval_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
+//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
 }
 
 
