@@ -514,12 +514,13 @@ static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_i
 
     memset(&char_md, 0, sizeof(char_md));
 
-    char_md.char_props.read   = 1;
-    char_md.char_props.notify = (p_optical->is_notification_supported) ? 1 : 0;
+    char_md.char_props.read   = 0;
+		char_md.char_props.write   = 1;
+    char_md.char_props.notify = 0;//(p_optical->is_notification_supported) ? 1 : 0;
     char_md.p_char_user_desc  = NULL;
     char_md.p_char_pf         = NULL;
     char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = (p_optical->is_notification_supported) ? &cccd_md : NULL;
+    char_md.p_cccd_md         = NULL;//(p_optical->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
 
     BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR);
@@ -530,7 +531,7 @@ static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_i
     attr_md.write_perm = p_optical_init->cal_result_char_attr_md.write_perm;
     attr_md.vloc       = BLE_GATTS_VLOC_STACK;
     attr_md.rd_auth    = 0;
-    attr_md.wr_auth    = 0;
+    attr_md.wr_auth    = 1;
     attr_md.vlen       = 0;
 
     initial_cal_result = p_optical_init->initial_batt_level;

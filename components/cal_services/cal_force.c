@@ -208,13 +208,13 @@ static uint32_t cal_points_char_add(cal_force_t * p_force, const cal_force_init_
 
     memset(&char_md, 0, sizeof(char_md));
 
-    char_md.char_props.read   = 0;
-		char_md.char_props.write  = 1;
-    char_md.char_props.notify = 0;//(p_force->is_notification_supported) ? 1 : 0;
+    char_md.char_props.read   = 1;
+		char_md.char_props.write  = 0;
+    char_md.char_props.notify = (p_force->is_notification_supported) ? 1 : 0;
     char_md.p_char_user_desc  = NULL;
     char_md.p_char_pf         = NULL;
     char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = NULL;//(p_force->is_notification_supported) ? &cccd_md : NULL;
+    char_md.p_cccd_md         = (p_force->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
 
     BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_CHAR_UUID_CAL_POINTS);
@@ -299,8 +299,8 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     
 
     // Here the sec level for the Battery Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&force_init->force_char_cccd_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&force_init->force_char_cccd_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&force_init->force_char_cccd_attr_md.cccd_write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&force_init->force_char_cccd_attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&force_init->force_char_cccd_attr_md.write_perm);
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&force_init->force_report_read_perm);
