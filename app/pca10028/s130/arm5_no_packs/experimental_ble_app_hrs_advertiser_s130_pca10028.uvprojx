@@ -1079,6 +1079,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\ble\ble_services\ble_status\ble_status.c</FilePath>
             </File>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3175,6 +3185,16 @@
               <FileName>ble_status.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\ble\ble_services\ble_status\ble_status.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
             </File>
           </Files>
         </Group>

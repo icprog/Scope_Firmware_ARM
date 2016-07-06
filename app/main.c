@@ -178,12 +178,13 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-		{SCOPE_UUID_SLOPE,                BLE_UUID_TYPE_BLE},
+	//{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
-	{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
-	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
-    {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE}
+	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
+	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+    //{PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
+    //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
 
@@ -454,7 +455,7 @@ static void services_init(void)
 		ble_bas_init_t bas_init;
 		memset(&bas_init, 0, sizeof(bas_init));
 		err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
+        APP_ERROR_CHECK(err_code);
 	
 	
     // Initialize Slope Service.
@@ -465,9 +466,9 @@ static void services_init(void)
 		
 		// Initialize Device Information Service.
 		ble_dis_init_t dis_init;
-    memset(&dis_init, 0, sizeof(dis_init));
-    err_code = ble_dis_init(&dis_init);
-    APP_ERROR_CHECK(err_code);
+        memset(&dis_init, 0, sizeof(dis_init));
+        err_code = ble_dis_init(&dis_init);
+        APP_ERROR_CHECK(err_code);
 		
 //		// Initialize Device Status Service.
 //		ble_status_init_t status_init;
@@ -481,17 +482,17 @@ static void services_init(void)
 //    //initialize profile service
 //   ble_profile_service_init(&m_ps);
 
-		// Initialize Optical Cal.
-		cal_optical_init_t optical_init;
-    memset(&optical_init, 0, sizeof(optical_init));
-    err_code = cal_optical_init(&m_optical, &optical_init);
-    APP_ERROR_CHECK(err_code);
+    // Initialize Optical Cal.
+//    cal_optical_init_t optical_init;
+//    memset(&optical_init, 0, sizeof(optical_init));
+//    err_code = cal_optical_init(&m_optical, &optical_init);
+//    APP_ERROR_CHECK(err_code);
 
-		// Initialize Force Cal.
-		cal_force_init_t force_init;
-    memset(&force_init, 0, sizeof(force_init));
-    err_code = cal_force_init(&m_force, &force_init);
-    APP_ERROR_CHECK(err_code);
+    // Initialize Force Cal.
+//    cal_force_init_t force_init;
+//    memset(&force_init, 0, sizeof(force_init));
+//    err_code = cal_force_init(&m_force, &force_init);
+//    APP_ERROR_CHECK(err_code);
 
 }
 
@@ -941,6 +942,7 @@ static void power_manage(void)
 {
     uint32_t err_code = sd_app_evt_wait();
     APP_ERROR_CHECK(err_code);
+    
 }
 
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
@@ -1016,12 +1018,12 @@ int main(void)
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
     SEGGER_RTT_printf(0, "HELLO WORLD!\n");
 
-	APP_Initialize();
+	//APP_Initialize();
 
     while(true)
     {
         
-        APP_Tasks();
+        //APP_Tasks();
         power_manage();
 
         
