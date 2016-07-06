@@ -1025,6 +1025,7 @@ int main(void)
         
         APP_Tasks();
         power_manage();
+
         
         /********   Dave's test:   ********/
 //		test_data_303 = getLSM303data();
