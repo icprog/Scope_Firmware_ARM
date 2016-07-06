@@ -135,6 +135,7 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
 void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt);
 uint32_t cal_weights_update(cal_force_t * p_force, uint8_t weight);
 uint32_t cal_points_update(cal_force_t * p_force, uint8_t weight);
+
 #endif // cal_force_H__
 
 /** @} */
