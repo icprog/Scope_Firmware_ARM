@@ -184,7 +184,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     //{PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
+    {BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
 
@@ -483,10 +483,10 @@ static void services_init(void)
 //   ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
-//    cal_optical_init_t optical_init;
-//    memset(&optical_init, 0, sizeof(optical_init));
-//    err_code = cal_optical_init(&m_optical, &optical_init);
-//    APP_ERROR_CHECK(err_code);
+    cal_optical_init_t optical_init;
+    memset(&optical_init, 0, sizeof(optical_init));
+    err_code = cal_optical_init(&m_optical, &optical_init);
+    APP_ERROR_CHECK(err_code);
 
     // Initialize Force Cal.
 //    cal_force_init_t force_init;
@@ -741,9 +741,9 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	//ble_slope_on_ble_evt(&m_slope, p_ble_evt);
 	ble_status_on_ble_evt(&m_status, p_ble_evt);
-	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+	//ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
@@ -1008,7 +1008,7 @@ int main(void)
     gap_params_init();
     advertising_init();
     services_init();
-    sensor_simulator_init();
+    //sensor_simulator_init();
     conn_params_init();
 	
     // Start execution.
@@ -1018,12 +1018,12 @@ int main(void)
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
     SEGGER_RTT_printf(0, "HELLO WORLD!\n");
 
-	//APP_Initialize();
+	APP_Initialize();
 
     while(true)
     {
         
-        //APP_Tasks();
+        APP_Tasks();
         power_manage();
         
         /********   Dave's test:   ********/
