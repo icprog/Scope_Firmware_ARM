@@ -15,8 +15,10 @@
 typedef struct{
     uint8_t force_status;
     uint16_t force_data[5];
+    uint16_t force_weights[5];
     uint8_t optical_status;
     float optical_data;
+    float optical_length;
     uint8_t hall_status;
     uint8_t vib_status;
 }cal_data_t;

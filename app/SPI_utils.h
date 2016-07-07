@@ -104,6 +104,7 @@ extern pic_arm_pack_t test_code_pack;
 extern pic_arm_pack_t force_cal_init_pack;
 extern pic_arm_pack_t force_cal_data_pack;
 extern pic_arm_pack_t force_cal_rdy_pack;
+extern pic_arm_pack_t vib_cal_rdy_pack;
 
 typedef struct
 {

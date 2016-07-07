@@ -63,20 +63,17 @@ bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
-uint16_t force_cal_consts[5]; //TESTING
-uint16_t force_cal_weights[5] = {0, 1, 3, 9, 18}; //in newtons
 
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_rdy_pack = {PA_FORCE_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
-pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)force_cal_weights, sizeof(force_cal_weights)};
+pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)(cal_data.force_weights), sizeof(cal_data.force_weights)};
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
  * Then handle the subsequent data packets in the spis_event_handler.
  */
-static const uint8_t blah[] = {0xBA, 0xAB, 0x55, 0x33, 0x5A, 0xA5};
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 {
     //TODO while(spis_tx_transfer_length) 
@@ -88,18 +85,17 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         packet.code = pa_pack.code;
         spis_tx_transfer_length = pa_pack.data_size; //TODO make this a regular variable
         packet.length = pa_pack.data_size;
-        if((pa_pack.code) == PA_FORCE_CAL_RDY)
-        {
-            memcpy(&packet, blah, 6);
-        }
+
+        
+        memcpy(m_tx_buf_s, &packet, PIC_ARM_HEADER_SIZE); //TODO: look into why this memcoy is necessary as well.
         //TODO: something weird with timing here. need the print statement to get correct values
         SEGGER_RTT_printf(0, "sending:");
         for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
         {
             SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
         }
-        SEGGER_RTT_printf(0, "size of header = %d\n", PIC_ARM_HEADER_SIZE);
-        if (nrf_drv_spis_buffers_set(&spis, blah, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        
+        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }
@@ -137,17 +133,19 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
-               appData.state = APP_STATE_FORCE_CAL_INIT;
+               next_state = APP_STATE_VIB_CAL_RDY;
                break;
             }
             case PA_FORCE_CAL_DATA:
             {
+                next_state = APP_STATE_FORCE_CAL_DATA;
                 rx_data_ptr = cal_data.force_data;
                 break;
             }
             case PA_OPTICAL_CAL_DATA:
             {
                 //set up a place to store data and change state
+                next_state = APP_STATE_OPTICAL_CAL_DATA;
                 rx_data_ptr = &(cal_data.optical_data);
                 break;
             }
