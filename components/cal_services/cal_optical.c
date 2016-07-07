@@ -20,7 +20,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
-
+#include "SEGGER_RTT.h"
 
 #define INVALID_BATTERY_LEVEL 255
 
@@ -59,9 +59,23 @@ static void on_disconnect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 //		ble_gatts_char_handles_t      cal_test_vars_handles;          /**< Handles related to the Battery Level characteristic. */
 static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
+	
+	
+		SEGGER_RTT_printf(0, "optical write fxn\n");
+	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+	
+	if ((p_evt_write->handle == p_optical->cal_test_vars_handles.value_handle) &&
+        (p_evt_write->len <= 2))// &&(p_optical->optical_write_handler != NULL))
+    {
+			SEGGER_RTT_printf(0, "optical data write handler data[0] \n");
+			SEGGER_RTT_printf(0,"input: %d ",p_evt_write->data[0]);
+        //p_optical->optical_write_handler(p_optical, p_evt_write->data[0]); //null pointer crashes processor...
+			
+			
+    }
     if (p_optical->is_notification_supported)
     {
-        ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+        //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
         if (
             (p_evt_write->handle == p_optical->cal_result_handles.cccd_handle)
@@ -115,27 +129,33 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 
 void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
+		SEGGER_RTT_WriteString(0, "CAL OPTICAL BLE \n");
     if (p_optical == NULL || p_ble_evt == NULL)
     {
+				SEGGER_RTT_WriteString(0, "optical NULL \n");
         return;
     }
     
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
+					SEGGER_RTT_WriteString(0, "optical conn \n");
             on_connect(p_optical, p_ble_evt);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
+					SEGGER_RTT_WriteString(0, "optical discon\n");
             on_disconnect(p_optical, p_ble_evt);
             break;
 
         case BLE_GATTS_EVT_WRITE:
+					SEGGER_RTT_WriteString(0, "optical write \n");
             on_write(p_optical, p_ble_evt);
             break;
 
         default:
             // No implementation needed.
+				SEGGER_RTT_WriteString(0, "optical default \n");
             break;
     }
 }
@@ -488,112 +508,168 @@ static uint32_t cal_optical_data_add(cal_optical_t * p_optical, const cal_optica
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_init_t * p_optical_init)
+//static uint32_t cal_test_vars_add(cal_optical_t * p_optical, const cal_optical_init_t * p_optical_init)
+//{
+//    uint32_t            err_code;
+//    ble_gatts_char_md_t char_md;
+//    ble_gatts_attr_md_t cccd_md;
+//    ble_gatts_attr_t    attr_char_value;
+//    ble_uuid_t          ble_uuid;
+//    ble_gatts_attr_md_t attr_md;
+//    uint8_t             initial_cal_result;
+//    uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
+//    uint8_t             init_len;
+
+//    // Add Battery Level characteristic
+////    if (p_optical->is_notification_supported)
+////    {
+////        memset(&cccd_md, 0, sizeof(cccd_md));
+
+////        // According to OPTICAL_SPEC_V10, the read operation on cccd should be possible without
+////        // authentication.
+////        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+////        cccd_md.write_perm = p_optical_init->cal_result_char_attr_md.cccd_write_perm;
+////        cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
+////    }
+
+//    memset(&char_md, 0, sizeof(char_md));
+
+//    char_md.char_props.read   = 0;
+//		char_md.char_props.write   = 1;
+//    char_md.char_props.notify = 0;//(p_optical->is_notification_supported) ? 1 : 0;
+//    char_md.p_char_user_desc  = NULL;
+//    char_md.p_char_pf         = NULL;
+//    char_md.p_user_desc_md    = NULL;
+//    char_md.p_cccd_md         = NULL;//(p_optical->is_notification_supported) ? &cccd_md : NULL;
+//    char_md.p_sccd_md         = NULL;
+
+//    BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR);
+
+//    memset(&attr_md, 0, sizeof(attr_md));
+
+//    attr_md.read_perm  = p_optical_init->cal_result_char_attr_md.read_perm;
+//    attr_md.write_perm = p_optical_init->cal_result_char_attr_md.write_perm;
+//    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
+//    attr_md.rd_auth    = 0;
+//    attr_md.wr_auth    = 1;
+//    attr_md.vlen       = 0;
+
+//		BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
+
+//    initial_cal_result = p_optical_init->initial_batt_level;
+
+//    memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+//    attr_char_value.p_uuid    = &ble_uuid;
+//    attr_char_value.p_attr_md = &attr_md;
+//    attr_char_value.init_len  = sizeof(uint8_t);
+//    attr_char_value.init_offs = 0;
+//    attr_char_value.max_len   = sizeof(uint8_t);
+//    attr_char_value.p_value   = &initial_cal_result;
+
+//    err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
+//                                               &attr_char_value,
+//                                               &p_optical->cal_test_vars_handles);
+//    if (err_code != NRF_SUCCESS)
+//    {
+//        return err_code;
+//    }
+
+////    if (p_optical_init->p_report_ref != NULL)
+////    {
+////        // Add Report Reference descriptor
+////        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+
+////        memset(&attr_md, 0, sizeof(attr_md));
+
+////        attr_md.read_perm = p_optical_init->cal_result_report_read_perm;
+////        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
+
+////        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
+////        attr_md.rd_auth = 0;
+////        attr_md.wr_auth = 0;
+////        attr_md.vlen    = 0;
+////        
+////        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_optical_init->p_report_ref);
+////        
+////        memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+////        attr_char_value.p_uuid    = &ble_uuid;
+////        attr_char_value.p_attr_md = &attr_md;
+////        attr_char_value.init_len  = init_len;
+////        attr_char_value.init_offs = 0;
+////        attr_char_value.max_len   = attr_char_value.init_len;
+////        attr_char_value.p_value   = encoded_report_ref;
+
+////        err_code = sd_ble_gatts_descriptor_add(p_optical->cal_result_handles.value_handle,
+////                                               &attr_char_value,
+////                                               &p_optical->report_ref_handle);
+////        if (err_code != NRF_SUCCESS)
+////        {
+////            return err_code;
+////        }
+////    }
+////    else
+////    {
+////        p_optical->report_ref_handle = BLE_GATT_HANDLE_INVALID;
+////    }
+
+//    return NRF_SUCCESS;
+//}
+
+
+//static uint32_t cal_test_vars_char_add(cal_optical_t * p_optical, const cal_optical_init_t * p_optical_init)
+void cal_test_vars_char_add(cal_optical_t * p_optical)
 {
-    uint32_t            err_code;
+    
+    uint32_t err_code; // Variable to hold return codes from library and softdevice functions
+    
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    char_uuid.uuid      = BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR;
+    BLE_UUID_BLE_ASSIGN(char_uuid, BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR); //TODO might be redundant witht he previous line
+
+    /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
-    ble_gatts_attr_md_t cccd_md;
-    ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
-    ble_gatts_attr_md_t attr_md;
-    uint8_t             initial_cal_result;
-    uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
-    uint8_t             init_len;
-
-    // Add Battery Level characteristic
-    if (p_optical->is_notification_supported)
-    {
-        memset(&cccd_md, 0, sizeof(cccd_md));
-
-        // According to OPTICAL_SPEC_V10, the read operation on cccd should be possible without
-        // authentication.
-        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-        cccd_md.write_perm = p_optical_init->cal_result_char_attr_md.cccd_write_perm;
-        cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
-    }
-
     memset(&char_md, 0, sizeof(char_md));
-
-    char_md.char_props.read   = 0;
-		char_md.char_props.write   = 1;
-    char_md.char_props.notify = 0;//(p_optical->is_notification_supported) ? 1 : 0;
-    char_md.p_char_user_desc  = NULL;
-    char_md.p_char_pf         = NULL;
-    char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = NULL;//(p_optical->is_notification_supported) ? &cccd_md : NULL;
-    char_md.p_sccd_md         = NULL;
-
-    BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR);
-
-    memset(&attr_md, 0, sizeof(attr_md));
-
-    attr_md.read_perm  = p_optical_init->cal_result_char_attr_md.read_perm;
-    attr_md.write_perm = p_optical_init->cal_result_char_attr_md.write_perm;
-    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
-    attr_md.rd_auth    = 0;
-    attr_md.wr_auth    = 1;
-    attr_md.vlen       = 0;
-
-    initial_cal_result = p_optical_init->initial_batt_level;
-
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-    attr_char_value.p_uuid    = &ble_uuid;
-    attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(uint8_t);
-    attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(uint8_t);
-    attr_char_value.p_value   = &initial_cal_result;
-
-    err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
-                                               &attr_char_value,
-                                               &p_optical->cal_test_vars_handles);
-    if (err_code != NRF_SUCCESS)
-    {
-        return err_code;
-    }
-
-    if (p_optical_init->p_report_ref != NULL)
-    {
-        // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
-
-        memset(&attr_md, 0, sizeof(attr_md));
-
-        attr_md.read_perm = p_optical_init->cal_result_report_read_perm;
-        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
-
-        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
-        attr_md.rd_auth = 0;
-        attr_md.wr_auth = 0;
-        attr_md.vlen    = 0;
-        
-        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_optical_init->p_report_ref);
-        
-        memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-        attr_char_value.p_uuid    = &ble_uuid;
-        attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
-        attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
-        attr_char_value.p_value   = encoded_report_ref;
-
-        err_code = sd_ble_gatts_descriptor_add(p_optical->cal_result_handles.value_handle,
-                                               &attr_char_value,
-                                               &p_optical->report_ref_handle);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-    }
-    else
-    {
-        p_optical->report_ref_handle = BLE_GATT_HANDLE_INVALID;
-    }
-
-    return NRF_SUCCESS;
+    char_md.char_props.write = 1;
+    //char_md.char_props.read = 1;
+    
+    /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
+//    ble_gatts_attr_md_t cccd_md;
+//    memset(&cccd_md, 0, sizeof(cccd_md));
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+//    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+//    char_md.p_cccd_md           = &cccd_md;
+//    char_md.char_props.notify   = 1;
+    
+    /*** Configure the attribute metadata ***/
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md)); 
+    attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
+    
+    /****Set read/write security levels to our characteristic ***/
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
+    
+    /**** Configure the characteristic value attribute  ****/
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));     
+    attr_char_value.p_uuid      = &char_uuid;
+    attr_char_value.p_attr_md   = &attr_md;
+    
+    /***  Set characteristic length in number of bytes  ****/
+    attr_char_value.max_len     = 1;
+    attr_char_value.init_len    = 1;
+    uint8_t value               = 0x00;
+    attr_char_value.p_value     = &value;
+    
+    /**** add it too the softdevice  *****/
+    err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md, &attr_char_value, &p_optical->cal_test_vars_handles);
+    //APP_ERROR_CHECK(err_code);
 }
+
 
 
 
@@ -644,11 +720,13 @@ uint32_t cal_optical_init(cal_optical_t * p_optical, const cal_optical_init_t * 
 
     // Add battery level characteristic
 		
-    err_code = cal_test_vars_add(p_optical, p_optical_init);
-		if (err_code != NRF_SUCCESS)
-    {
-        return err_code;
-    }
+//    err_code = cal_test_vars_add(p_optical, p_optical_init);
+//		if (err_code != NRF_SUCCESS)
+//    {
+//        return err_code;
+//    }
+		cal_test_vars_char_add(p_optical);
+		
 		err_code = cal_optical_data_add(p_optical, p_optical_init);
 		if (err_code != NRF_SUCCESS)
     {
@@ -666,6 +744,9 @@ uint32_t cal_optical_init(cal_optical_t * p_optical, const cal_optical_init_t * 
     }
 		return err_code;
 }
+
+
+
 
 
 uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result)

@@ -442,6 +442,10 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+//void force_write_handler(cal_force_t * p_force, uint8_t data_in)
+//{
+//		SEGGER_RTT_printf(0,"input: %d",data_in);
+//}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -738,16 +742,18 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	SEGGER_RTT_WriteString(0, "ble dispatch \n");
-    dm_ble_evt_handler(p_ble_evt);
+  dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
 	ble_status_on_ble_evt(&m_status, p_ble_evt);
 	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-    ble_conn_params_on_ble_evt(p_ble_evt);
+  ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
-    on_ble_evt(p_ble_evt);
-    ble_advertising_on_ble_evt(p_ble_evt);
+	cal_force_on_ble_evt(&m_force,p_ble_evt);
+	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+  on_ble_evt(p_ble_evt);
+  ble_advertising_on_ble_evt(p_ble_evt);
 }
 
 
