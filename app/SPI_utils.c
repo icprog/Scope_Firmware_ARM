@@ -66,9 +66,9 @@ void * rx_data_ptr; //where to put the data received from the PIC
 
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
-pic_arm_pack_t force_cal_rdy_pack = {PA_FORCE_CAL_RDY, dummy_buf, 0};
+pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_weight), 1};
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
-pic_arm_pack_t force_cal_weights_pack = {PA_FORCE_CAL_WEIGHTS, (uint8_t *)(cal_data.force_weights), sizeof(cal_data.force_weights)};
+pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, &(cal_data.optical_length), 1};
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 

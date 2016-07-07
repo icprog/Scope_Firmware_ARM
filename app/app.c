@@ -177,10 +177,17 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_FORCE_CAL_RDY:
+        case APP_STATE_FORCE_CAL_WEIGHT:
         {
-            SEGGER_RTT_printf(0, "FORCE_CAL_RDY\n");
-            send_data_to_PIC(force_cal_rdy_pack);
+            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            send_data_to_PIC(force_cal_weight_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_LENGTH:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+            send_data_to_PIC(optical_cal_length_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

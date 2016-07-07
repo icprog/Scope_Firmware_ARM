@@ -75,17 +75,15 @@ typedef enum
     /******************  calibration codes  ****************/
     PA_CAL_START, //dummy code used to amrk where cal codes start
             
-    PA_FORCE_CAL_RDY, //ARM -> PIC
-    PA_FORCE_CAL_WEIGHTS, //ARM -> PIC
+    PA_FORCE_CAL_WEIGHT, //ARM -> PIC
     PA_FORCE_CAL_DATA, //PIC -> ARM
     
-    PA_OPTICAL_CAL_RDY, //ARM -> PIC
     PA_OPTICAL_CAL_LENGTH, //ARM -> PIC
     PA_OPTICAL_CAL_DATA, //PIC -> ARM
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
-    PA_VIB_CAL_PASS, //ARM -> PIC
-    PA_VIB_CAL_FAIL,  //ARM -> PIC
+    //PA_VIB_CAL_PASS, //ARM -> PIC
+    //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
     
@@ -103,8 +101,9 @@ typedef struct
 extern pic_arm_pack_t test_code_pack;
 extern pic_arm_pack_t force_cal_init_pack;
 extern pic_arm_pack_t force_cal_data_pack;
-extern pic_arm_pack_t force_cal_rdy_pack;
+extern pic_arm_pack_t force_cal_weight_pack;
 extern pic_arm_pack_t vib_cal_rdy_pack;
+extern pic_arm_pack_t optical_cal_length_pack;
 
 typedef struct
 {
