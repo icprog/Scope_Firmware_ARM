@@ -24,7 +24,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
-
+#include "SEGGER_RTT.h"
 
 
 #define cal_force_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -72,113 +72,222 @@ static ble_gatts_char_handles_t cal_result_handles;
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-static uint32_t cal_weights_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
+//static uint32_t cal_weights_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
+//{
+//    uint32_t            err_code;
+//    ble_gatts_char_md_t char_md;
+//    ble_gatts_attr_md_t cccd_md;
+//    ble_gatts_attr_t    attr_char_value;
+//    ble_uuid_t          ble_uuid;
+//    ble_gatts_attr_md_t attr_md;
+//    uint8_t             initial_cal_result = 3;
+//    uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
+//    uint8_t             init_len;
+
+//    // Add Battery Level characteristic
+////    if (p_force->is_notification_supported)
+////    {
+////        memset(&cccd_md, 0, sizeof(cccd_md));
+
+////        // According to force_SPEC_V10, the read operation on cccd should be possible without
+////        // authentication.
+////        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+////				BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+////        cccd_md.write_perm = p_force_init->force_char_cccd_attr_md.cccd_write_perm;
+////        cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
+////    }
+//		
+//		BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
+//		
+//    memset(&char_md, 0, sizeof(char_md));
+
+//    char_md.char_props.read   = 0;
+//		char_md.char_props.write  = 1;
+//    char_md.char_props.notify = 0;//(p_force->is_notification_supported) ? 1 : 0;
+//    char_md.p_char_user_desc  = NULL;
+//    char_md.p_char_pf         = NULL;
+//    char_md.p_user_desc_md    = NULL;
+//    char_md.p_cccd_md         = NULL;//(p_force->is_notification_supported) ? &cccd_md : NULL;
+//    char_md.p_sccd_md         = NULL;
+
+//    BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_CHAR_UUID_WEIGHTS);
+
+//    memset(&attr_md, 0, sizeof(attr_md));
+
+//    attr_md.read_perm  = p_force_init->force_char_cccd_attr_md.read_perm;
+//    attr_md.write_perm = p_force_init->force_char_cccd_attr_md.write_perm;
+//    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
+//    attr_md.rd_auth    = 1;
+//    attr_md.wr_auth    = 1;
+//    attr_md.vlen       = 0;
+
+//    initial_cal_result = p_force_init->initial_batt_level;
+
+//    memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+//    attr_char_value.p_uuid    = &ble_uuid;
+//    attr_char_value.p_attr_md = &attr_md;
+//    attr_char_value.init_len  = sizeof(uint8_t);
+//    attr_char_value.init_offs = 0;
+//    attr_char_value.max_len   = sizeof(uint8_t);
+//    attr_char_value.p_value   = &initial_cal_result;
+
+//    err_code = sd_ble_gatts_characteristic_add(p_force->service_handle, &char_md,
+//                                               &attr_char_value,
+//                                               &p_force->force_weight_handles);
+//    if (err_code != NRF_SUCCESS)
+//    {
+//        return err_code;
+//    }
+
+//    if (p_force_init->p_report_ref != NULL)
+//    {
+//        // Add Report Reference descriptor
+//        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+
+//        memset(&attr_md, 0, sizeof(attr_md));
+
+//        attr_md.read_perm = p_force_init->force_report_read_perm;
+//        //BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
+
+//        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
+//        attr_md.rd_auth = 0;
+//        attr_md.wr_auth = 1;
+//        attr_md.vlen    = 0;
+//        
+//        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_force_init->p_report_ref);
+//        
+//        memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+//        attr_char_value.p_uuid    = &ble_uuid;
+//        attr_char_value.p_attr_md = &attr_md;
+//        attr_char_value.init_len  = init_len;
+//        attr_char_value.init_offs = 0;
+//        attr_char_value.max_len   = attr_char_value.init_len;
+//        attr_char_value.p_value   = encoded_report_ref;
+
+//        err_code = sd_ble_gatts_descriptor_add(p_force->force_weight_handles.value_handle,
+//                                               &attr_char_value,
+//                                               &p_force->report_ref_handle);
+//        if (err_code != NRF_SUCCESS)
+//        {
+//            return err_code;
+//        }
+//    }
+//    else
+//    {
+//        p_force->report_ref_handle = BLE_GATT_HANDLE_INVALID;
+//    }
+
+//    return err_code;
+//}
+
+
+//static uint32_t cal_weights_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
+void cal_weights_char_add(cal_force_t * p_force)
 {
-    uint32_t            err_code;
+    
+    uint32_t err_code; // Variable to hold return codes from library and softdevice functions
+    
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    char_uuid.uuid      = SCOPE_CHAR_UUID_WEIGHTS;
+    BLE_UUID_BLE_ASSIGN(char_uuid, SCOPE_CHAR_UUID_WEIGHTS); //TODO might be redundant witht he previous line
+
+    /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
-    ble_gatts_attr_md_t cccd_md;
-    ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
-    ble_gatts_attr_md_t attr_md;
-    uint8_t             initial_cal_result;
-    uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
-    uint8_t             init_len;
-
-    // Add Battery Level characteristic
-    if (p_force->is_notification_supported)
-    {
-        memset(&cccd_md, 0, sizeof(cccd_md));
-
-        // According to force_SPEC_V10, the read operation on cccd should be possible without
-        // authentication.
-        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-				BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-        cccd_md.write_perm = p_force_init->force_char_cccd_attr_md.cccd_write_perm;
-        cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
-    }
-
     memset(&char_md, 0, sizeof(char_md));
-
-    char_md.char_props.read   = 0;
-		char_md.char_props.write  = 1;
-    char_md.char_props.notify = 0;//(p_force->is_notification_supported) ? 1 : 0;
-    char_md.p_char_user_desc  = NULL;
-    char_md.p_char_pf         = NULL;
-    char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = NULL;//(p_force->is_notification_supported) ? &cccd_md : NULL;
-    char_md.p_sccd_md         = NULL;
-
-    BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_CHAR_UUID_WEIGHTS);
-
-    memset(&attr_md, 0, sizeof(attr_md));
-
-    attr_md.read_perm  = p_force_init->force_char_cccd_attr_md.read_perm;
-    attr_md.write_perm = p_force_init->force_char_cccd_attr_md.write_perm;
-    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
-    attr_md.rd_auth    = 0;
-    attr_md.wr_auth    = 1;
-    attr_md.vlen       = 0;
-
-    initial_cal_result = p_force_init->initial_batt_level;
-
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-    attr_char_value.p_uuid    = &ble_uuid;
-    attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(uint8_t);
-    attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(uint8_t);
-    attr_char_value.p_value   = &initial_cal_result;
-
-    err_code = sd_ble_gatts_characteristic_add(p_force->service_handle, &char_md,
-                                               &attr_char_value,
-                                               &p_force->force_weight_handles);
-    if (err_code != NRF_SUCCESS)
-    {
-        return err_code;
-    }
-
-    if (p_force_init->p_report_ref != NULL)
-    {
-        // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
-
-        memset(&attr_md, 0, sizeof(attr_md));
-
-        attr_md.read_perm = p_force_init->force_report_read_perm;
-        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
-
-        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
-        attr_md.rd_auth = 0;
-        attr_md.wr_auth = 0;
-        attr_md.vlen    = 0;
-        
-        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_force_init->p_report_ref);
-        
-        memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-        attr_char_value.p_uuid    = &ble_uuid;
-        attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
-        attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
-        attr_char_value.p_value   = encoded_report_ref;
-
-        err_code = sd_ble_gatts_descriptor_add(p_force->force_weight_handles.value_handle,
-                                               &attr_char_value,
-                                               &p_force->report_ref_handle);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-    }
-    else
-    {
-        p_force->report_ref_handle = BLE_GATT_HANDLE_INVALID;
-    }
-
-    return err_code;
+    char_md.char_props.write = 1;
+    //char_md.char_props.read = 1;
+    
+    /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
+//    ble_gatts_attr_md_t cccd_md;
+//    memset(&cccd_md, 0, sizeof(cccd_md));
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+//    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+//    char_md.p_cccd_md           = &cccd_md;
+//    char_md.char_props.notify   = 1;
+    
+    /*** Configure the attribute metadata ***/
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md)); 
+    attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
+    
+    /****Set read/write security levels to our characteristic ***/
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
+    
+    /**** Configure the characteristic value attribute  ****/
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));     
+    attr_char_value.p_uuid      = &char_uuid;
+    attr_char_value.p_attr_md   = &attr_md;
+    
+    /***  Set characteristic length in number of bytes  ****/
+    attr_char_value.max_len     = 1;
+    attr_char_value.init_len    = 1;
+    uint8_t value               = 0x00;
+    attr_char_value.p_value     = &value;
+    
+    /**** add it too the softdevice  *****/
+    err_code = sd_ble_gatts_characteristic_add(p_force->service_handle, &char_md, &attr_char_value, &p_force->force_weight_handles);
+    APP_ERROR_CHECK(err_code);
 }
+
+//static uint32_t cal_weights_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
+void cal_ready_add(cal_force_t * p_force)
+{
+    
+    uint32_t err_code; // Variable to hold return codes from library and softdevice functions
+    
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    char_uuid.uuid      = SCOPE_CHAR_UUID_READY;
+    BLE_UUID_BLE_ASSIGN(char_uuid, SCOPE_CHAR_UUID_READY); //TODO might be redundant witht he previous line
+
+    /****** add read write properties ******/
+    ble_gatts_char_md_t char_md;
+    memset(&char_md, 0, sizeof(char_md));
+    char_md.char_props.write = 1;
+    //char_md.char_props.read = 1;
+    
+    /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
+//    ble_gatts_attr_md_t cccd_md;
+//    memset(&cccd_md, 0, sizeof(cccd_md));
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+//    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+//    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+//    char_md.p_cccd_md           = &cccd_md;
+//    char_md.char_props.notify   = 1;
+    
+    /*** Configure the attribute metadata ***/
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md)); 
+    attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
+    
+    /****Set read/write security levels to our characteristic ***/
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
+    
+    /**** Configure the characteristic value attribute  ****/
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));     
+    attr_char_value.p_uuid      = &char_uuid;
+    attr_char_value.p_attr_md   = &attr_md;
+    
+    /***  Set characteristic length in number of bytes  ****/
+    attr_char_value.max_len     = 1;
+    attr_char_value.init_len    = 1;
+    uint8_t value               = 0x00;
+    attr_char_value.p_value     = &value;
+    
+    /**** add it too the softdevice  *****/
+    err_code = sd_ble_gatts_characteristic_add(p_force->service_handle, &char_md, &attr_char_value, &p_force->force_ready_handles);
+    APP_ERROR_CHECK(err_code);
+}
+
+
 
 //calibration points characteristic
 static uint32_t cal_points_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
@@ -289,6 +398,117 @@ static uint32_t cal_points_char_add(cal_force_t * p_force, const cal_force_init_
     return err_code;
 }
 
+
+//calibration result characteristic
+static uint32_t cal_result_char_add(cal_force_t * p_force, const cal_force_init_t * p_force_init)
+{
+    uint32_t            err_code;
+    ble_gatts_char_md_t char_md;
+    ble_gatts_attr_md_t cccd_md;
+    ble_gatts_attr_t    attr_char_value;
+    ble_uuid_t          ble_uuid;
+    ble_gatts_attr_md_t attr_md;
+    uint8_t             initial_cal_result;
+    uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
+    uint8_t             init_len;
+
+    // Add Battery Level characteristic
+    if (p_force->is_notification_supported)
+    {
+        memset(&cccd_md, 0, sizeof(cccd_md));
+
+        // According to force_SPEC_V10, the read operation on cccd should be possible without
+        // authentication.
+        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+				BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+        cccd_md.write_perm = p_force_init->force_char_cccd_attr_md.cccd_write_perm;
+        cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
+    }
+
+    memset(&char_md, 0, sizeof(char_md));
+
+    char_md.char_props.read   = 1;
+		char_md.char_props.write  = 0;
+    char_md.char_props.notify = (p_force->is_notification_supported) ? 1 : 0;
+    char_md.p_char_user_desc  = NULL;
+    char_md.p_char_pf         = NULL;
+    char_md.p_user_desc_md    = NULL;
+    char_md.p_cccd_md         = (p_force->is_notification_supported) ? &cccd_md : NULL;
+    char_md.p_sccd_md         = NULL;
+
+    BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_CHAR_UUID_RESULT);
+
+    memset(&attr_md, 0, sizeof(attr_md));
+
+    attr_md.read_perm  = p_force_init->force_char_cccd_attr_md.read_perm;
+    attr_md.write_perm = p_force_init->force_char_cccd_attr_md.write_perm;
+    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
+    attr_md.rd_auth    = 0;
+    attr_md.wr_auth    = 1;
+    attr_md.vlen       = 0;
+
+    initial_cal_result = p_force_init->initial_batt_level;
+
+    memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+    attr_char_value.p_uuid    = &ble_uuid;
+    attr_char_value.p_attr_md = &attr_md;
+    attr_char_value.init_len  = sizeof(uint8_t);
+    attr_char_value.init_offs = 0;
+    attr_char_value.max_len   = sizeof(uint8_t);
+    attr_char_value.p_value   = &initial_cal_result;
+
+    err_code = sd_ble_gatts_characteristic_add(p_force->service_handle, &char_md,
+                                               &attr_char_value,
+                                               &p_force->force_result_handles);
+    if (err_code != NRF_SUCCESS)
+    {
+        return err_code;
+    }
+
+    if (p_force_init->p_report_ref != NULL)
+    {
+        // Add Report Reference descriptor
+        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+
+        memset(&attr_md, 0, sizeof(attr_md));
+
+        attr_md.read_perm = p_force_init->force_report_read_perm;
+        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
+
+        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
+        attr_md.rd_auth = 0;
+        attr_md.wr_auth = 0;
+        attr_md.vlen    = 0;
+        
+        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_force_init->p_report_ref);
+        
+        memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+        attr_char_value.p_uuid    = &ble_uuid;
+        attr_char_value.p_attr_md = &attr_md;
+        attr_char_value.init_len  = init_len;
+        attr_char_value.init_offs = 0;
+        attr_char_value.max_len   = attr_char_value.init_len;
+        attr_char_value.p_value   = encoded_report_ref;
+
+        err_code = sd_ble_gatts_descriptor_add(p_force->force_result_handles.value_handle,
+                                               &attr_char_value,
+                                               &p_force->report_ref_handle);
+        if (err_code != NRF_SUCCESS)
+        {
+            return err_code;
+        }
+    }
+    else
+    {
+        p_force->report_ref_handle = BLE_GATT_HANDLE_INVALID;
+    }
+
+    return err_code;
+}
+
+
 uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_init)
 {
     uint32_t   err_code;
@@ -296,7 +516,7 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
 		
 		cal_force_init_t * force_init = (cal_force_init_t *)p_force_init;  //undo const declaration
 		//cal_force_init_t force_init = *ptr;  //get back to cal_force_init_t
-    
+		
 
     // Here the sec level for the Battery Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&force_init->force_char_cccd_attr_md.cccd_write_perm);
@@ -309,7 +529,7 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     force_init->support_notification = true;
     force_init->p_report_ref         = NULL;
     force_init->initial_batt_level   = 100;
-
+		//p_force_init->force_write_handler = force_write_handler;
     
     if (p_force == NULL || p_force_init == NULL)
     {
@@ -322,8 +542,9 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     p_force->evt_handler               = p_force_init->evt_handler;
     p_force->conn_handle               = BLE_CONN_HANDLE_INVALID;
     p_force->is_notification_supported = p_force_init->support_notification;
-    p_force->force_level_last        = NULL;
-
+    p_force->force_level_last          = NULL;
+		p_force->force_write_handler		 = p_force_init->force_write_handler;
+		
     // Add service
     BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_UUID_FORCE_CAL);
 
@@ -334,18 +555,19 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     }
 
     // Add characteristics
-    err_code =  cal_weights_char_add(p_force, p_force_init); //weights service
-		if (err_code != NRF_SUCCESS)
-    {
-        return err_code;
-    }
+    cal_weights_char_add(p_force); //weights characteristic
+		cal_ready_add(p_force); //ready characteristic
 		
 		err_code =  cal_points_char_add(p_force, p_force_init); // calibration points service
 		if (err_code != NRF_SUCCESS)
     {
         return err_code;
     }
-		
+		err_code =  cal_result_char_add(p_force, p_force_init); // calibration points service
+		if (err_code != NRF_SUCCESS)
+    {
+        return err_code;
+    }
 //        err_code = cal_weights_char_add(SCOPE_CHAR_UUID_WEIGHTS,
 //                            p_force_init->test_vars_str.p_str,
 //                            p_force_init->test_vars_str.length,
@@ -398,6 +620,10 @@ static void on_disconnect(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     p_force->conn_handle = BLE_CONN_HANDLE_INVALID;
 }
 
+void force_write_handler(cal_force_t * p_force, uint8_t data_in)
+{
+		SEGGER_RTT_printf(0,"input: %d",data_in);
+}
 
 /**@brief Function for handling the Write event.
  *
@@ -406,34 +632,38 @@ static void on_disconnect(cal_force_t * p_force, ble_evt_t * p_ble_evt)
  */
 static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 {
+	SEGGER_RTT_printf(0, "force write fxn\n");
+	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+	
+	if ((p_evt_write->handle == p_force->force_weight_handles.value_handle) &&
+        (p_evt_write->len <= 2))// &&(p_force->force_write_handler != NULL))
+    {
+			SEGGER_RTT_printf(0, "force data write handler data[0] \n");
+			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
+        //p_force->force_write_handler(p_force, p_evt_write->data[0]); //null pointer crashes processor...
+			
+			force_write_handler(p_force, p_evt_write->data[0]);
+    }
+		if ((p_evt_write->handle == p_force->force_ready_handles.value_handle) &&
+        (p_evt_write->len <= 2))// &&(p_force->force_write_handler != NULL))
+    {
+			SEGGER_RTT_printf(0, "force ready write handler data[0] \n");
+			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
+        //p_force->force_write_handler(p_force, p_evt_write->data[0]); //null pointer crashes processor...
+			
+			force_write_handler(p_force, p_evt_write->data[0]);
+    }
+	
+//	 if (p_evt_write->handle == p_force->force_weight_handles.value_handle)
+//        {
+//            // Data written written, call application event handler
+//					SEGGER_RTT_printf(0, "force data write\n");
+//				}
     if (p_force->is_notification_supported)
     {
-        ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+        //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
-        if (
-            (p_evt_write->handle == p_force->force_weight_handles.cccd_handle)
-            &&
-            (p_evt_write->len == 2)
-           )
-        {
-            // CCCD written, call application event handler
-            if (p_force->evt_handler != NULL)
-            {
-                cal_force_evt_t evt;
-
-                if (ble_srv_is_notification_enabled(p_evt_write->data))
-                {
-                    evt.evt_type = cal_force_EVT_NOTIFICATION_ENABLED;
-                }
-                else
-                {
-                    evt.evt_type = cal_force_EVT_NOTIFICATION_DISABLED;
-                }
-
-                p_force->evt_handler(p_force, &evt);
-            }
-        }
-				
+       
 				if (  
             (p_evt_write->handle == p_force->force_cal_handles.cccd_handle)
             &&
@@ -463,29 +693,36 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 
 void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 {
+    
     if (p_force == NULL || p_ble_evt == NULL)
     {
+				//SEGGER_RTT_WriteString(0, "CAL FORCE NULL \n");
         return;
     }
     
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
+					//SEGGER_RTT_WriteString(0, "CAL FORCE CONN \n");
             on_connect(p_force, p_ble_evt);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
+					//SEGGER_RTT_WriteString(0, "CAL FORCE DISCONN \n");
             on_disconnect(p_force, p_ble_evt);
             break;
 
         case BLE_GATTS_EVT_WRITE:
+						//SEGGER_RTT_WriteString(0, "CAL FORCE WRITE \n");
             on_write(p_force, p_ble_evt);
             break;
 
         default:
+					//SEGGER_RTT_WriteString(0, "CAL FORCE DEFAULT \n");
+					//on_write(p_force, p_ble_evt);
             // No implementation needed.
             break;
-    }
+			}
 }
 
 uint32_t cal_weights_update(cal_force_t * p_force, uint8_t weight)
@@ -593,5 +830,38 @@ uint32_t cal_points_update(cal_force_t * p_force, uint8_t weight)
 }
 
 
+//void ble_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt)
+//{
+//		SEGGER_RTT_WriteString(0, "CAL FORCE BLE \n");
+//    if (p_force == NULL || p_ble_evt == NULL)
+//    {
+//				SEGGER_RTT_WriteString(0, "CAL FORCE NULL \n");
+//        return;
+//    }
+//    
+//    switch (p_ble_evt->header.evt_id)
+//    {
+//        case BLE_GAP_EVT_CONNECTED:
+//					SEGGER_RTT_WriteString(0, "CAL FORCE CONN \n");
+//            on_connect(p_force, p_ble_evt);
+//            break;
+
+//        case BLE_GAP_EVT_DISCONNECTED:
+//					SEGGER_RTT_WriteString(0, "CAL FORCE DISCONN \n");
+//            on_disconnect(p_force, p_ble_evt);
+//            break;
+
+//        case BLE_GATTS_EVT_WRITE:
+//						SEGGER_RTT_WriteString(0, "CAL FORCE WRITE \n");
+//            on_write(p_force, p_ble_evt);
+//            break;
+
+//        default:
+//					SEGGER_RTT_WriteString(0, "CAL FORCE DEFAULT \n");
+//					//on_write(p_force, p_ble_evt);
+//            // No implementation needed.
+//            break;
+//    }
+//}
 
 

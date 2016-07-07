@@ -27,3 +27,5 @@ extern cal_data_t cal_data;
 uint8_t hall_effect_calibration(void);
 
 #endif //CALIBRATION_H
+
+

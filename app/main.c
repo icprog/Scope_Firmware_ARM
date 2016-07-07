@@ -52,6 +52,8 @@
 #include "nrf_delay.h"
 #include "spi_utils.h"
 #include "app.h"
+#include "cal_vib.h"
+
 //#include "SEGGER_RTT_printf.h"
 
 //services
@@ -151,6 +153,7 @@ static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
 static cal_optical_t												 m_optical;
 static cal_force_t													 m_force;
+static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -442,6 +445,10 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+//void force_write_handler(cal_force_t * p_force, uint8_t data_in)
+//{
+//		SEGGER_RTT_printf(0,"input: %d",data_in);
+//}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -489,10 +496,16 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 
     // Initialize Force Cal.
-//    cal_force_init_t force_init;
-//    memset(&force_init, 0, sizeof(force_init));
-//    err_code = cal_force_init(&m_force, &force_init);
-//    APP_ERROR_CHECK(err_code);
+    cal_force_init_t force_init;
+    memset(&force_init, 0, sizeof(force_init));
+    err_code = cal_force_init(&m_force, &force_init);
+    APP_ERROR_CHECK(err_code);
+		
+		// Initialize vib Cal.
+    cal_vib_init_t vib_init;
+    memset(&vib_init, 0, sizeof(vib_init));
+    err_code = cal_vib_init(&m_vib, &vib_init);
+    APP_ERROR_CHECK(err_code);
 
 }
 
@@ -502,40 +515,40 @@ static void services_init(void)
 // */
 static void sensor_simulator_init(void)
 {
-    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-    m_battery_sim_cfg.start_at_max = true;
+//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
+//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
+//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
+//    m_battery_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
-	
-		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
-    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
-    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
-    m_slope_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+//	
+//		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
+//    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
+//    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
+//    m_slope_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
-	
-		m_status_sim_cfg.min          = MIN_status_LEVEL;
-    m_status_sim_cfg.max          = MAX_status_LEVEL;
-    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
-    m_status_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
+//	
+//		m_status_sim_cfg.min          = MIN_status_LEVEL;
+//    m_status_sim_cfg.max          = MAX_status_LEVEL;
+//    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
+//    m_status_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
+//    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
 
-    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-    m_heart_rate_sim_cfg.start_at_max = false;
+//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
+//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
+//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
+//    m_heart_rate_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
-    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-    m_rr_interval_sim_cfg.start_at_max = false;
+//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
+//    m_rr_interval_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
+//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
 }
 
 
@@ -738,17 +751,19 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	SEGGER_RTT_WriteString(0, "ble dispatch \n");
-    dm_ble_evt_handler(p_ble_evt);
+  dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	//ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
 	ble_status_on_ble_evt(&m_status, p_ble_evt);
-	//ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-    ble_conn_params_on_ble_evt(p_ble_evt);
+	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+  ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
-    cal_optical_on_ble_evt(&m_optical, p_ble_evt);
-    on_ble_evt(p_ble_evt);
-    ble_advertising_on_ble_evt(p_ble_evt);
+	cal_force_on_ble_evt(&m_force,p_ble_evt);
+	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+  on_ble_evt(p_ble_evt);
+  ble_advertising_on_ble_evt(p_ble_evt);
+	cal_vib_on_ble_evt(&m_vib,p_ble_evt);
 }
 
 

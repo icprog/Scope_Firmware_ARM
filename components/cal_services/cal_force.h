@@ -38,9 +38,11 @@
 
 //#define       SCOPE_CHAR_UUID_cal_result		0x2A27
 
+
 #define		SCOPE_CHAR_UUID_WEIGHTS					0xae5a 
 #define		SCOPE_CHAR_UUID_CAL_POINTS			0X70de
 #define		SCOPE_CHAR_UUID_RESULT					0X654d
+#define		SCOPE_CHAR_UUID_READY						0X1234
 
 #define   WEIGHTS    	0x01
 #define		CAL_POINTS  0x01
@@ -72,6 +74,7 @@ typedef struct cal_force_s cal_force_t;
 
 /**@brief force Service event handler type. */
 typedef void (*cal_force_evt_handler_t) (cal_force_t * p_force, cal_force_evt_t * p_evt);
+typedef void (*cal_force_write_handler_t) (cal_force_t * p_force, uint8_t data_in);
 
 ///**@brief PnP ID parameters */
 //typedef struct
@@ -87,18 +90,19 @@ typedef void (*cal_force_evt_handler_t) (cal_force_t * p_force, cal_force_evt_t 
  */
 typedef struct
 {
-    ble_srv_utf8_str_t             test_data_str;           /**< Manufacturer Name String. */
-		ble_srv_utf8_str_t             test_vars_str;           /**< Manufacturer Name String. */
-    ble_srv_utf8_str_t             force_data_str;               /**< Model Number String. */
-    ble_srv_utf8_str_t             force_cal_str;              /**< Serial Number String. */
-    ble_srv_utf8_str_t             cal_result_str;                  /**< Hardware Revision String. */
-		//ble_srv_security_mode_t        force_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
-		cal_force_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+    ble_srv_utf8_str_t            test_data_str;           /**< Manufacturer Name String. */
+		ble_srv_utf8_str_t            test_vars_str;           /**< Manufacturer Name String. */
+    ble_srv_utf8_str_t            force_data_str;               /**< Model Number String. */
+    ble_srv_utf8_str_t            force_cal_str;              /**< Serial Number String. */
+    ble_srv_utf8_str_t            cal_result_str;                  /**< Hardware Revision String. */
+		//ble_srv_security_mode_t     force_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
+		cal_force_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
     bool                          support_notification;           /**< TRUE if notification of Battery Level measurement is supported. */
     ble_srv_report_ref_t *        p_report_ref;                   /**< If not NULL, a Report Reference descriptor with the specified value will be added to the Battery Level characteristic */
     uint8_t                       initial_batt_level;             /**< Initial battery level */
     ble_srv_cccd_security_mode_t  force_char_cccd_attr_md;     /**< Initial security level for battery characteristics attribute */
     ble_gap_conn_sec_mode_t       force_report_read_perm; 			/**< Initial security level for battery report read attribute */
+		cal_force_write_handler_t 		force_write_handler; 
 } cal_force_init_t;
 
 
@@ -111,10 +115,12 @@ struct cal_force_s
     ble_gatts_char_handles_t      force_weight_handles;          /**< Handles related to the force Level characteristic. */
 		ble_gatts_char_handles_t      force_cal_handles;          /**< Handles related to the force Level characteristic. */
 		ble_gatts_char_handles_t      force_result_handles;          /**< Handles related to the force Level characteristic. */
+		ble_gatts_char_handles_t      force_ready_handles;          /**< Handles related to the force Level characteristic. */
     uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
     uint8_t                       force_level_last;             /**< Last force Level measurement passed to the force Service. */
     uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */
     bool                          is_notification_supported;      /**< TRUE if notification of force Level is supported. */
+		cal_force_write_handler_t 		force_write_handler; 
 };
 
 
@@ -135,7 +141,7 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
 void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt);
 uint32_t cal_weights_update(cal_force_t * p_force, uint8_t weight);
 uint32_t cal_points_update(cal_force_t * p_force, uint8_t weight);
-
+void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt);
 #endif // cal_force_H__
 
 /** @} */
