@@ -180,6 +180,7 @@ void APP_Tasks(void)
         case APP_STATE_FORCE_CAL_WEIGHT:
         {
             SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            cal_data.current_weight = 1;
             send_data_to_PIC(force_cal_weight_pack);
             appData.state = APP_STATE_POLLING;
             break;

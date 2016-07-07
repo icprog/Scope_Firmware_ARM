@@ -63,6 +63,7 @@ bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
+void * tx_data_ptr; //where to pull data from to send to PIC
 
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
@@ -85,7 +86,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         packet.code = pa_pack.code;
         spis_tx_transfer_length = pa_pack.data_size; //TODO make this a regular variable
         packet.length = pa_pack.data_size;
-
+        tx_data_ptr = pa_pack.data;
         
         memcpy(m_tx_buf_s, &packet, PIC_ARM_HEADER_SIZE); //TODO: look into why this memcoy is necessary as well.
         //TODO: something weird with timing here. need the print statement to get correct values
@@ -94,11 +95,11 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         {
             SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
         }
-        
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }
+        
         set_RDY();
     }
     else
@@ -133,7 +134,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         {
             case TEST_CODE:
             {
-               next_state = APP_STATE_VIB_CAL_RDY;
+               next_state = APP_STATE_FORCE_CAL_WEIGHT;
                break;
             }
             case PA_FORCE_CAL_DATA:
@@ -231,10 +232,19 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
 
+        /******* determine if rdy needs to remain high after sending current data  ******/
+        if(spis_tx_transfer_length == 0)
+        {
+            clear_RDY();
+        }
+        
         
         /**********  determine length of the packet to send and new one to receive *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);
         tx_length = buffer_size_calc(spis_tx_transfer_length);
+        
+        
+        memcpy(m_tx_buf_s, tx_data_ptr, tx_length); //copy data to send into tx buffer
 
         if(spis_tx_transfer_length != 0)
         {
@@ -255,11 +265,6 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         {
             SEGGER_RTT_printf(0, "SPIS error");
         }  
-        
-        if(spis_tx_transfer_length == 0)
-        {
-            clear_RDY();
-        }
     }
 }
 
