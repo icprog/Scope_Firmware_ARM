@@ -66,6 +66,7 @@
 #include "app.h"
 #include "SPI_utils.h"
 #include "nrf_drv_config.h"
+#include "calibration.h"
 
 
 // *****************************************************************************
@@ -189,7 +190,7 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "received force calibration data: ");
             for(int i = 0; i < 5; i++)
             {
-                SEGGER_RTT_printf(0, "  %d", force_cal_consts[i]);
+                SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
             }
             appData.state = APP_STATE_POLLING;
             break;

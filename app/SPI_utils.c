@@ -166,6 +166,10 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 break;
             }
         }
+        if(!transfer_in_progress)
+        {
+            appData.state = next_state;
+        }
     }
     else if(transfer_in_progress) //Data packet
     {

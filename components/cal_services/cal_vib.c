@@ -25,6 +25,7 @@
 #include "ble_srv_common.h"
 #include "app_util.h"
 #include "SEGGER_RTT.h"
+#include "spi_utils.h"
 
 
 #define cal_vib_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -179,11 +180,12 @@ static void on_write(cal_vib_t * p_vib, ble_evt_t * p_ble_evt)
 	if ((p_evt_write->handle == p_vib->vib_handles.value_handle) &&
         (p_evt_write->len <= 2))// &&(p_vib->vib_write_handler != NULL))
     {
-			SEGGER_RTT_printf(0, "vib data write handler data[0] \n");
-			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
+		SEGGER_RTT_printf(0, "vib data write handler data[0] \n");
+		SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
         //p_vib->vib_write_handler(p_vib, p_evt_write->data[0]); //null pointer crashes processor...
 			
-			vib_write_handler(p_vib, p_evt_write->data[0]);
+		vib_write_handler(p_vib, p_evt_write->data[0]);
+        send_data_to_PIC(vib_cal_rdy_pack);
     }
 		
 }
