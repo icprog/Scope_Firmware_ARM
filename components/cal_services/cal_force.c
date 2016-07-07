@@ -25,6 +25,8 @@
 #include "ble_srv_common.h"
 #include "app_util.h"
 #include "SEGGER_RTT.h"
+#include "calibration.h"
+#include "SPI_utils.h"
 
 
 #define cal_force_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -37,7 +39,7 @@ static ble_gatts_char_handles_t force_cal_handles;
 static ble_gatts_char_handles_t cal_result_handles;
 //static ble_gatts_char_handles_t pnp_id_handles;
 
-
+extern pic_arm_pack_t force_cal_weight_pack;
 
 
 ///**@brief Function for encoding a PnP ID.
@@ -225,8 +227,8 @@ void cal_weights_char_add(cal_force_t * p_force)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
+    attr_char_value.max_len     = 3;
+    attr_char_value.init_len    = 3;
     uint8_t value               = 0x00;
     attr_char_value.p_value     = &value;
     
@@ -377,9 +379,9 @@ static uint32_t cal_points_char_add(cal_force_t * p_force, const cal_force_init_
 
         attr_char_value.p_uuid    = &ble_uuid;
         attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
+        attr_char_value.init_len  = 6;//init_len;
         attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
+        attr_char_value.max_len   = 6;//attr_char_value.init_len;
         attr_char_value.p_value   = encoded_report_ref;
 
         err_code = sd_ble_gatts_descriptor_add(p_force->force_cal_handles.value_handle,
@@ -622,7 +624,11 @@ static void on_disconnect(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 
 void force_write_handler(cal_force_t * p_force, uint8_t data_in)
 {
-		SEGGER_RTT_printf(0,"input: %d",data_in);
+	//add call to SPI Utils stuff here:
+		cal_data.current_weight = data_in;
+		send_data_to_PIC(force_cal_weight_pack);
+
+	
 }
 
 /**@brief Function for handling the Write event.
@@ -640,6 +646,8 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     {
 			SEGGER_RTT_printf(0, "force data write handler data[0] \n");
 			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
+//			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[1]);
+//			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[2]);
         //p_force->force_write_handler(p_force, p_evt_write->data[0]); //null pointer crashes processor...
 			
 			force_write_handler(p_force, p_evt_write->data[0]);
@@ -651,7 +659,7 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
         //p_force->force_write_handler(p_force, p_evt_write->data[0]); //null pointer crashes processor...
 			
-			force_write_handler(p_force, p_evt_write->data[0]);
+			//force_write_handler(p_force, p_evt_write->data[0]);
     }
 	
 //	 if (p_evt_write->handle == p_force->force_weight_handles.value_handle)
@@ -725,8 +733,61 @@ void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 			}
 }
 
-uint32_t cal_weights_update(cal_force_t * p_force, uint8_t weight)
+//uint32_t cal_result_update(cal_force_t * p_force, uint8_t weight)
+//{
+//    if (p_force == NULL)
+//    {
+//        return NRF_ERROR_NULL;
+//    }
+//    
+//    uint32_t err_code = NRF_SUCCESS;
+//    ble_gatts_value_t gatts_value;
+
+//    //if (cal_result != p_optical->cal_result_last)
+//    //{
+//        // Initialize value struct.
+//        memset(&gatts_value, 0, sizeof(gatts_value));
+
+//        gatts_value.len     = sizeof(uint8_t);
+//        gatts_value.offset  = 0;
+//        gatts_value.p_value = &weight;
+
+//        // Update dataopticale.
+//        err_code = sd_ble_gatts_value_set(p_force->conn_handle,
+//                                          p_force->force_weight_handles.value_handle,
+//                                          &gatts_value);
+//        if (err_code != NRF_SUCCESS)
+//        {
+//            return err_code;
+//        }
+
+//        // Send value if connected and notifying.
+//        if ((p_force->conn_handle != BLE_CONN_HANDLE_INVALID) && p_force->is_notification_supported)
+//        {
+//            ble_gatts_hvx_params_t hvx_params;
+
+//            memset(&hvx_params, 0, sizeof(hvx_params));
+
+//            hvx_params.handle = p_force->force_weight_handles.value_handle;
+//            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+//            hvx_params.offset = gatts_value.offset;
+//            hvx_params.p_len  = &gatts_value.len;
+//            hvx_params.p_data = gatts_value.p_value;
+
+//            err_code = sd_ble_gatts_hvx(p_force->conn_handle, &hvx_params);
+//        }
+//        else
+//        {
+//            err_code = NRF_ERROR_INVALID_STATE;
+//        }
+//    //}
+
+//    return err_code;
+//}
+
+uint32_t cal_points_update(cal_force_t * p_force, uint16_t weight[7])
 {
+	uint8_t index = 0;
     if (p_force == NULL)
     {
         return NRF_ERROR_NULL;
@@ -740,62 +801,13 @@ uint32_t cal_weights_update(cal_force_t * p_force, uint8_t weight)
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 
-        gatts_value.len     = sizeof(uint8_t);
+        gatts_value.len     = 12;//sizeof(uint8_t);
         gatts_value.offset  = 0;
-        gatts_value.p_value = &weight;
-
-        // Update dataopticale.
-        err_code = sd_ble_gatts_value_set(p_force->conn_handle,
-                                          p_force->force_weight_handles.value_handle,
-                                          &gatts_value);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-
-        // Send value if connected and notifying.
-        if ((p_force->conn_handle != BLE_CONN_HANDLE_INVALID) && p_force->is_notification_supported)
-        {
-            ble_gatts_hvx_params_t hvx_params;
-
-            memset(&hvx_params, 0, sizeof(hvx_params));
-
-            hvx_params.handle = p_force->force_weight_handles.value_handle;
-            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-            hvx_params.offset = gatts_value.offset;
-            hvx_params.p_len  = &gatts_value.len;
-            hvx_params.p_data = gatts_value.p_value;
-
-            err_code = sd_ble_gatts_hvx(p_force->conn_handle, &hvx_params);
-        }
-        else
-        {
-            err_code = NRF_ERROR_INVALID_STATE;
-        }
-    //}
-
-    return err_code;
-}
-
-uint32_t cal_points_update(cal_force_t * p_force, uint8_t weight)
-{
-    if (p_force == NULL)
-    {
-        return NRF_ERROR_NULL;
-    }
-    
-    uint32_t err_code = NRF_SUCCESS;
-    ble_gatts_value_t gatts_value;
-
-    //if (cal_result != p_optical->cal_result_last)
-    //{
-        // Initialize value struct.
-        memset(&gatts_value, 0, sizeof(gatts_value));
-
-        gatts_value.len     = sizeof(uint8_t);
-        gatts_value.offset  = 0;
-        gatts_value.p_value = &weight;
-
+//				for(index=0;index<6;index++)
+//				{
+//					gatts_value.p_value[index] = weight[index];
+//				}
+				gatts_value.p_value = (uint8_t *)weight;
         // Update dataopticale.
         err_code = sd_ble_gatts_value_set(p_force->conn_handle,
                                           p_force->force_cal_handles.value_handle,
