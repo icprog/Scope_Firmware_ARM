@@ -52,6 +52,8 @@
 #include "nrf_delay.h"
 #include "spi_utils.h"
 #include "app.h"
+#include "cal_vib.h"
+
 //#include "SEGGER_RTT_printf.h"
 
 //services
@@ -151,6 +153,7 @@ static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
 static cal_optical_t												 m_optical;
 static cal_force_t													 m_force;
+static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -497,6 +500,12 @@ static void services_init(void)
     memset(&force_init, 0, sizeof(force_init));
     err_code = cal_force_init(&m_force, &force_init);
     APP_ERROR_CHECK(err_code);
+		
+		// Initialize vib Cal.
+    cal_vib_init_t vib_init;
+    memset(&vib_init, 0, sizeof(vib_init));
+    err_code = cal_vib_init(&m_vib, &vib_init);
+    APP_ERROR_CHECK(err_code);
 
 }
 
@@ -754,6 +763,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
   on_ble_evt(p_ble_evt);
   ble_advertising_on_ble_evt(p_ble_evt);
+	cal_vib_on_ble_evt(&m_vib,p_ble_evt);
 }
 
 

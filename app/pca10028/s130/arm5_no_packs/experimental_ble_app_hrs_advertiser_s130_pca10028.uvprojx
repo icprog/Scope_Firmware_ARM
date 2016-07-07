@@ -2104,6 +2104,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
             </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4210,6 +4215,11 @@
               <FileName>cal_optical.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
             </File>
           </Files>
         </Group>

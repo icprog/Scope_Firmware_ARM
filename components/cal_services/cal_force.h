@@ -38,6 +38,7 @@
 
 //#define       SCOPE_CHAR_UUID_cal_result		0x2A27
 
+
 #define		SCOPE_CHAR_UUID_WEIGHTS					0xae5a 
 #define		SCOPE_CHAR_UUID_CAL_POINTS			0X70de
 #define		SCOPE_CHAR_UUID_RESULT					0X654d
@@ -89,13 +90,13 @@ typedef void (*cal_force_write_handler_t) (cal_force_t * p_force, uint8_t data_i
  */
 typedef struct
 {
-    ble_srv_utf8_str_t             test_data_str;           /**< Manufacturer Name String. */
-		ble_srv_utf8_str_t             test_vars_str;           /**< Manufacturer Name String. */
-    ble_srv_utf8_str_t             force_data_str;               /**< Model Number String. */
-    ble_srv_utf8_str_t             force_cal_str;              /**< Serial Number String. */
-    ble_srv_utf8_str_t             cal_result_str;                  /**< Hardware Revision String. */
-		//ble_srv_security_mode_t        force_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
-		cal_force_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+    ble_srv_utf8_str_t            test_data_str;           /**< Manufacturer Name String. */
+		ble_srv_utf8_str_t            test_vars_str;           /**< Manufacturer Name String. */
+    ble_srv_utf8_str_t            force_data_str;               /**< Model Number String. */
+    ble_srv_utf8_str_t            force_cal_str;              /**< Serial Number String. */
+    ble_srv_utf8_str_t            cal_result_str;                  /**< Hardware Revision String. */
+		//ble_srv_security_mode_t     force_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
+		cal_force_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
     bool                          support_notification;           /**< TRUE if notification of Battery Level measurement is supported. */
     ble_srv_report_ref_t *        p_report_ref;                   /**< If not NULL, a Report Reference descriptor with the specified value will be added to the Battery Level characteristic */
     uint8_t                       initial_batt_level;             /**< Initial battery level */
