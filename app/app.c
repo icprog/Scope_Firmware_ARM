@@ -67,6 +67,7 @@
 #include "SPI_utils.h"
 #include "nrf_drv_config.h"
 #include "calibration.h"
+#include "cal_force.h"
 
 
 // *****************************************************************************
@@ -81,7 +82,7 @@ static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	       
 extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
 extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-
+extern cal_force_t                           m_force;
 // *****************************************************************************
 /* Application Data
 
@@ -170,35 +171,36 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-        case APP_STATE_VIB_CAL_RDY:
-        {
-            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
-            send_data_to_PIC(vib_cal_rdy_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FORCE_CAL_WEIGHT:
-        {
-            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
-            send_data_to_PIC(force_cal_weight_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_LENGTH:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
-            send_data_to_PIC(optical_cal_length_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
+//        case APP_STATE_VIB_CAL_RDY:
+//        {
+//            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+//            send_data_to_PIC(vib_cal_rdy_pack);
+//            appData.state = APP_STATE_POLLING;
+//            break;
+//        }
+//        case APP_STATE_FORCE_CAL_WEIGHT:
+//        {
+//            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+//            send_data_to_PIC(force_cal_weight_pack);
+//            appData.state = APP_STATE_POLLING;
+//            break;
+//        }
+//        case APP_STATE_OPTICAL_CAL_LENGTH:
+//        {
+//            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+//            send_data_to_PIC(optical_cal_length_pack);
+//            appData.state = APP_STATE_POLLING;
+//            break;
+//        }
         case APP_STATE_FORCE_CAL_DATA:
         {
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < 6; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
             }
+						cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }

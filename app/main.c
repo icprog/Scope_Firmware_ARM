@@ -152,7 +152,7 @@ static ble_hrs_t                             m_hrs;                             
 static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
 static cal_optical_t												 m_optical;
-static cal_force_t													 m_force;
+cal_force_t																	 m_force;
 static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
