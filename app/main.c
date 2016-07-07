@@ -187,7 +187,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     //{PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
+    {BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
 
@@ -1024,7 +1024,7 @@ int main(void)
     gap_params_init();
     advertising_init();
     services_init();
-    sensor_simulator_init();
+    //sensor_simulator_init();
     conn_params_init();
 	
     // Start execution.
@@ -1034,12 +1034,12 @@ int main(void)
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
     SEGGER_RTT_printf(0, "HELLO WORLD!\n");
 
-	//APP_Initialize();
+	APP_Initialize();
 
     while(true)
     {
         
-        //APP_Tasks();
+        APP_Tasks();
         power_manage();
 
         

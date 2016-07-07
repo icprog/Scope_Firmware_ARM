@@ -169,6 +169,31 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
+        case APP_STATE_VIB_CAL_RDY:
+        {
+            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+            send_data_to_PIC(vib_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_RDY:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_RDY\n");
+            send_data_to_PIC(force_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_DATA:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
+            SEGGER_RTT_printf(0, "received force calibration data: ");
+            for(int i = 0; i < 5; i++)
+            {
+                SEGGER_RTT_printf(0, "  %d", force_cal_consts[i]);
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         default:
         {
             break;
