@@ -53,7 +53,7 @@
 #include "spi_utils.h"
 #include "app.h"
 #include "cal_vib.h"
-
+#include "cal_hall_effect.h"
 //#include "SEGGER_RTT_printf.h"
 
 //services
@@ -153,6 +153,7 @@ static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
 cal_optical_t																 m_optical;
 cal_force_t																	 m_force;
+cal_hall_effect_t														 m_hall_effect;
 static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 

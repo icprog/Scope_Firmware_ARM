@@ -23,7 +23,8 @@ typedef struct{
     uint8_t optical_result;
     float optical_data;
     uint8_t optical_length;
-    uint8_t hall_status;
+    uint8_t hall_test;
+		uint8_t hall_result;
     uint8_t vib_status;
 }cal_data_t;
 

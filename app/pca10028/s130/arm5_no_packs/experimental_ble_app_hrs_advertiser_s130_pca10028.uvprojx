@@ -2114,6 +2114,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
             </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4230,6 +4235,11 @@
               <FileName>cal_vib.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
             </File>
           </Files>
         </Group>

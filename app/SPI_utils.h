@@ -86,7 +86,8 @@ typedef enum
     //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
-    PA_CAL_OPTICAL_RESULT
+    PA_CAL_OPTICAL_RESULT,
+		PA_CAL_HALL_EFFECT_TEST
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;
@@ -104,6 +105,7 @@ extern pic_arm_pack_t force_cal_data_pack;
 extern pic_arm_pack_t force_cal_weight_pack;
 extern pic_arm_pack_t vib_cal_rdy_pack;
 extern pic_arm_pack_t optical_cal_length_pack;
+extern pic_arm_pack_t hall_effect_test_pack;
 
 typedef struct
 {
