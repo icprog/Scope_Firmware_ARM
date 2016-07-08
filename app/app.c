@@ -68,6 +68,8 @@
 #include "nrf_drv_config.h"
 #include "calibration.h"
 #include "cal_force.h"
+#include "nrf_drv_gpiote.h" //for the hall effect test
+
 
 
 // *****************************************************************************
@@ -171,30 +173,7 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-<<<<<<< HEAD
-        case APP_STATE_VIB_CAL_RDY:
-        {
-            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
-            send_data_to_PIC(vib_cal_rdy_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FORCE_CAL_WEIGHT:
-        {
-            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
-            cal_data.current_weight = 1;
-            send_data_to_PIC(force_cal_weight_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_LENGTH:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
-            send_data_to_PIC(optical_cal_length_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-=======
+
 //        case APP_STATE_VIB_CAL_RDY:
 //        {
 //            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -216,17 +195,30 @@ void APP_Tasks(void)
 //            appData.state = APP_STATE_POLLING;
 //            break;
 //        }
->>>>>>> f11a274ca7fe4f3b182546ad5d6a86ce23804c4c
         case APP_STATE_FORCE_CAL_DATA:
         {
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < 7; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
             }
-						cal_points_update(&m_force, cal_data.force_data);
+			cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_HALL_EFFECT_TEST:
+        {
+            if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
+            {
+                //communicate that the test failed!
+                appData.state = APP_STATE_POLLING;
+            }
+            if(cal_data.hall_status == COMPLETE)
+            {
+                //communicate that the test passed
+                appData.state = APP_STATE_POLLING;
+            }
             break;
         }
         default:

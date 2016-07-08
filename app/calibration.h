@@ -5,6 +5,12 @@
 
 #define NUMBER_OF_WEIGHTS 6
 
+typedef enum{
+    FAILED = -1,
+    NOT_STARTED = 0,
+    //value 1 - 100 can be used for intermediate steps
+    COMPLETE = 100,
+}cal_status_t;
 /*
  * This structure contains data nad status information about all of the differen parts of calibration and testing.
  * Statuses obey the following encoding:
@@ -23,13 +29,13 @@ typedef struct{
     uint8_t optical_status;
     float optical_data;
     uint8_t optical_length;
-    uint8_t hall_status;
+    cal_status_t hall_status;
     uint8_t vib_status;
 }cal_data_t;
 
 extern cal_data_t cal_data;
 
-uint8_t hall_effect_calibration(void);
+
 
 #endif //CALIBRATION_H
 
