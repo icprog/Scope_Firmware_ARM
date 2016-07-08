@@ -68,6 +68,7 @@
 #include "nrf_drv_config.h"
 #include "calibration.h"
 #include "cal_force.h"
+#include "nrf_drv_gpiote.h" //for the hall effect test
 #include "cal_optical.h"
 #include "cal_hall_effect.h"
 
@@ -197,10 +198,9 @@ void APP_Tasks(void)
 //            appData.state = APP_STATE_POLLING;
 //            break;
 //        }
-
         case APP_STATE_FORCE_CAL_DATA:
         {
-						uint16_t test[7];
+			uint16_t test[7];
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
             for(int i = 0; i < 7; i++)
@@ -208,7 +208,8 @@ void APP_Tasks(void)
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
 							test[i] = i;
             }
-						cal_points_update(&m_force, test);//cal_data.force_data);
+
+			cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -224,6 +225,7 @@ void APP_Tasks(void)
 				{
 					cal_result_update(&m_hall_effect, cal_data.hall_result);
 				}
+
         default:
         {
             break;
