@@ -1047,7 +1047,7 @@ int main(void)
     {
         //cal_points_update(&m_force, test);
 			//optical_cal_data_update(&m_optical, 7);
-        //APP_Tasks();
+        APP_Tasks();
         power_manage();
 
         
