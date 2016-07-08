@@ -200,7 +200,7 @@ void APP_Tasks(void)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
             }
-						cal_points_update(&m_force, cal_data.force_data);
+						//cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }
