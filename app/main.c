@@ -508,6 +508,12 @@ static void services_init(void)
     err_code = cal_vib_init(&m_vib, &vib_init);
     APP_ERROR_CHECK(err_code);
 
+		// Initialize vib Cal.
+    cal_hall_effect_init_t hall_effect_init;
+    memset(&hall_effect_init, 0, sizeof(hall_effect_init));
+    err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
+    APP_ERROR_CHECK(err_code);
+
 }
 
 
