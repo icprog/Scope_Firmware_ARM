@@ -1011,6 +1011,8 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
+	uint16_t test[8];
+	uint8_t kk = 0;
 //    uint8_t slope_level;
 //    LSM303_DATA test_data_303;
 	
@@ -1032,14 +1034,20 @@ int main(void)
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
-    SEGGER_RTT_printf(0, "HELLO WORLD!\n");
+    
 
 	APP_Initialize();
-
+		
+		for(kk=0;kk<8;kk++)
+		{
+			test[kk] = kk;
+		}
+		
     while(true)
     {
-        
-        APP_Tasks();
+        //cal_points_update(&m_force, test);
+			//optical_cal_data_update(&m_optical, 7);
+        //APP_Tasks();
         power_manage();
 
         
