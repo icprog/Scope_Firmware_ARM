@@ -26,7 +26,7 @@ typedef struct{
     uint16_t force_data[NUMBER_OF_WEIGHTS];
     uint8_t current_weight; //just a number of the weight not the actual weight
     uint16_t force_weights[NUMBER_OF_WEIGHTS];
-		uint8_t optical_parameters[3]; // length, max speed, tolerance
+	uint8_t optical_parameters[3]; // length, max speed, tolerance
     uint8_t optical_status;
     float optical_data;
     uint8_t optical_length;
