@@ -338,9 +338,9 @@ static uint32_t cal_optical_cal_char_add(cal_optical_t * p_optical, const cal_op
 
     attr_char_value.p_uuid    = &ble_uuid;
     attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(uint8_t);
+    attr_char_value.init_len  = sizeof(float);
     attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(uint8_t);
+    attr_char_value.max_len   = sizeof(float);
     attr_char_value.p_value   = &initial_cal_result;
 
     err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
@@ -827,7 +827,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
 
         gatts_value.len     = sizeof(float);
         gatts_value.offset  = 0;
-        gatts_value.p_value = ((uint8_t *)&cal_result); 
+        gatts_value.p_value = (uint8_t *)&cal_result; 
 
         // Update dataopticale.
         err_code = sd_ble_gatts_value_set(p_optical->conn_handle,

@@ -1049,12 +1049,13 @@ int main(void)
 		{
 			test[kk] = kk;
 		}
-		
+		float test123 = 23.27;
+		uint32_t test22 = 2;
     while(true)
     {
         //cal_points_update(&m_force, test);
-			//optical_cal_data_update(&m_optical, 7);
-        APP_Tasks();
+			optical_cal_update(&m_optical, test123);
+       // APP_Tasks();
         power_manage();
 
         

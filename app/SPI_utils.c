@@ -70,7 +70,7 @@ pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_weight), 1};
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
-pic_arm_pack_t hall_effect_test_pack = {PA_CAL_HALL_EFFECT_TEST};
+//pic_arm_pack_t hall_effect_test_pack = {PA_CAL_HALL_EFFECT_TEST};
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -167,11 +167,11 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 							 next_state = APP_STATE_OPTICAL_CAL_RESULT;
 							rx_data_ptr = &(cal_data.optical_result);
 						}
-						case PA_CAL_HALL_EFFECT_TEST:
-						{
-							next_state = APP_STATE_HALL_EFFECT_RESULT;
-							rx_data_ptr = &(cal_data.hall_result);
-						}
+//						case PA_CAL_HALL_EFFECT_TEST:
+//						{
+//							next_state = APP_STATE_HALL_EFFECT_RESULT;
+//							rx_data_ptr = &(cal_data.hall_result);
+//						}
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
