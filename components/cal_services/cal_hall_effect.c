@@ -647,7 +647,7 @@ static void on_disconnect(cal_hall_effect_t * p_hall_effect, ble_evt_t * p_ble_e
 void hall_effect_write_handler(cal_hall_effect_t * p_hall_effect, uint8_t data_in)
 {
 	
-	cal_data.hall_status == data_in;
+	cal_data.hall_status = data_in;
 	
 	if(data_in ==1) appData.state = APP_STATE_HALL_EFFECT_TEST;
 
