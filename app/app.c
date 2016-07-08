@@ -70,6 +70,7 @@
 #include "cal_force.h"
 #include "nrf_drv_gpiote.h" //for the hall effect test
 #include "cal_optical.h"
+#include "cal_hall_effect.h"
 
 
 // *****************************************************************************
@@ -86,6 +87,7 @@ extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
 extern cal_force_t                             m_force;
 extern cal_optical_t													 m_optical;
+extern cal_hall_effect_t											 m_hall_effect;
 // *****************************************************************************
 /* Application Data
 
@@ -211,7 +213,7 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_HALL_EFFECT_TEST:
+=        case APP_STATE_HALL_EFFECT_TEST:
         {
             if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
             {
@@ -237,6 +239,11 @@ void APP_Tasks(void)
             optical_cal_result_update(&m_optical, cal_data.optical_result);
             appData.state = APP_STATE_POLLING;
         }
+        case APP_STATE_HALL_EFFECT_RESULT:
+        {
+            cal_result_update(&m_hall_effect, cal_data.hall_result);
+        }
+
         default:
         {
             break;
