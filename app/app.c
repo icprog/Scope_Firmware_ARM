@@ -214,6 +214,10 @@ void APP_Tasks(void)
 				{
 					optical_cal_update(&m_optical, cal_data.optical_data);
 				}
+				case APP_STATE_OPTICAL_CAL_RESULT:
+				{
+					optical_cal_result_update(&m_optical, cal_data.optical_result);
+				}
         default:
         {
             break;
