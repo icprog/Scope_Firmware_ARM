@@ -71,6 +71,7 @@ pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 
+
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
  * Then handle the subsequent data packets in the spis_event_handler.
