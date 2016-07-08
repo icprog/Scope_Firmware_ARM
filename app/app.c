@@ -227,11 +227,15 @@ void APP_Tasks(void)
         }
         case APP_STATE_OPTICAL_CAL_DATA:
         {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
             optical_cal_update(&m_optical, cal_data.optical_data);
+            appData.state = APP_STATE_POLLING;
         }
         case APP_STATE_OPTICAL_CAL_RESULT:
         {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
             optical_cal_result_update(&m_optical, cal_data.optical_result);
+            appData.state = APP_STATE_POLLING;
         }
         default:
         {
