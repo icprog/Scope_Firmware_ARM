@@ -810,7 +810,7 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 
     return err_code;
 }
-uint32_t optical_cal_update(cal_optical_t * p_optical, uint8_t cal_result)
+uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
 {
     if (p_optical == NULL)
     {
@@ -825,9 +825,9 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, uint8_t cal_result)
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 
-        gatts_value.len     = sizeof(uint8_t);
+        gatts_value.len     = sizeof(float);
         gatts_value.offset  = 0;
-        gatts_value.p_value = &cal_result;
+        gatts_value.p_value = ((uint8_t *)&cal_result); 
 
         // Update dataopticale.
         err_code = sd_ble_gatts_value_set(p_optical->conn_handle,
