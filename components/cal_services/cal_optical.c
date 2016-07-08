@@ -828,7 +828,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
 
         gatts_value.len     = sizeof(float);
         gatts_value.offset  = 0;
-        gatts_value.p_value = ((uint8_t *)&cal_result); 
+        gatts_value.p_value = (uint8_t *)&cal_result; 
 
         // Update data optical.
         err_code = sd_ble_gatts_value_set(p_optical->conn_handle,
