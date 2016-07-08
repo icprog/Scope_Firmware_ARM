@@ -171,30 +171,7 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-<<<<<<< HEAD
-        case APP_STATE_VIB_CAL_RDY:
-        {
-            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
-            send_data_to_PIC(vib_cal_rdy_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FORCE_CAL_WEIGHT:
-        {
-            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
-            cal_data.current_weight = 1;
-            send_data_to_PIC(force_cal_weight_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_LENGTH:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
-            send_data_to_PIC(optical_cal_length_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-=======
+
 //        case APP_STATE_VIB_CAL_RDY:
 //        {
 //            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -216,7 +193,7 @@ void APP_Tasks(void)
 //            appData.state = APP_STATE_POLLING;
 //            break;
 //        }
->>>>>>> f11a274ca7fe4f3b182546ad5d6a86ce23804c4c
+
         case APP_STATE_FORCE_CAL_DATA:
         {
 						uint16_t test[7];
