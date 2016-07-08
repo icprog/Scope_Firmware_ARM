@@ -194,13 +194,15 @@ void APP_Tasks(void)
 //        }
         case APP_STATE_FORCE_CAL_DATA:
         {
+						uint16_t test[7];
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < 7; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
+							test[i] = i;
             }
-						//cal_points_update(&m_force, cal_data.force_data);
+						cal_points_update(&m_force, test);//cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }

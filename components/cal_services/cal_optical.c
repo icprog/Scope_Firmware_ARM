@@ -21,6 +21,8 @@
 #include "ble_srv_common.h"
 #include "app_util.h"
 #include "SEGGER_RTT.h"
+#include "SPI_utils.h"
+#include "calibration.h"
 
 #define INVALID_BATTERY_LEVEL 255
 
@@ -65,12 +67,15 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
 	if ((p_evt_write->handle == p_optical->cal_test_vars_handles.value_handle) &&
-        (p_evt_write->len <= 2))// &&(p_optical->optical_write_handler != NULL))
+        (p_evt_write->len <= 3))// &&(p_optical->optical_write_handler != NULL))
     {
 			SEGGER_RTT_printf(0, "optical data write handler data[0] \n");
 			SEGGER_RTT_printf(0,"input: %d ",p_evt_write->data[0]);
         //p_optical->optical_write_handler(p_optical, p_evt_write->data[0]); //null pointer crashes processor...
-			
+			cal_data.optical_parameters[0] = p_evt_write->data[0]; //length
+			cal_data.optical_parameters[1] = p_evt_write->data[1]; //max speed
+			cal_data.optical_parameters[2] = p_evt_write->data[2]; // tolerance
+			send_data_to_PIC(optical_cal_length_pack);
 			
     }
     if (p_optical->is_notification_supported)
@@ -660,8 +665,8 @@ void cal_test_vars_char_add(cal_optical_t * p_optical)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
+    attr_char_value.max_len     = 3;
+    attr_char_value.init_len    = 3;  // expecting 3 x uint8_t
     uint8_t value               = 0x00;
     attr_char_value.p_value     = &value;
     

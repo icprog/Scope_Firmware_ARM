@@ -857,6 +857,7 @@ void cal_force_on_ble_evt(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 
 uint32_t cal_points_update(cal_force_t * p_force, uint16_t points[7])
 {
+	SEGGER_RTT_printf(0, "FORCE_UPDATE\n");
     if (p_force == NULL)
     {
         return NRF_ERROR_NULL;

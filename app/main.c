@@ -1045,8 +1045,8 @@ int main(void)
 		
     while(true)
     {
-        cal_points_update(&m_force, test);
-			optical_cal_data_update(&m_optical, 7);
+        //cal_points_update(&m_force, test);
+			//optical_cal_data_update(&m_optical, 7);
         //APP_Tasks();
         power_manage();
 
