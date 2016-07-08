@@ -213,16 +213,18 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-=        case APP_STATE_HALL_EFFECT_TEST:
+        case APP_STATE_HALL_EFFECT_TEST:
         {
             if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
             {
                 //communicate that the test failed!
+								cal_result_update(&m_hall_effect, 0);
                 appData.state = APP_STATE_POLLING;
             }
-            if(cal_data.hall_status == COMPLETE)
+            if(cal_data.hall_status == 0) //test complete
             {
                 //communicate that the test passed
+							cal_result_update(&m_hall_effect, 1);
                 appData.state = APP_STATE_POLLING;
             }
             break;

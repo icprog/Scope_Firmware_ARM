@@ -27,6 +27,7 @@
 #include "SEGGER_RTT.h"
 #include "calibration.h"
 #include "SPI_utils.h"
+#include "app.h"
 
 
 #define cal_hall_effect_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -40,7 +41,7 @@ static ble_gatts_char_handles_t cal_result_handles;
 //static ble_gatts_char_handles_t pnp_id_handles;
 
 extern pic_arm_pack_t hall_effect_cal_weight_pack;
-
+extern  APP_DATA appData;
 
 ///**@brief Function for encoding a PnP ID.
 // *
@@ -645,11 +646,11 @@ static void on_disconnect(cal_hall_effect_t * p_hall_effect, ble_evt_t * p_ble_e
 
 void hall_effect_write_handler(cal_hall_effect_t * p_hall_effect, uint8_t data_in)
 {
-	//add call to SPI Utils stuff here:
-		cal_data.current_weight = data_in;
-		send_data_to_PIC(hall_effect_test_pack);
-
 	
+	cal_data.hall_status == data_in;
+	
+	if(data_in ==1) appData.state = APP_STATE_HALL_EFFECT_TEST;
+
 }
 
 /**@brief Function for handling the Write event.
