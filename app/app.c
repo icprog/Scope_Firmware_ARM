@@ -218,13 +218,13 @@ void APP_Tasks(void)
             if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
             {
                 //communicate that the test failed!
-								cal_result_update(&m_hall_effect, 0);
+				cal_result_update(&m_hall_effect, 0);
                 appData.state = APP_STATE_POLLING;
             }
             if(cal_data.hall_status == 0) //test complete
             {
                 //communicate that the test passed
-							cal_result_update(&m_hall_effect, 1);
+				cal_result_update(&m_hall_effect, 1);
                 appData.state = APP_STATE_POLLING;
             }
             break;
@@ -234,12 +234,14 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
             optical_cal_update(&m_optical, cal_data.optical_data);
             appData.state = APP_STATE_POLLING;
+            break;
         }
         case APP_STATE_OPTICAL_CAL_RESULT:
         {
             SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
             optical_cal_result_update(&m_optical, cal_data.optical_result);
             appData.state = APP_STATE_POLLING;
+            break;
         }
         case APP_STATE_HALL_EFFECT_RESULT:
         {

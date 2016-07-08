@@ -508,7 +508,7 @@ static void services_init(void)
     err_code = cal_vib_init(&m_vib, &vib_init);
     APP_ERROR_CHECK(err_code);
 
-		// Initialize vib Cal.
+	// Initialize cal hall effect service.
     cal_hall_effect_init_t hall_effect_init;
     memset(&hall_effect_init, 0, sizeof(hall_effect_init));
     err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
@@ -758,19 +758,20 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	SEGGER_RTT_WriteString(0, "ble dispatch \n");
-  dm_ble_evt_handler(p_ble_evt);
+    dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
 	ble_status_on_ble_evt(&m_status, p_ble_evt);
 	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-  ble_conn_params_on_ble_evt(p_ble_evt);
-   // bsp_btn_ble_on_ble_evt(p_ble_evt);
+    ble_conn_params_on_ble_evt(p_ble_evt);
+    // bsp_btn_ble_on_ble_evt(p_ble_evt);
 	cal_force_on_ble_evt(&m_force,p_ble_evt);
 	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
-  on_ble_evt(p_ble_evt);
-  ble_advertising_on_ble_evt(p_ble_evt);
-	cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+    on_ble_evt(p_ble_evt);
+    ble_advertising_on_ble_evt(p_ble_evt);
+    cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+    cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
 }
 
 

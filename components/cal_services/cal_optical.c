@@ -338,9 +338,9 @@ static uint32_t cal_optical_cal_char_add(cal_optical_t * p_optical, const cal_op
 
     attr_char_value.p_uuid    = &ble_uuid;
     attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(uint8_t);
+    attr_char_value.init_len  = sizeof(float);
     attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(uint8_t);
+    attr_char_value.max_len   = sizeof(float);
     attr_char_value.p_value   = &initial_cal_result;
 
     err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
@@ -812,6 +812,7 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 }
 uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
 {
+    SEGGER_RTT_printf(0, "optical_cal_update\n");
     if (p_optical == NULL)
     {
         return NRF_ERROR_NULL;
@@ -829,7 +830,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
         gatts_value.offset  = 0;
         gatts_value.p_value = ((uint8_t *)&cal_result); 
 
-        // Update dataopticale.
+        // Update data optical.
         err_code = sd_ble_gatts_value_set(p_optical->conn_handle,
                                           p_optical->cal_optical_cal_handles.value_handle,
                                           &gatts_value);
@@ -840,6 +841,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
         }
         else
         {
+            SEGGER_RTT_printf(0, "error in sd_ble_gatts_value_set = %d", err_code);
             return err_code;
         }
 
@@ -857,10 +859,12 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
             hvx_params.p_data = gatts_value.p_value;
 
             err_code = sd_ble_gatts_hvx(p_optical->conn_handle, &hvx_params);
+            SEGGER_RTT_printf(0, "notify error code = %d\n", err_code);
         }
         else
         {
             err_code = NRF_ERROR_INVALID_STATE;
+            SEGGER_RTT_printf(0, "not connected or notifying\n");
         }
     //}
 

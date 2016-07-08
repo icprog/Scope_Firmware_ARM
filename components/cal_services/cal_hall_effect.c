@@ -567,8 +567,8 @@ uint32_t cal_hall_effect_init(cal_hall_effect_t * p_hall_effect, const cal_hall_
     uint32_t   err_code;
     ble_uuid_t ble_uuid;
 		
-		cal_hall_effect_init_t * hall_effect_init = (cal_hall_effect_init_t *)p_hall_effect_init;  //undo const declaration
-		//cal_hall_effect_init_t hall_effect_init = *ptr;  //get back to cal_hall_effect_init_t
+	cal_hall_effect_init_t * hall_effect_init = (cal_hall_effect_init_t *)p_hall_effect_init;  //undo const declaration
+	//cal_hall_effect_init_t hall_effect_init = *ptr;  //get back to cal_hall_effect_init_t
 		
 
     // Here the sec level for the Battery Service can be changed/increased.
@@ -582,21 +582,19 @@ uint32_t cal_hall_effect_init(cal_hall_effect_t * p_hall_effect, const cal_hall_
     hall_effect_init->support_notification = true;
     hall_effect_init->p_report_ref         = NULL;
     hall_effect_init->initial_batt_level   = 100;
-		//p_hall_effect_init->hall_effect_write_handler = hall_effect_write_handler;
+	//p_hall_effect_init->hall_effect_write_handler = hall_effect_write_handler;
     
     if (p_hall_effect == NULL || p_hall_effect_init == NULL)
     {
         return NRF_ERROR_NULL;
     }
-    
-
 
     // Initialize service structure
-    p_hall_effect->evt_handler               = p_hall_effect_init->evt_handler;
-    p_hall_effect->conn_handle               = BLE_CONN_HANDLE_INVALID;
-    p_hall_effect->is_notification_supported = p_hall_effect_init->support_notification;
-    p_hall_effect->hall_effect_level_last          = NULL;
-		p_hall_effect->hall_effect_write_handler		 = p_hall_effect_init->hall_effect_write_handler;
+    p_hall_effect->evt_handler                      = p_hall_effect_init->evt_handler;
+    p_hall_effect->conn_handle                      = BLE_CONN_HANDLE_INVALID;
+    p_hall_effect->is_notification_supported        = p_hall_effect_init->support_notification;
+    p_hall_effect->hall_effect_level_last           = NULL;
+	p_hall_effect->hall_effect_write_handler        = p_hall_effect_init->hall_effect_write_handler;
 		
     // Add service
     BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_UUID_HALL_EFFECT_CAL);
@@ -609,8 +607,8 @@ uint32_t cal_hall_effect_init(cal_hall_effect_t * p_hall_effect, const cal_hall_
 
     // Add characteristics
     cal_test_add(p_hall_effect); //weights characteristic
-		//cal_ready_add(p_hall_effect); //ready characteristic
-		cal_result_char_add(p_hall_effect);
+	//cal_ready_add(p_hall_effect); //ready characteristic
+	cal_result_char_add(p_hall_effect);
 //		err_code =  cal_points_char_add(p_hall_effect, p_hall_effect_init); // calibration points service
 //		if (err_code != NRF_SUCCESS)
 //    {
