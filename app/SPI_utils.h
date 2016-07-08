@@ -86,7 +86,7 @@ typedef enum
     //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
-    
+    PA_CAL_OPTICAL_RESULT
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;

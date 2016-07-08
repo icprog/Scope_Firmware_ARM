@@ -150,17 +150,22 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 rx_data_ptr = &(cal_data.optical_data);
                 break;
             }
-            case PA_DEVICE_STATUS:
-            {
-                SEGGER_RTT_printf(0, "DEV STATUS\n");
-                
-                break;
-            }
-            case PA_PROFILE:
-            {
-                SEGGER_RTT_printf(0, "PROFILE\n");
-                break;
-            }
+//            case PA_DEVICE_STATUS:
+//            {
+//                //SEGGER_RTT_printf(0, "DEV STATUS\n");
+//                
+//                break;
+//            }
+//            case PA_PROFILE:
+//            {
+//                //SEGGER_RTT_printf(0, "PROFILE\n");
+//                break;
+//            }
+						case PA_CAL_OPTICAL_RESULT:
+						{
+							 next_state = APP_STATE_OPTICAL_CAL_RESULT;
+							rx_data_ptr = &(cal_data.optical_result);
+						}
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");

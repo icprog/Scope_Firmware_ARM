@@ -69,8 +69,7 @@
 #include "calibration.h"
 #include "cal_force.h"
 #include "nrf_drv_gpiote.h" //for the hall effect test
-
-
+#include "cal_optical.h"
 
 
 // *****************************************************************************
@@ -85,7 +84,8 @@ static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	       
 extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
 extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-extern cal_force_t                           m_force;
+extern cal_force_t                             m_force;
+extern cal_optical_t													 m_optical;
 // *****************************************************************************
 /* Application Data
 
@@ -224,6 +224,14 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
             }
             break;
+        }
+        case APP_STATE_OPTICAL_CAL_DATA:
+        {
+            optical_cal_update(&m_optical, cal_data.optical_data);
+        }
+        case APP_STATE_OPTICAL_CAL_RESULT:
+        {
+            optical_cal_result_update(&m_optical, cal_data.optical_result);
         }
         default:
         {
