@@ -331,8 +331,8 @@ void cal_result_char_add(cal_hall_effect_t * p_hall_effect)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 14;
-    attr_char_value.init_len    = 14;
+    attr_char_value.max_len     = 1;
+    attr_char_value.init_len    = 1;
     uint8_t value               = 0x00;
     attr_char_value.p_value     = &value;
     
