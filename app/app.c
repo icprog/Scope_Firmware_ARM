@@ -71,7 +71,7 @@
 #include "nrf_drv_gpiote.h" //for the hall effect test
 #include "cal_optical.h"
 #include "cal_hall_effect.h"
-
+#include "pcb_test.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -246,6 +246,15 @@ void APP_Tasks(void)
         case APP_STATE_HALL_EFFECT_RESULT:
         {
             cal_result_update(&m_hall_effect, cal_data.hall_result);
+            break;
+        }
+        case APP_STATE_PCB_TEST:
+        {
+            uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
+            run_pcb_tests(pcb_test_results);
+            pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
+            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            break;
         }
 
         default:
@@ -340,8 +349,8 @@ void monitor(void)
 						
 						case 'w':
 						{
-								printf("\r\nLSM Who Am I: %x",getLSM303ID());
-								printf("\r\nL3G Who Am I: %x",getL3GD_ID());
+								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
+								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
 								prompt();											
 						}
 				}

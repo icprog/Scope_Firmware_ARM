@@ -21,13 +21,11 @@
 		MDK-Lite version 5.20
  
   Author(s): 
-    Richard Kirby
+    Joe Trovato, Richard Kirby
  
   Created on:
     June 1, 2016
   
-  Revision History:
-    Development version      June 1, 2016
  *******************************************************************************/
  
 #ifndef SPI_UTILS_H
@@ -73,6 +71,8 @@ typedef enum
     PA_FORCE_CAL_INIT,
     
     /******************  calibration codes  ****************/
+    PA_PCB_TEST,
+    PA_PCB_TEST_DATA,
     PA_CAL_START, //dummy code used to amrk where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC

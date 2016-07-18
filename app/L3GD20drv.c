@@ -55,7 +55,7 @@
     See prototype in L3GDdrv.h.
  */
 
-uint8_t getL3GD_ID(void)
+uint8_t get_L3GD_ID(void)
 {
 	
     return(SPIReadByte(L3GD_WHO_AM_I|L3GD_READ_BIT, L3G_DEVICE));  
