@@ -73,7 +73,7 @@ typedef enum
     /******************  calibration codes  ****************/
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
-    PA_CAL_START, //dummy code used to amrk where cal codes start
+    PA_CAL_START, //dummy code used to mark where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC
     PA_FORCE_CAL_DATA, //PIC -> ARM
@@ -86,8 +86,8 @@ typedef enum
     //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
-    PA_CAL_OPTICAL_RESULT,
-
+    PA_OPTICAL_CAL_RESULT, //PIC-> ARM
+    
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;

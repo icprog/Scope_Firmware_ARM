@@ -163,11 +163,17 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //                //SEGGER_RTT_printf(0, "PROFILE\n");
 //                break;
 //            }
-            case PA_CAL_OPTICAL_RESULT:
+            case PA_OPTICAL_CAL_RESULT:
             {
                 SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
                 next_state = APP_STATE_OPTICAL_CAL_RESULT;
                 rx_data_ptr = &(cal_data.optical_result);
+                break;
+            }
+            case PA_PCB_TEST:
+            {
+                SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
+                next_state = APP_STATE_PCB_TEST;
                 break;
             }
             default:
