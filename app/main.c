@@ -54,6 +54,7 @@
 #include "app.h"
 #include "cal_vib.h"
 #include "cal_hall_effect.h"
+#include "calibration.h"
 //#include "SEGGER_RTT_printf.h"
 
 //services
@@ -1021,8 +1022,8 @@ int main(void)
     bool erase_bonds;
 	uint16_t test[8];
 	uint8_t kk = 0;
-//    uint8_t slope_level;
-//    LSM303_DATA test_data_303;
+    uint8_t slope_level;
+    LSM303_DATA test_data_303;
 	
     // Initialize.
     timers_init();
@@ -1043,24 +1044,28 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
     
-
+	//init_LSM303();
 	APP_Initialize();
+	SEGGER_RTT_WriteString(0, "main loop:\n");
     while(true)
     {
         //cal_points_update(&m_force, test);
 		//	optical_cal_update(&m_optical, test123);
-       // APP_Tasks();
+       //APP_Tasks();
         power_manage();
 
         
         /********   Dave's test:   ********/
-//		test_data_303 = getLSM303data();
-//		slope_level = 0;
-//		slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
+		//test_data_303 = getLSM303data();
+		//slope_level = 0;
+		//slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
 //	
 //		SLOPE_GLOBAL = slope_level;
-//		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
-
+		//SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
+			cal_data.optical_parameters[0] = 0x5c; //length
+			cal_data.optical_parameters[1] = 0x31; //max speed
+			cal_data.optical_parameters[2] = 0xc5;
+			send_data_to_PIC(optical_cal_length_pack);
 
 
     }
