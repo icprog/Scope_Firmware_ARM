@@ -514,6 +514,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\calibration.c</FilePath>
             </File>
+            <File>
+              <FileName>pcb_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\pcb_test.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2640,6 +2645,11 @@
               <FileName>calibration.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>pcb_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\pcb_test.c</FilePath>
             </File>
           </Files>
         </Group>

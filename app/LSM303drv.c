@@ -57,7 +57,7 @@
     See prototype in LSM303drv.h.
  */
  
-uint8_t getLSM303ID(void)
+uint8_t get_LSM303_ID(void)
 {
 		return(SPIReadByte(LSM_WHO_AM_I|LSM303_READ_BIT, LSM_DEVICE));
 }
