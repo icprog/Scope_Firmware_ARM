@@ -141,7 +141,7 @@ typedef struct
     None.
 */
 
-uint8_t getL3GD_ID(void);
+uint8_t get_L3GD_ID(void);
 
 
 /*******************************************************************************

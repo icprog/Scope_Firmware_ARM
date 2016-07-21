@@ -185,7 +185,7 @@ typedef struct LSM303_DATA
     None.
 */
 
-uint8_t getLSM303ID(void);
+uint8_t get_LSM303_ID(void);
 
 
 /*******************************************************************************
