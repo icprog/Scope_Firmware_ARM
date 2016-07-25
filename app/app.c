@@ -207,7 +207,7 @@ void APP_Tasks(void)
             for(int i = 0; i < 7; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
-							test[i] = i;
+				test[i] = i;
             }
 
 			cal_points_update(&m_force, cal_data.force_data);
