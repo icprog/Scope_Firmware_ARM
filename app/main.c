@@ -1050,7 +1050,7 @@ int main(void)
         //cal_points_update(&m_force, test);
 		//	optical_cal_update(&m_optical, test123);
         APP_Tasks();
-        power_manage();
+        //power_manage(); //TODO when ARM is asleep communication to PIc does not work
 
         
         /********   Dave's test:   ********/
