@@ -489,7 +489,7 @@ static void services_init(void)
 //	ble_probe_error_service_init(&m_pes);
 //    
     //initialize profile service
-   ble_profile_service_init(&m_ps);
+  // ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
     cal_optical_init_t optical_init;
