@@ -146,7 +146,7 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt);
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
 uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result);
-uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result);
+uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result);
 uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t cal_result);
 uint32_t optical_cal_test_vars_update(cal_optical_t * p_optical, uint8_t cal_result);
 #endif // CAL_OPTICAL_H__

@@ -4,6 +4,7 @@
 #include "profile_service.h"
 #include "ble_srv_common.h"
 #include "app_error.h"
+#include "SEGGER_RTT.h"
 
 
 void profile_char_add(ble_ps_t * p_ps)
@@ -286,7 +287,67 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     
 }
 
+void profile_Data_update(ble_ps_t * p_ps)
+{
+	if (p_ps == NULL)
+    {
+        return NRF_ERROR_NULL;
+    }
+    
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
 
+    //if (cal_result != p_ps->cal_result_last)
+    //{
+        // Initialize value struct.
+        memset(&gatts_value, 0, sizeof(gatts_value));
+
+        gatts_value.len     = sizeof(uint8_t);
+        gatts_value.offset  = 0;
+        gatts_value.p_value = &cal_result;
+
+        // Update dataopticale.
+        err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
+                                          p_ps->cal_test_vars_handles.value_handle,
+                                          &gatts_value);
+        if (err_code == NRF_SUCCESS)
+        {
+            // Save new battery value.
+           // p_ps->cal_result_last = cal_result;
+        }
+        else
+        {
+            //return err_code;
+					SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        }
+
+        // Send value if connected and notifying.
+        if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
+        {
+            ble_gatts_hvx_params_t hvx_params;
+
+            memset(&hvx_params, 0, sizeof(hvx_params));
+
+            hvx_params.handle = p_ps->cal_test_vars_handles.value_handle;
+            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+            hvx_params.offset = gatts_value.offset;
+            hvx_params.p_len  = &gatts_value.len;
+            hvx_params.p_data = gatts_value.p_value;
+
+            err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+        }
+        else
+        {
+            err_code = NRF_ERROR_INVALID_STATE;
+        }
+    //}
+
+}
+
+void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
+{
+	
+}
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
 
@@ -295,6 +356,7 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     {        
         case BLE_GATTS_EVT_WRITE:
             //on_ble_write(p_ps, p_ble_evt); //TODO not sure what the effects of the on write are :/
+				on_write_profile_service(p_ps, p_ble_evt);
             break;
         case BLE_GAP_EVT_CONNECTED:
             p_ps->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;

@@ -488,8 +488,8 @@ static void services_init(void)
 //	//initialize probe error service
 //	ble_probe_error_service_init(&m_pes);
 //    
-//    //initialize profile service
-//   ble_profile_service_init(&m_ps);
+    //initialize profile service
+   ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
     cal_optical_init_t optical_init;
@@ -1051,7 +1051,7 @@ int main(void)
     {
         //cal_points_update(&m_force, test);
 		//	optical_cal_update(&m_optical, test123);
-       //APP_Tasks();
+       APP_Tasks();
         power_manage();
 
         
@@ -1062,10 +1062,10 @@ int main(void)
 //	
 //		SLOPE_GLOBAL = slope_level;
 		//SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
-			cal_data.optical_parameters[0] = 0x5c; //length
-			cal_data.optical_parameters[1] = 0x31; //max speed
-			cal_data.optical_parameters[2] = 0xc5;
-			send_data_to_PIC(optical_cal_length_pack);
+//			cal_data.optical_parameters[0] = 0x5c; //length
+//			cal_data.optical_parameters[1] = 0x31; //max speed
+//			cal_data.optical_parameters[2] = 0xc5;
+//			send_data_to_PIC(optical_cal_length_pack);
 
 
     }
