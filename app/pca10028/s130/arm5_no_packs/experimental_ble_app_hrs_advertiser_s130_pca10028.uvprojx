@@ -1421,11 +1421,6 @@
                 </FileArmAds>
               </FileOption>
             </File>
-            <File>
-              <FileName>nrf_drv_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\components\drivers_nrf\config\nrf_drv_config.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -3552,11 +3547,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-            <File>
-              <FileName>nrf_drv_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\..\components\drivers_nrf\config\nrf_drv_config.h</FilePath>
             </File>
           </Files>
         </Group>
