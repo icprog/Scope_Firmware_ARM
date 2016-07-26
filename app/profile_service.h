@@ -37,7 +37,7 @@ typedef void (*profile_evt_handler_t) (profile_t * p_profile, profile_evt_t * p_
 //service structure
 //TODO typedef might mess things up
 typedef struct {
-	profile_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+	profile_evt_handler_t       evt_handler;    /**< Event handler to be called for handling events in the Battery Service. */
 	uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t    char_handles;   //handles for the characteristic attributes to our struct
@@ -47,6 +47,6 @@ typedef struct {
 void ble_profile_service_init(ble_ps_t * p_profile_service);
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps_service, ble_evt_t * p_ble_evt);
 uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code);
-void profile_data_update(ble_ps_t * p_ps, uint8_t send_data[]); // send data to phone
+void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size); // send data to phone
 	
 #endif //PROFILE_SERVICE_H__

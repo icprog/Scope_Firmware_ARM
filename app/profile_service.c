@@ -7,6 +7,7 @@
 #include "SEGGER_RTT.h"
 
 
+
 void profile_char_add(ble_ps_t * p_ps)
 {
     
@@ -23,7 +24,7 @@ void profile_char_add(ble_ps_t * p_ps)
     memset(&char_md, 0, sizeof(char_md));
     //char_md.char_props.write = 1;
     char_md.char_props.read = 1;
-		char_md.char_props.notify = 1;
+	char_md.char_props.notify = 1;
     
     /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
     ble_gatts_attr_md_t cccd_md;
@@ -281,122 +282,108 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     
     /******* add charateristics  *******/
     profile_char_add(p_profile_service);
-    profile_ids_char_add(p_profile_service);
-    transfer_ids_char_add(p_profile_service);
-    delete_ids_char_add(p_profile_service);
-    profile_error_char_add(p_profile_service);
+//    profile_ids_char_add(p_profile_service);
+//    transfer_ids_char_add(p_profile_service);
+//    delete_ids_char_add(p_profile_service);
+//    profile_error_char_add(p_profile_service);
     
 }
 
-void profile_data_update(ble_ps_t * p_ps, uint8_t send_data[])
+void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
 {
 	if (p_ps == NULL)
     {
         //return NRF_ERROR_NULL;
-			SEGGER_RTT_printf(0, "error: null profile input \n");
-			return;
-			
+		SEGGER_RTT_printf(0, "error: null profile input \n");
+		return;
     }
     
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
 
-    //if (cal_result != p_ps->cal_result_last)
-    //{
-        // Initialize value struct.
-        memset(&gatts_value, 0, sizeof(gatts_value));
+    // Initialize value struct.
+    memset(&gatts_value, 0, sizeof(gatts_value));
 
-        gatts_value.len     = 20;// sizeof(uint8_t);
-        gatts_value.offset  = 0;
-        gatts_value.p_value = send_data;
+    gatts_value.len     = size;// sizeof(uint8_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = send_data;
 
-        // Update dataopticale.
-        err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
-                                          p_ps->char_handles.value_handle,
-                                          &gatts_value);
-        if (err_code == NRF_SUCCESS)
-        {
-            // Save new battery value.
-           // p_ps->cal_result_last = cal_result;
-					SEGGER_RTT_printf(0, "data update success \n");
-        }
-        else
-        {
-            //return err_code;
-					SEGGER_RTT_printf(0, "error in profile data update fxn\n");
-        }
+    // Update data.
+    err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
+                                      p_ps->char_handles.value_handle,
+                                      &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        SEGGER_RTT_printf(0, "data update success \n");
+    }
+    else
+    {
+        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+    }
 
-        // Send value if connected and notifying.
-        if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
-        {
-            ble_gatts_hvx_params_t hvx_params;
+    // Send value if connected and notifying.
+    if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
+    {
+        ble_gatts_hvx_params_t hvx_params;
 
-            memset(&hvx_params, 0, sizeof(hvx_params));
+        memset(&hvx_params, 0, sizeof(hvx_params));
 
-            hvx_params.handle = p_ps->char_handles.value_handle;
-            hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-            hvx_params.offset = gatts_value.offset;
-            hvx_params.p_len  = &gatts_value.len;
-            hvx_params.p_data = gatts_value.p_value;
+        hvx_params.handle = p_ps->char_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = gatts_value.offset;
+        hvx_params.p_len  = &gatts_value.len;
+        hvx_params.p_data = gatts_value.p_value;
 
-            err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
-        }
-        else
-        {
-            err_code = NRF_ERROR_INVALID_STATE;
-        }
-    //}
-
+        err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+    }
+    else
+    {
+        err_code = NRF_ERROR_INVALID_STATE;
+    }
 }
 
 void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
 	//need to get data from PIC
 
-		SEGGER_RTT_printf(0, "profile data write fxn\n");
-		ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-		profile_t * p_profile;
-        if (
-            (p_evt_write->handle == p_ps->char_handles.cccd_handle)
-            &&
-            (p_evt_write->len == 2)
-           )
+    SEGGER_RTT_printf(0, "profile data write fxn\n");
+    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+    profile_t * p_profile;
+    if ((p_evt_write->handle == p_ps->char_handles.cccd_handle) && (p_evt_write->len == 2))
+    {
+        // CCCD written, call application event handler
+        if (p_ps->evt_handler != NULL)
         {
-            // CCCD written, call application event handler
-            if (p_ps->evt_handler != NULL)
-            {
-                profile_evt_t evt;
-
+            profile_evt_t evt;
 //                if (ble_srv_is_notification_enabled(p_evt_write->data))
 //                {
-                    evt.evt_type = PROFILE_EVT_NOTIFICATION_ENABLED;
-									SEGGER_RTT_printf(0, "profile data notification enabled *** *** *** \n");
+                evt.evt_type = PROFILE_EVT_NOTIFICATION_ENABLED;
+                SEGGER_RTT_printf(0, "profile data notification enabled *** *** *** \n");
 //                }
 //                else
 //                {
-                    //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
+                //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
 //                }
-								p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
-                //p_optical->result_handler(p_optical, 13);
-            }
+             //p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
+            //p_optical->result_handler(p_optical, 13);
         }
+    }
 
 	
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
-		if (p_ps == NULL || p_ble_evt == NULL)
+	if (p_ps == NULL || p_ble_evt == NULL)
     {
-				SEGGER_RTT_WriteString(0, "profile null \n");
+		SEGGER_RTT_WriteString(0, "profile null \n");
         return;
     }
     SEGGER_RTT_WriteString(0, "profile evt handler \n");
     switch (p_ble_evt->header.evt_id)
     {        
         case BLE_GATTS_EVT_WRITE:
-					SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
-            //on_ble_write(p_ps, p_ble_evt); //TODO not sure what the effects of the on write are :/
-				on_write_profile_service(p_ps, p_ble_evt);
+			SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
+			on_write_profile_service(p_ps, p_ble_evt);
             break;
         case BLE_GAP_EVT_CONNECTED:
             p_ps->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
@@ -408,11 +395,4 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
             // No implementation needed.
             break;
     }
-}
-
-uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code)
-{
-    uint32_t err_code = NRF_SUCCESS;
-    return err_code;
-    
 }

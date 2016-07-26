@@ -4,6 +4,7 @@
 #include "probe_error.h"
 #include "ble_srv_common.h"
 #include "app_error.h"
+#include "SEGGER_RTT.h"
 
 //static void on_ble_write(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
 //{
@@ -139,7 +140,7 @@ void probe_error_char_add(ble_pes_t * p_pes)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_pes->service_handle, &char_md, &attr_char_value,&p_pes->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_pes->service_handle, &char_md, &attr_char_value, &p_pes->char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -173,7 +174,7 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
 
-    if (probe_error_code != p_pes->probe_error_code)
+    if (probe_error_code != p_pes->probe_error_code) //notify anytime the value changes
     {
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
@@ -182,12 +183,10 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
         gatts_value.p_value = &probe_error_code;
 
         // Update database.
-        err_code = sd_ble_gatts_value_set(p_pes->conn_handle,
-                                          p_pes->char_handles.value_handle,
-                                          &gatts_value);
+        err_code = sd_ble_gatts_value_set(p_pes->conn_handle, p_pes->char_handles.value_handle, &gatts_value);
         if (err_code == NRF_SUCCESS)
         {
-            // Save new battery value.
+            //save probe error code
             p_pes->probe_error_code = probe_error_code;
         }
         else
@@ -208,7 +207,9 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
             hvx_params.p_len  = &gatts_value.len;
             hvx_params.p_data = gatts_value.p_value;
 
+            
             err_code = sd_ble_gatts_hvx(p_pes->conn_handle, &hvx_params);
+            SEGGER_RTT_printf(0, "notifying %d", probe_error_code);
         }
         else
         {

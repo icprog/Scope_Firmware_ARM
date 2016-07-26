@@ -566,8 +566,8 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     uint32_t   err_code;
     ble_uuid_t ble_uuid;
 		
-		cal_force_init_t * force_init = (cal_force_init_t *)p_force_init;  //undo const declaration
-		//cal_force_init_t force_init = *ptr;  //get back to cal_force_init_t
+	cal_force_init_t * force_init = (cal_force_init_t *)p_force_init;  //undo const declaration
+	//cal_force_init_t force_init = *ptr;  //get back to cal_force_init_t
 		
 
     // Here the sec level for the Battery Service can be changed/increased.
@@ -581,21 +581,19 @@ uint32_t cal_force_init(cal_force_t * p_force, const cal_force_init_t * p_force_
     force_init->support_notification = true;
     force_init->p_report_ref         = NULL;
     force_init->initial_batt_level   = 100;
-		//p_force_init->force_write_handler = force_write_handler;
+	//p_force_init->force_write_handler = force_write_handler;
     
     if (p_force == NULL || p_force_init == NULL)
     {
         return NRF_ERROR_NULL;
     }
     
-
-
     // Initialize service structure
     p_force->evt_handler               = p_force_init->evt_handler;
     p_force->conn_handle               = BLE_CONN_HANDLE_INVALID;
     p_force->is_notification_supported = p_force_init->support_notification;
     p_force->force_level_last          = NULL;
-		p_force->force_write_handler		 = p_force_init->force_write_handler;
+	p_force->force_write_handler	   = p_force_init->force_write_handler;
 		
     // Add service
     BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_UUID_FORCE_CAL);
@@ -646,10 +644,8 @@ static void on_disconnect(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 void force_write_handler(cal_force_t * p_force, uint8_t data_in)
 {
 	//add call to SPI Utils stuff here:
-		cal_data.current_weight = data_in;
-		send_data_to_PIC(force_cal_weight_pack);
-
-	
+	cal_data.current_weight = data_in;
+	send_data_to_PIC(force_cal_weight_pack);
 }
 
 /**@brief Function for handling the Write event.
@@ -667,8 +663,6 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     {
 			SEGGER_RTT_printf(0, "force data write handler data[0] \n");
 			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
-
-			
 			force_write_handler(p_force, p_evt_write->data[0]);
     }
 
@@ -691,12 +685,12 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
                 if (ble_srv_is_notification_enabled(p_evt_write->data))
                 {
                     evt.evt_type = cal_force_EVT_NOTIFICATION_ENABLED;
-									SEGGER_RTT_printf(0, "notification enabled \n");
+					SEGGER_RTT_printf(0, "notification enabled \n");
                 }
                 else
                 {
                     evt.evt_type = cal_force_EVT_NOTIFICATION_DISABLED;
-									SEGGER_RTT_printf(0, "notification disabled \n");
+					SEGGER_RTT_printf(0, "notification disabled \n");
                 }
 
                 p_force->evt_handler(p_force, &evt);
