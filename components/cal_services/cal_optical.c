@@ -45,8 +45,10 @@ static void on_connect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
  */
 static void on_disconnect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
+	
     UNUSED_PARAMETER(p_ble_evt);
     p_optical->conn_handle = BLE_CONN_HANDLE_INVALID;
+	
 }
 
 

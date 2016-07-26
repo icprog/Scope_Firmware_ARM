@@ -489,7 +489,7 @@ static void services_init(void)
 //	ble_probe_error_service_init(&m_pes);
 //    
     //initialize profile service
-  // ble_profile_service_init(&m_ps);
+   ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
     cal_optical_init_t optical_init;
@@ -758,21 +758,22 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
-	SEGGER_RTT_WriteString(0, "ble dispatch \n");
+		SEGGER_RTT_WriteString(0, "ble dispatch \n");
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
-	ble_status_on_ble_evt(&m_status, p_ble_evt);
-	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+		ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+		ble_status_on_ble_evt(&m_status, p_ble_evt);
+		ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
     // bsp_btn_ble_on_ble_evt(p_ble_evt);
-	cal_force_on_ble_evt(&m_force,p_ble_evt);
-	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+		cal_force_on_ble_evt(&m_force,p_ble_evt);
+		cal_optical_on_ble_evt(&m_optical,p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
+		ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 }
 
 
@@ -1020,10 +1021,9 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-	uint16_t test[8];
-	uint8_t kk = 0;
-    uint8_t slope_level;
-    LSM303_DATA test_data_303;
+	
+		uint8_t kk = 0;  // counter for data send test
+		uint8_t send_data[20];  //send data test
 	
     // Initialize.
     timers_init();
@@ -1047,26 +1047,22 @@ int main(void)
 	//init_LSM303();
 	APP_Initialize();
 	SEGGER_RTT_WriteString(0, "main loop:\n");
+	kk = 0;
+	for(kk = 0;kk<20;kk++)
+	{
+		send_data[kk] = kk;
+	}
+		kk = 0;
     while(true)
     {
-        //cal_points_update(&m_force, test);
-		//	optical_cal_update(&m_optical, test123);
-       APP_Tasks();
+			kk++;
+			send_data[0] = kk;
+			
+			profile_data_update(&m_ps,send_data);
+
+       //APP_Tasks();
         power_manage();
-
-        
-        /********   Dave's test:   ********/
-		//test_data_303 = getLSM303data();
-		//slope_level = 0;
-		//slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
-//	
-//		SLOPE_GLOBAL = slope_level;
-		//SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
-//			cal_data.optical_parameters[0] = 0x5c; //length
-//			cal_data.optical_parameters[1] = 0x31; //max speed
-//			cal_data.optical_parameters[2] = 0xc5;
-//			send_data_to_PIC(optical_cal_length_pack);
-
+			if(kk >=10) kk=0;
 
     }
 
