@@ -45,8 +45,10 @@ static void on_connect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
  */
 static void on_disconnect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
+	
     UNUSED_PARAMETER(p_ble_evt);
     p_optical->conn_handle = BLE_CONN_HANDLE_INVALID;
+	
 }
 
 
@@ -338,9 +340,9 @@ static uint32_t cal_optical_cal_char_add(cal_optical_t * p_optical, const cal_op
 
     attr_char_value.p_uuid    = &ble_uuid;
     attr_char_value.p_attr_md = &attr_md;
-    attr_char_value.init_len  = sizeof(float);
+    attr_char_value.init_len  = sizeof(uint16_t); //was float
     attr_char_value.init_offs = 0;
-    attr_char_value.max_len   = sizeof(float);
+    attr_char_value.max_len   = sizeof(uint16_t); //was float
     attr_char_value.p_value   = &initial_cal_result;
 
     err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
@@ -810,7 +812,7 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 
     return err_code;
 }
-uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
+uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result)
 {
     SEGGER_RTT_printf(0, "optical_cal_update\n");
     if (p_optical == NULL)
@@ -826,7 +828,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, float cal_result)
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 
-        gatts_value.len     = sizeof(float);
+        gatts_value.len     = 2;// sizeof(uint16_t); //was float
         gatts_value.offset  = 0;
         gatts_value.p_value = (uint8_t *)&cal_result; 
 

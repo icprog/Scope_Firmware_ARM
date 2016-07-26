@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
  *
  * The information contained herein is property of Nordic Semiconductor ASA.
@@ -462,3 +463,4 @@
 #include "nrf_drv_config_validation.h"
 
 #endif // NRF_DRV_CONFIG_H
+
