@@ -89,6 +89,7 @@ extern cal_force_t                             m_force;
 extern cal_optical_t													 m_optical;
 extern cal_hall_effect_t											 m_hall_effect;
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
+extern char serial_number[6];
 // *****************************************************************************
 /* Application Data
 
@@ -254,6 +255,13 @@ void APP_Tasks(void)
             run_pcb_tests(pcb_test_results);
             pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
             send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_SERIAL_NUMBER:
+        {
+            serial_number
+            
             appData.state = APP_STATE_POLLING;
             break;
         }

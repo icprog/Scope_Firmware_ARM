@@ -71,6 +71,7 @@ pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 
+extern char serial_number[6];
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -174,6 +175,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
                 next_state = APP_STATE_PCB_TEST;
+                break;
+            }
+            case PA_SERIAL_NUMBER:
+            {
+                SEGGER_RTT_printf(0, "PA_SERIAL_NUMBER\n");
+                rx_data_ptr = serial_number;
+                next_state = APP_STATE_SERIAL_NUMBER;
                 break;
             }
             default:

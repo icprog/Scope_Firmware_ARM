@@ -73,6 +73,7 @@ typedef enum
     /******************  calibration codes  ****************/
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
+    PA_SERIAL_NUMBER,
     PA_CAL_START, //dummy code used to mark where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC

@@ -45,7 +45,6 @@
 
 
 #define DEVICE_NAME                          "SCOPE JOE"                           /**< Name of device. Will be included in the advertising data. */
-
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define SERIAL_NUMBER												 "SN 0001"
 #define MODEL_NUMBER												 "Scope V 1.0"
