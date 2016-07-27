@@ -149,6 +149,7 @@ char serial_number[6] = "NO NUM";
 extern uint8_t dummy_buf[32];
 pic_arm_pack_t send_sn_pack = {PA_SERIAL_NUMBER, dummy_buf, 0};
 uint8_t sn_update = 0;
+char device_name[13] = "SCOPE ";
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
@@ -434,10 +435,11 @@ static void gap_params_init(void)
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
     
-    //get serial number
+
+    strcat(device_name, serial_number);
     err_code = sd_ble_gap_device_name_set(&sec_mode,
-                                          (const uint8_t *)serial_number,
-                                          strlen(serial_number));
+                                          (const uint8_t *)device_name,
+                                          12);
 //    err_code = sd_ble_gap_device_name_set(&sec_mode,
 //                                          (const uint8_t *)DEVICE_NAME,
 //                                          strlen(DEVICE_NAME));
