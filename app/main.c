@@ -187,8 +187,8 @@ static ble_uuid_t m_adv_uuids[] =                                               
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
 	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
-	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
-    //{PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
+	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+    {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
     {BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
@@ -221,7 +221,7 @@ static void battery_level_update(void)
     uint8_t  battery_level;
 
     //battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
-		battery_level = SLOPE_GLOBAL;
+	battery_level = SLOPE_GLOBAL;
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
@@ -234,7 +234,7 @@ static void battery_level_update(void)
     
     //TESTING THE PROBE ERROR UPDATE
     uint8_t probe_error_code = battery_level;
-    err_code = ble_probe_error_update(&m_pes, probe_error_code);
+    //err_code = ble_probe_error_update(&m_pes, probe_error_code);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != BLE_ERROR_NO_TX_PACKETS) &&
@@ -485,9 +485,9 @@ static void services_init(void)
 //    err_code = ble_status_init(&m_status, &status_init);
 //    APP_ERROR_CHECK(err_code);
 //	
-//	//initialize probe error service
-//	ble_probe_error_service_init(&m_pes);
-//    
+	//initialize probe error service
+	ble_probe_error_service_init(&m_pes);
+    
     //initialize profile service
    ble_profile_service_init(&m_ps);
 
@@ -758,22 +758,22 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
-		SEGGER_RTT_WriteString(0, "ble dispatch \n");
+	SEGGER_RTT_WriteString(0, "ble dispatch \n");
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-		ble_slope_on_ble_evt(&m_slope, p_ble_evt);
-		ble_status_on_ble_evt(&m_status, p_ble_evt);
-		ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	ble_status_on_ble_evt(&m_status, p_ble_evt);
+	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
     // bsp_btn_ble_on_ble_evt(p_ble_evt);
-		cal_force_on_ble_evt(&m_force,p_ble_evt);
-		cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+	cal_force_on_ble_evt(&m_force,p_ble_evt);
+	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
-		ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 }
 
 
@@ -1022,8 +1022,8 @@ int main(void)
     uint32_t err_code;
     bool erase_bonds;
 	
-		uint8_t kk = 0;  // counter for data send test
-		uint8_t send_data[20];  //send data test
+	uint8_t kk = 0;  // counter for data send test
+	uint8_t send_data[20];  //send data test
 	
     // Initialize.
     timers_init();
@@ -1049,7 +1049,7 @@ int main(void)
 	
 	send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-	
+
     while(true)
     {
 			
@@ -1057,8 +1057,10 @@ int main(void)
        APP_Tasks();
         power_manage();
 			//SEGGER_RTT_WriteString(0, "looping....\n");
+	}
 
-    }
+}
+
 
 }
 
