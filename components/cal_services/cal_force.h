@@ -97,13 +97,13 @@ typedef struct
     ble_srv_utf8_str_t            force_cal_str;              /**< Serial Number String. */
     ble_srv_utf8_str_t            cal_result_str;                  /**< Hardware Revision String. */
 		//ble_srv_security_mode_t     force_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
-		cal_force_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+	cal_force_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
     bool                          support_notification;           /**< TRUE if notification of Battery Level measurement is supported. */
     ble_srv_report_ref_t *        p_report_ref;                   /**< If not NULL, a Report Reference descriptor with the specified value will be added to the Battery Level characteristic */
     uint8_t                       initial_batt_level;             /**< Initial battery level */
     ble_srv_cccd_security_mode_t  force_char_cccd_attr_md;     /**< Initial security level for battery characteristics attribute */
     ble_gap_conn_sec_mode_t       force_report_read_perm; 			/**< Initial security level for battery report read attribute */
-		cal_force_write_handler_t 		force_write_handler; 
+	cal_force_write_handler_t 		force_write_handler; 
 } cal_force_init_t;
 
 
@@ -112,11 +112,11 @@ struct cal_force_s
 {
     cal_force_evt_handler_t     	evt_handler;                    /**< Event handler to be called for handling events in the force Service. */
     uint16_t                      service_handle;                 /**< Handle of force Service (as provided by the BLE stack). */
-		ble_gatts_char_handles_t      force_level_handles;          /**< Handles related to the force Level characteristic. */
+	ble_gatts_char_handles_t      force_level_handles;          /**< Handles related to the force Level characteristic. */
     ble_gatts_char_handles_t      force_weight_handles;          /**< Handles related to the force Level characteristic. */
-		ble_gatts_char_handles_t      force_cal_handles;          /**< Handles related to the force Level characteristic. */
-		ble_gatts_char_handles_t      force_result_handles;          /**< Handles related to the force Level characteristic. */
-		ble_gatts_char_handles_t      force_ready_handles;          /**< Handles related to the force Level characteristic. */
+	ble_gatts_char_handles_t      force_cal_handles;          /**< Handles related to the force Level characteristic. */
+	ble_gatts_char_handles_t      force_result_handles;          /**< Handles related to the force Level characteristic. */
+	ble_gatts_char_handles_t      force_ready_handles;          /**< Handles related to the force Level characteristic. */
     uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
     uint8_t                       force_level_last;             /**< Last force Level measurement passed to the force Service. */
     uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */

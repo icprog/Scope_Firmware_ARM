@@ -40,7 +40,12 @@ typedef struct {
 	profile_evt_handler_t       evt_handler;    /**< Event handler to be called for handling events in the Battery Service. */
 	uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
-    ble_gatts_char_handles_t    char_handles;   //handles for the characteristic attributes to our struct
+    ble_gatts_char_handles_t    profile_char_handles;   //handles for the profile characteristic attributes to our struct
+    ble_gatts_char_handles_t    profile_ids_char_handles;   //handles for the profile ids characteristic attributes to our struct
+    ble_gatts_char_handles_t    transfer_ids_char_handles;   //handles for the transfer ids characteristic attributes to our struct
+    ble_gatts_char_handles_t    delete_ids_char_handles;   //handles for the delete ids characteristic attributes to our struct
+    ble_gatts_char_handles_t    profile_error_char_handles;   //handles for the profile error characteristic attributes to our struct
+
 }ble_ps_t;
 
 /********* FUNCTIONS  ***********/
