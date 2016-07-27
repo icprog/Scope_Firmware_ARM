@@ -88,7 +88,10 @@ static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer
 extern cal_force_t                             m_force;
 extern cal_optical_t													 m_optical;
 extern cal_hall_effect_t											 m_hall_effect;
+extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
+extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
+
 // *****************************************************************************
 /* Application Data
 
@@ -138,6 +141,7 @@ void APP_Initialize(void)
 		spi_init();	
 		spis_init();
 		spis_xfer_done = false;
+		profile_block_counter = 0;
 		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
@@ -152,6 +156,7 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
+	uint16_t kk;
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -168,7 +173,7 @@ void APP_Tasks(void)
             if(~NRF_GPIO->IN & 1<<17)
             {
                     //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
-                SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
+									SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
                   init_LSM303();
                   LEDS_INVERT(BSP_LED_0_MASK);
                     while(~NRF_GPIO->IN & 1<<17);
@@ -177,7 +182,20 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-
+				case APP_STATE_PROFILE_TRANSFER:
+				{
+					//handle incoming profile data from PIC here
+					//profile_data_in[];
+					profile_block_counter++; //keeps track of current block of 250 bytes
+					if(profile_block_counter >= 6)
+					{
+							profile_block_counter = 0;
+							SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
+							//for(kk=0;kk<1500;kk++)SEGGER_RTT_printf(0, " %d ",profile_data_in[kk]);
+					}
+					appData.state = APP_STATE_POLLING;
+					break;
+				}
 //        case APP_STATE_VIB_CAL_RDY:
 //        {
 //            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -201,16 +219,16 @@ void APP_Tasks(void)
 //        }
         case APP_STATE_FORCE_CAL_DATA:
         {
-			uint16_t test[7];
+						uint16_t test[7];
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
             for(int i = 0; i < 7; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
-				test[i] = i;
+								test[i] = i;
             }
 
-			cal_points_update(&m_force, cal_data.force_data);
+						cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -219,13 +237,13 @@ void APP_Tasks(void)
             if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
             {
                 //communicate that the test failed!
-				cal_result_update(&m_hall_effect, 0);
+								cal_result_update(&m_hall_effect, 0);
                 appData.state = APP_STATE_POLLING;
             }
             if(cal_data.hall_status == 0) //test complete
             {
                 //communicate that the test passed
-				cal_result_update(&m_hall_effect, 1);
+								cal_result_update(&m_hall_effect, 1);
                 appData.state = APP_STATE_POLLING;
             }
             break;

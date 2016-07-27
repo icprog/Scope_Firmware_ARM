@@ -1042,33 +1042,25 @@ int main(void)
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-	SEGGER_RTT_WriteString(0, "Hello World!\n");
+		SEGGER_RTT_WriteString(0, "Hello World!\n");
     
 	//init_LSM303();
 	APP_Initialize();
+	
+	send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-	kk = 0;
-	for(kk = 0;kk<20;kk++)
-	{
-		send_data[kk] = kk;
-	}
-	kk = 0;
+
     while(true)
     {
-        APP_Tasks();
-        //power_manage(); //TODO when ARM is asleep communication to PIc does not work
+			
 
-        
-		kk++;
-		send_data[0] = kk;
-		
-        nrf_delay_ms(1000);
-        //ble_probe_error_update(&m_pes, kk);
-		profile_data_update(&m_ps, send_data, 10);
+       APP_Tasks();
+        power_manage();
+			//SEGGER_RTT_WriteString(0, "looping....\n");
+	}
 
-		if(kk >=10) kk=0;
+}
 
-    }
 
 }
 
