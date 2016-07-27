@@ -57,19 +57,20 @@
 typedef enum
 {
 	/* Application's state machine's initial state. */
-	APP_STATE_INIT = 0,
+		APP_STATE_INIT = 0,
     APP_STATE_POLLING = 1,
     APP_STATE_FORCE_CAL_INIT,
     APP_STATE_FORCE_CAL_WEIGHT,
     APP_STATE_OPTICAL_CAL_LENGTH,
     APP_STATE_FORCE_CAL_DATA,
     APP_STATE_OPTICAL_CAL_DATA,
-	APP_STATE_OPTICAL_CAL_RESULT,
+		APP_STATE_OPTICAL_CAL_RESULT,
     APP_STATE_FORCE_CAL_RDY,
     APP_STATE_VIB_CAL_RDY,
-	APP_STATE_HALL_EFFECT_RESULT,
+		APP_STATE_HALL_EFFECT_RESULT,
     APP_STATE_HALL_EFFECT_TEST,
     APP_STATE_PCB_TEST,
+		APP_STATE_PROFILE_TRANSFER,
 } APP_STATES;
 
 
@@ -94,6 +95,8 @@ typedef struct
 
 } APP_DATA;
 extern APP_DATA appData;
+
+
 	
 // *****************************************************************************
 // *****************************************************************************

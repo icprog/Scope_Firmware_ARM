@@ -376,7 +376,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 //                {
                     //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
 //                }
-								p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
+//								p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
                 //p_optical->result_handler(p_optical, 13);
             }
         }

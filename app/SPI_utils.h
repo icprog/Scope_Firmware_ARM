@@ -57,6 +57,7 @@
 extern uint16_t force_cal_consts[5];
 
 
+
 typedef enum
 {
     LSM_DEVICE = 0,
@@ -106,6 +107,7 @@ extern pic_arm_pack_t force_cal_weight_pack;
 extern pic_arm_pack_t vib_cal_rdy_pack;
 extern pic_arm_pack_t optical_cal_length_pack;
 extern pic_arm_pack_t hall_effect_test_pack;
+extern pic_arm_pack_t get_profile_pack;
 
 typedef struct
 {
