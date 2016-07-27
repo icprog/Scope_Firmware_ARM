@@ -90,6 +90,7 @@ extern cal_optical_t													 m_optical;
 extern cal_hall_effect_t											 m_hall_effect;
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
 extern char serial_number[6];
+extern uint8_t sn_update;
 // *****************************************************************************
 /* Application Data
 
@@ -260,9 +261,13 @@ void APP_Tasks(void)
         }
         case APP_STATE_SERIAL_NUMBER:
         {
-            serial_number
-            
+            SEGGER_RTT_printf(0, "serial number = ");
+            for(int i = 0; i < 5; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", serial_number[i]);
+            }
             appData.state = APP_STATE_POLLING;
+            sn_update = 1;
             break;
         }
 

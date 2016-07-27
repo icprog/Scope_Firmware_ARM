@@ -145,7 +145,10 @@ static ble_beacon_init_t beacon_init;
 
 #define DEAD_BEEF                            0xDEADBEEF                                 /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-char serial_number[6];
+char serial_number[6] = "NO NUM";
+extern uint8_t dummy_buf[32];
+pic_arm_pack_t send_sn_pack = {PA_SERIAL_NUMBER, dummy_buf, 0};
+uint8_t sn_update = 0;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
@@ -430,9 +433,14 @@ static void gap_params_init(void)
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
+    
+    //get serial number
     err_code = sd_ble_gap_device_name_set(&sec_mode,
                                           (const uint8_t *)serial_number,
                                           strlen(serial_number));
+//    err_code = sd_ble_gap_device_name_set(&sec_mode,
+//                                          (const uint8_t *)DEVICE_NAME,
+//                                          strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
 
     err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_HEART_RATE_SENSOR_HEART_RATE_BELT);
@@ -1042,6 +1050,8 @@ int main(void)
 	
     // Start execution.
     application_timers_start();
+    
+    
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 	SEGGER_RTT_WriteString(0, "Hello World!\n");
@@ -1060,13 +1070,20 @@ int main(void)
         APP_Tasks();
         //power_manage(); //TODO when ARM is asleep communication to PIc does not work
 
-        
+        if(sn_update)
+        {
+                gap_params_init();
+                advertising_init();
+                err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+            sn_update = 0;
+        }
+            
 		kk++;
 		send_data[0] = kk;
 		
-        nrf_delay_ms(1000);
+        //nrf_delay_ms(1000);
         //ble_probe_error_update(&m_pes, kk);
-		profile_data_update(&m_ps, send_data, 10);
+		//profile_data_update(&m_ps, send_data, 10);
 
 		if(kk >=10) kk=0;
 

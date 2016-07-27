@@ -132,6 +132,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "setting spis_rx_trasnfer_length to %d", spis_rx_transfer_length);
         
         //TODO sort out where to put the data from the buffer
+        SEGGER_RTT_printf(0, "code = %d\n", packet->code);
         switch(packet->code)
         {
             case TEST_CODE:
