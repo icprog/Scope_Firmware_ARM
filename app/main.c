@@ -1024,6 +1024,9 @@ int main(void)
 	
 	uint8_t kk = 0;  // counter for data send test
 	uint8_t send_data[20];  //send data test
+		
+		uint8_t accel_id = 0;
+		LSM303_DATA accel_data;
 	
     // Initialize.
     timers_init();
@@ -1049,18 +1052,21 @@ int main(void)
 	
 	send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-
+	init_LSM303();
+	nrf_delay_us(1);
+	accel_id = get_LSM303_ID();
+	SEGGER_RTT_printf(0, "\n *** *** *** accel id : %d \n",accel_id);
     while(true)
     {
 			
-
-       APP_Tasks();
+				//accel_data = getLSM303data();
+				//SEGGER_RTT_printf(0, " %d \n",accel_data.Y);
+       //APP_Tasks();
         power_manage();
-			//SEGGER_RTT_WriteString(0, "looping....\n");
+			
 	}
 
 }
 
 
-}
 
