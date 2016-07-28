@@ -57,7 +57,7 @@ void profile_char_add(ble_ps_t * p_ps)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->profile_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -108,7 +108,7 @@ void profile_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->profile_ids_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -159,7 +159,7 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->transfer_ids_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -210,7 +210,7 @@ void delete_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->delete_ids_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -261,7 +261,7 @@ void profile_error_char_add(ble_ps_t * p_ps)
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->profile_error_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -282,10 +282,10 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     
     /******* add charateristics  *******/
     profile_char_add(p_profile_service);
-//    profile_ids_char_add(p_profile_service);
-//    transfer_ids_char_add(p_profile_service);
-//    delete_ids_char_add(p_profile_service);
-//    profile_error_char_add(p_profile_service);
+    profile_ids_char_add(p_profile_service);
+    transfer_ids_char_add(p_profile_service);
+    delete_ids_char_add(p_profile_service);
+    profile_error_char_add(p_profile_service);
     
 }
 
@@ -304,13 +304,13 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
     // Initialize value struct.
     memset(&gatts_value, 0, sizeof(gatts_value));
 
-    gatts_value.len     = size;// sizeof(uint8_t);
+    gatts_value.len     = size*sizeof(uint8_t);
     gatts_value.offset  = 0;
     gatts_value.p_value = send_data;
 
     // Update data.
     err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
-                                      p_ps->char_handles.value_handle,
+                                      p_ps->profile_char_handles.value_handle,
                                       &gatts_value);
     if (err_code == NRF_SUCCESS)
     {
@@ -328,7 +328,7 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
 
         memset(&hvx_params, 0, sizeof(hvx_params));
 
-        hvx_params.handle = p_ps->char_handles.value_handle;
+        hvx_params.handle = p_ps->profile_char_handles.value_handle;
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = gatts_value.offset;
         hvx_params.p_len  = &gatts_value.len;
@@ -349,7 +349,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     SEGGER_RTT_printf(0, "profile data write fxn\n");
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
     profile_t * p_profile;
-    if ((p_evt_write->handle == p_ps->char_handles.cccd_handle) && (p_evt_write->len == 2))
+    if ((p_evt_write->handle == p_ps->profile_char_handles.cccd_handle) && (p_evt_write->len == 2))
     {
         // CCCD written, call application event handler
         if (p_ps->evt_handler != NULL)
@@ -364,9 +364,17 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 //                {
                 //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
 //                }
+<<<<<<< HEAD
 
             
 
+=======
+//								p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
+                //p_optical->result_handler(p_optical, 13);
+            //}
+             //p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
+            //p_optical->result_handler(p_optical, 13);
+>>>>>>> 5c5d6bd39fffe5cee090d4252fc17eab4d3af6f9
         }
     }
 
