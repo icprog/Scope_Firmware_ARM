@@ -145,23 +145,21 @@ static ble_beacon_init_t beacon_init;
 
 #define DEAD_BEEF                            0xDEADBEEF                                 /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-char serial_number[6] = "NO NUM";
+device_info_t device_info;
 extern uint8_t dummy_buf[32];
-pic_arm_pack_t send_sn_pack = {PA_SERIAL_NUMBER, dummy_buf, 0};
-uint8_t sn_update = 0;
-char device_name[13] = "SCOPE ";
+pic_arm_pack_t send_sn_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 						     						 m_pes; //probing error service
+static ble_pes_t 	 						 m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
-static ble_status_t													 m_status;
-cal_optical_t																 m_optical;
-cal_force_t																	 m_force;
-cal_hall_effect_t														 m_hall_effect;
-static cal_vib_t														 m_vib;    //vibration motor cal struct
+static ble_status_t							 m_status;
+cal_optical_t								 m_optical;
+cal_force_t									 m_force;
+cal_hall_effect_t							 m_hall_effect;
+static cal_vib_t							 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -434,12 +432,15 @@ static void gap_params_init(void)
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
-    
-
-    strcat(device_name, serial_number);
+    SEGGER_RTT_printf(0, "serial number in gap init = ");
+    for(int i = 0; i < 5; i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+    }
     err_code = sd_ble_gap_device_name_set(&sec_mode,
-                                          (const uint8_t *)device_name,
-                                          12);
+                                          (const uint8_t *)device_info.device_name,
+                                          strlen(device_info.device_name));
+                                          
 //    err_code = sd_ble_gap_device_name_set(&sec_mode,
 //                                          (const uint8_t *)DEVICE_NAME,
 //                                          strlen(DEVICE_NAME));
@@ -786,6 +787,8 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
 	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+    
+    serial_number_update(p_ble_evt);
 }
 
 
@@ -1037,6 +1040,9 @@ int main(void)
 	uint8_t kk = 0;  // counter for data send test
 	uint8_t send_data[20];  //send data test
 	
+    
+    send_data_to_PIC(send_sn_pack);
+    
     // Initialize.
     timers_init();
     shutdown_gpio_init();
@@ -1044,6 +1050,7 @@ int main(void)
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
+    
     gap_params_init();
     advertising_init();
     services_init();
@@ -1067,18 +1074,13 @@ int main(void)
 		send_data[kk] = kk;
 	}
 	kk = 0;
+    
+    
+    
     while(true)
     {
         APP_Tasks();
         //power_manage(); //TODO when ARM is asleep communication to PIc does not work
-
-        if(sn_update)
-        {
-                gap_params_init();
-                advertising_init();
-                err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-            sn_update = 0;
-        }
             
 		kk++;
 		send_data[0] = kk;

@@ -37,6 +37,8 @@
 #ifndef _APP_H
 #define _APP_H
 
+#include <stdint.h>
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Type Definitions
@@ -70,23 +72,11 @@ typedef enum
 	APP_STATE_HALL_EFFECT_RESULT,
     APP_STATE_HALL_EFFECT_TEST,
     APP_STATE_PCB_TEST,
-    APP_STATE_SERIAL_NUMBER,
+    APP_STATE_DEVICE_INFO,
 } APP_STATES;
 
 
 
-// *****************************************************************************
-/* Application Data
-
-  Summary:
-    Holds application data
-
-  Description:
-    This structure holds the application's data.
-
-  Remarks:
-    Application strings and buffers are be defined outside this structure.
- */
 
 typedef struct
 {
@@ -95,6 +85,17 @@ typedef struct
 
 } APP_DATA;
 extern APP_DATA appData;
+
+
+/****** DEVICE INFO STRUCT *****/
+typedef struct{
+    uint8_t number_of_tests;
+    char serial_number[6];
+    char device_name[32];
+    uint8_t battery_capacity;
+}device_info_t;
+#define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
+extern device_info_t device_info;
 	
 // *****************************************************************************
 // *****************************************************************************

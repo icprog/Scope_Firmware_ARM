@@ -73,7 +73,7 @@ typedef enum
     /******************  calibration codes  ****************/
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
-    PA_SERIAL_NUMBER,
+    PA_DEVICE_INFO,
     PA_CAL_START, //dummy code used to mark where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC
@@ -83,8 +83,6 @@ typedef enum
     PA_OPTICAL_CAL_DATA, //PIC -> ARM
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
-    //PA_VIB_CAL_PASS, //ARM -> PIC
-    //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
     PA_OPTICAL_CAL_RESULT, //PIC-> ARM

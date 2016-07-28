@@ -259,15 +259,20 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_SERIAL_NUMBER:
+        case APP_STATE_DEVICE_INFO:
         {
-            SEGGER_RTT_printf(0, "serial number = ");
+            SEGGER_RTT_printf(0, "\nserial number = ");
             for(int i = 0; i < 5; i++)
             {
-                SEGGER_RTT_printf(0, "%c", serial_number[i]);
+                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
             }
+            SEGGER_RTT_printf(0, "\ndevice name = ");
+            for(int i=0; i < 32; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+            }
+            
             appData.state = APP_STATE_POLLING;
-            sn_update = 1;
             break;
         }
 

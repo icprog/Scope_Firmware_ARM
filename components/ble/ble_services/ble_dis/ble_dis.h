@@ -112,6 +112,8 @@ typedef struct
  * @return      NRF_SUCCESS on successful initialization of service.
  */
 uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init);
+void serial_number_update(ble_evt_t * p_ble_evt); //TODO remove later
+
 
 #endif // BLE_DIS_H__
 
