@@ -147,7 +147,7 @@ static ble_beacon_init_t beacon_init;
 
 device_info_t device_info;
 extern uint8_t dummy_buf[32];
-pic_arm_pack_t send_sn_pack = {PA_DEVICE_INFO, dummy_buf, 0};
+pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
@@ -418,7 +418,34 @@ static void timers_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void device_name_update(void)
+{
+    uint32_t                err_code;
+    ble_gap_conn_sec_mode_t sec_mode;
+    ble_advdata_t advdata;
+    
+    //change name
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+    err_code = sd_ble_gap_device_name_set(&sec_mode,
+                                          (const uint8_t *)device_info.device_name,
+                                          strlen(device_info.device_name));
+    APP_ERROR_CHECK(err_code);
+    // Build advertising data struct to pass into @ref ble_advertising_init.
+    memset(&advdata, 0, sizeof(advdata));
 
+    advdata.name_type               = BLE_ADVDATA_FULL_NAME;
+    advdata.include_appearance      = true;
+    advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
+    advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
+    advdata.uuids_complete.p_uuids  = m_adv_uuids;
+
+    ble_advdata_set(&advdata, NULL); //scan response data is NULL
+    SEGGER_RTT_printf(0, "device name = ");
+    for(int i = 0; i < 10; i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+    }
+}
 /**@brief Function for the GAP initialization.
  *
  * @details This function sets up all the necessary GAP (Generic Access Profile) parameters of the
@@ -976,6 +1003,12 @@ static void buttons_leds_init(bool * p_erase_bonds)
     *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
 }
 
+void device_info_update(void)
+{
+    device_name_update();
+    //serial number should already be updating.
+}
+
 
 /**@brief Function for the Power manager.
  */
@@ -1041,7 +1074,7 @@ int main(void)
 	uint8_t send_data[20];  //send data test
 	
     
-    send_data_to_PIC(send_sn_pack);
+    send_data_to_PIC(send_device_info_pack);
     
     // Initialize.
     timers_init();
@@ -1075,7 +1108,7 @@ int main(void)
 	}
 	kk = 0;
     
-    
+    device_info_update();
     
     while(true)
     {
@@ -1085,7 +1118,7 @@ int main(void)
 		kk++;
 		send_data[0] = kk;
 		
-        //nrf_delay_ms(1000);
+        nrf_delay_ms(1000);
         //ble_probe_error_update(&m_pes, kk);
 		//profile_data_update(&m_ps, send_data, 10);
 
