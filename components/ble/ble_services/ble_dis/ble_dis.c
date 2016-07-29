@@ -43,6 +43,8 @@ static ble_gatts_char_handles_t sys_id_handles;
 static ble_gatts_char_handles_t reg_cert_data_list_handles;
 static ble_gatts_char_handles_t pnp_id_handles;
 
+extern device_info_t device_info;
+
 /**@brief Function for encoding a System ID.
  *
  * @param[out]  p_encoded_buffer   Buffer where the encoded data will be written.
@@ -151,7 +153,7 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     ble_uuid_t ble_uuid;
 
     ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
-    
+
     //add relevent data to 
     ble_srv_ascii_to_utf8(&dis_init->manufact_name_str, (char *)MANUFACTURER_NAME);
     ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)device_info.serial_number);

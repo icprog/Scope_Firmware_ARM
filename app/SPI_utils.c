@@ -59,7 +59,7 @@ uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
 
 /********  global variable for building a tx packet for PIC   **********/
-bool transfer_in_progress = false;
+volatile bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC

@@ -153,7 +153,7 @@ static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INV
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
 static ble_pes_t 	 						 m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
-static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
+static ble_hrs_t                             m_hrs;                                   /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
 static ble_status_t							 m_status;
 cal_optical_t								 m_optical;
@@ -815,6 +815,8 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
 	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
     
+    
+    
 }
 
 
@@ -1061,21 +1063,34 @@ static void shutdown_gpio_init(void)
 
 }
 
+
+void init_device_info(void)
+{
+    strcpy(device_info.serial_number, "NO SN");
+    strcpy(device_info.device_name, "SCOPE NO SN");
+    send_data_to_PIC(send_device_info_pack);
+    //wait for PIC to respond with device 
+    if(!transfer_in_progress)
+    {
+        while(!transfer_in_progress);
+    }
+    while(transfer_in_progress);
+}
+
+
 /**@brief Function for application main entry.
  */
 int main(void)
 {
-    strcpy(device_info.serial_number, "00100");
     uint32_t err_code;
     bool erase_bonds;
 	
 	uint8_t kk = 0;  // counter for data send test
 	uint8_t send_data[20];  //send data test
 	
-    
-    send_data_to_PIC(send_device_info_pack);
-    
     // Initialize.
+    spi_init();
+    spis_init();
     timers_init();
     shutdown_gpio_init();
     buttons_leds_init(&erase_bonds);
@@ -1083,6 +1098,7 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
     
+    init_device_info();
     gap_params_init();
     advertising_init();
     services_init();
@@ -1095,7 +1111,6 @@ int main(void)
     
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-	SEGGER_RTT_WriteString(0, "Hello World!\n");
     
 	//init_LSM303();
 	APP_Initialize();
