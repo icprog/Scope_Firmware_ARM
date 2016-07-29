@@ -24,6 +24,9 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
+#include "SEGGER_RTT.h"
+#include "app.h"
+
 
 
 #define BLE_DIS_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -40,6 +43,7 @@ static ble_gatts_char_handles_t sys_id_handles;
 static ble_gatts_char_handles_t reg_cert_data_list_handles;
 static ble_gatts_char_handles_t pnp_id_handles;
 
+extern device_info_t device_info;
 
 /**@brief Function for encoding a System ID.
  *
@@ -148,15 +152,15 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     uint32_t   err_code;
     ble_uuid_t ble_uuid;
 
-		ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
-		
-		//add relevent data to 
+    ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
+
+    //add relevent data to 
     ble_srv_ascii_to_utf8(&dis_init->manufact_name_str, (char *)MANUFACTURER_NAME);
-		ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)SERIAL_NUMBER);
-		ble_srv_ascii_to_utf8(&dis_init->model_num_str, (char *)MODEL_NUMBER);
-		ble_srv_ascii_to_utf8(&dis_init->hw_rev_str, (char *)HARDWARE_REVISION);
-		ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)FIRMWARE_VERSION);
-		ble_srv_ascii_to_utf8(&dis_init->sys_id_str, (char *)SYSTEM_ID);
+    ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)device_info.serial_number);
+    ble_srv_ascii_to_utf8(&dis_init->model_num_str, (char *)MODEL_NUMBER);
+    ble_srv_ascii_to_utf8(&dis_init->hw_rev_str, (char *)HARDWARE_REVISION);
+    ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)FIRMWARE_VERSION);
+    ble_srv_ascii_to_utf8(&dis_init->sys_id_str, (char *)SYSTEM_ID);
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init->dis_attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init->dis_attr_md.write_perm);
@@ -288,4 +292,35 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     }
 
     return NRF_SUCCESS;
+}
+
+void serial_number_update(ble_evt_t * p_ble_evt)
+{
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
+
+    // Initialize value struct.
+    memset(&gatts_value, 0, sizeof(gatts_value));
+
+    gatts_value.len     = strlen(device_info.serial_number);// sizeof(uint8_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = (uint8_t *)device_info.serial_number;
+
+    // Update data.
+    err_code = sd_ble_gatts_value_set(p_ble_evt->evt.gap_evt.conn_handle,
+                                      serial_num_handles.value_handle,
+                                      &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        SEGGER_RTT_printf(0, "serial_number update success \n");
+        SEGGER_RTT_printf(0, "serial number = ");
+        for(int i = 0; i < 5; i++)
+        {
+            SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+        }
+    }
+    else
+    {
+        SEGGER_RTT_printf(0, "error in serial_number update fxn\n");
+    }
 }

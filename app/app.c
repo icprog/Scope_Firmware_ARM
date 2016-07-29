@@ -91,7 +91,6 @@ extern cal_hall_effect_t											 m_hall_effect;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
 extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-
 // *****************************************************************************
 /* Application Data
 
@@ -138,8 +137,8 @@ void APP_Initialize(void)
         /* Place the App state machine in its initial state. */
         appData.state = APP_STATE_INIT;		
 	
-		spi_init();	
-		spis_init();
+		//spi_init();	
+		//spis_init();
 		spis_xfer_done = false;
 		profile_block_counter = 0;
 		SEGGER_RTT_WriteString(0, "Init End \n");
@@ -272,6 +271,22 @@ void APP_Tasks(void)
             run_pcb_tests(pcb_test_results);
             pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
             send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEVICE_INFO:
+        {
+            SEGGER_RTT_printf(0, "\nserial number = ");
+            for(int i = 0; i < 5; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+            }
+            SEGGER_RTT_printf(0, "\ndevice name = ");
+            for(int i=0; i < 32; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+            }
+            
             appData.state = APP_STATE_POLLING;
             break;
         }
