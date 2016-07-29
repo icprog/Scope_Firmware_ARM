@@ -526,7 +526,7 @@ static void services_init(void)
 //    APP_ERROR_CHECK(err_code);
 //	
 	//initialize probe error service
-	ble_probe_error_service_init(&m_pes);
+	//ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
    ble_profile_service_init(&m_ps);
