@@ -815,7 +815,6 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
 	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
     
-    serial_number_update(p_ble_evt);
 }
 
 
@@ -1006,7 +1005,6 @@ static void buttons_leds_init(bool * p_erase_bonds)
 void device_info_update(void)
 {
     device_name_update();
-    //serial number should already be updating.
 }
 
 
@@ -1067,6 +1065,7 @@ static void shutdown_gpio_init(void)
  */
 int main(void)
 {
+    strcpy(device_info.serial_number, "00100");
     uint32_t err_code;
     bool erase_bonds;
 	
@@ -1108,7 +1107,7 @@ int main(void)
 	}
 	kk = 0;
     
-    device_info_update();
+    //device_info_update();
     
     while(true)
     {
