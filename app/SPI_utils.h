@@ -106,6 +106,7 @@ extern pic_arm_pack_t vib_cal_rdy_pack;
 extern pic_arm_pack_t optical_cal_length_pack;
 extern pic_arm_pack_t hall_effect_test_pack;
 extern pic_arm_pack_t send_sn_pack;
+extern pic_arm_pack_t get_profile_pack;
 
 extern volatile bool transfer_in_progress;
 

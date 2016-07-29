@@ -169,7 +169,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 								rx_data_ptr = &profile_data_in[profile_block_counter * 250]; // holder; //set rx data pointer to profile buffer (size = 250)
                 SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
 
-								next_state = APP_STATE_PROFILE_TRANSFER;
+				next_state = APP_STATE_PROFILE_TRANSFER;
                 break;
             }
             case PA_OPTICAL_CAL_RESULT:
