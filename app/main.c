@@ -529,7 +529,7 @@ static void services_init(void)
 	//ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
-   ble_profile_service_init(&m_ps);
+   //ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
     cal_optical_init_t optical_init;
@@ -813,10 +813,8 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_advertising_on_ble_evt(p_ble_evt);
     cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
-	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
-    
-    
-    
+	//ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+   
 }
 
 
@@ -1069,7 +1067,7 @@ void init_device_info(void)
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
     send_data_to_PIC(send_device_info_pack);
-    //wait for PIC to respond with device 
+    //wait for PIC to respond with device info
     if(!transfer_in_progress)
     {
         while(!transfer_in_progress);
@@ -1098,7 +1096,14 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
     
-    init_device_info();
+    
+    APP_Initialize();
+    nrf_delay_ms(1000);
+    APP_Tasks();
+    
+    if(appData.state != APP_STATE_PCB_TEST){
+        init_device_info();
+    }
     gap_params_init();
     advertising_init();
     services_init();
@@ -1111,7 +1116,7 @@ int main(void)
     APP_ERROR_CHECK(err_code);
     
 	//init_LSM303();
-	APP_Initialize();
+	
 	
 	//send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
@@ -1139,7 +1144,6 @@ int main(void)
 
 		if(kk >=10) kk=0;
 
-       APP_Tasks();
         //power_manage();
 			//SEGGER_RTT_WriteString(0, "looping....\n");
 	}
