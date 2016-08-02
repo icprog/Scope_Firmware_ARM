@@ -79,7 +79,7 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-
+uint8_t raw_data_buffer[256];
 extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */

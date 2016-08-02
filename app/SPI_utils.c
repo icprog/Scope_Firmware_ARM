@@ -50,6 +50,7 @@
 #include "calibration.h"
 #include "LSM303drv.h"
 
+
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
@@ -79,6 +80,7 @@ pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 
 extern device_info_t device_info;
+
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -214,7 +216,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_RAW_DATA:
             {
+                SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
+                rx_data_ptr = &raw_data_buffer;
                 break;
             }
             default:
