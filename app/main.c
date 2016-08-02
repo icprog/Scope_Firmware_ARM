@@ -1132,7 +1132,7 @@ int main(void)
 		kk++;
 		send_data[0] = kk;
 		
-        nrf_delay_ms(1000);
+        //nrf_delay_ms(1000);
         //ble_probe_error_update(&m_pes, kk);
 		//profile_data_update(&m_ps, send_data, 10);
 
