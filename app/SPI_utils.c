@@ -212,6 +212,11 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 next_state = APP_STATE_DEVICE_INFO;
                 break;
             }
+            case PA_RAW_DATA:
+            {
+                next_state = APP_STATE_RAW_DATA_RECEIVE;
+                break;
+            }
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
