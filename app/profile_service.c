@@ -314,7 +314,7 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
                                       &gatts_value);
     if (err_code == NRF_SUCCESS)
     {
-        SEGGER_RTT_printf(0, "data update success \n");
+        //SEGGER_RTT_printf(0, "data update success \n");
     }
     else
     {
@@ -364,17 +364,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 //                {
                 //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
 //                }
-<<<<<<< HEAD
 
-            
-
-=======
-//								p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
-                //p_optical->result_handler(p_optical, 13);
-            //}
-             //p_ps->evt_handler(p_ps, &evt); // need to fix type conflict
-            //p_optical->result_handler(p_optical, 13);
->>>>>>> 5c5d6bd39fffe5cee090d4252fc17eab4d3af6f9
         }
     }
 

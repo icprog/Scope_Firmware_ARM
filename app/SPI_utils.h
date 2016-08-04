@@ -89,6 +89,9 @@ typedef enum
     PA_CAL_COMPLETE, //PIC -> ARM
     PA_OPTICAL_CAL_RESULT, //PIC-> ARM
     
+		
+		PA_ACCELEROMETER, //both ways, used to get accel data to PIC when queried
+		
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;

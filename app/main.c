@@ -148,7 +148,7 @@ static ble_beacon_init_t beacon_init;
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
 static ble_pes_t 						     						 m_pes; //probing error service
-static ble_ps_t                              m_ps; //profile service
+ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
@@ -504,10 +504,10 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 		
 		// Initialize vib Cal.
-    cal_vib_init_t vib_init;
-    memset(&vib_init, 0, sizeof(vib_init));
-    err_code = cal_vib_init(&m_vib, &vib_init);
-    APP_ERROR_CHECK(err_code);
+//    cal_vib_init_t vib_init;
+//    memset(&vib_init, 0, sizeof(vib_init));
+//    err_code = cal_vib_init(&m_vib, &vib_init);
+//    APP_ERROR_CHECK(err_code);
 
 	// Initialize cal hall effect service.
     cal_hall_effect_init_t hall_effect_init;
@@ -771,7 +771,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
-    cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+    //cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
 	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 }
@@ -1026,7 +1026,7 @@ int main(void)
 	uint8_t send_data[20];  //send data test
 		
 		uint8_t accel_id = 0;
-		LSM303_DATA accel_data;
+		//LSM303_DATA accel_data;
 	
     // Initialize.
     timers_init();
@@ -1047,24 +1047,23 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 		SEGGER_RTT_WriteString(0, "Hello World!\n");
     
-	//init_LSM303();
+
 	APP_Initialize();
 	
-	send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
+	//send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-	init_LSM303();
-	nrf_delay_us(1);
-	accel_id = get_LSM303_ID();
-	SEGGER_RTT_printf(0, "\n *** *** *** accel id : %d \n",accel_id);
+
+
+	//SEGGER_RTT_printf(0, "\n *** *** *** accel id : %d \n",accel_id);
     while(true)
     {
+
+       
+      
+			APP_Tasks();
+			power_manage();
 			
-				//accel_data = getLSM303data();
-				//SEGGER_RTT_printf(0, " %d \n",accel_data.Y);
-       //APP_Tasks();
-        power_manage();
-			
-	}
+		}
 
 }
 
