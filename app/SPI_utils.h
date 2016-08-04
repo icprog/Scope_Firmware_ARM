@@ -57,7 +57,6 @@
 extern uint16_t force_cal_consts[5];
 
 
-
 typedef enum
 {
     LSM_DEVICE = 0,
@@ -74,6 +73,7 @@ typedef enum
     /******************  calibration codes  ****************/
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
+    PA_DEVICE_INFO,
     PA_CAL_START, //dummy code used to mark where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC
@@ -83,8 +83,6 @@ typedef enum
     PA_OPTICAL_CAL_DATA, //PIC -> ARM
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
-    //PA_VIB_CAL_PASS, //ARM -> PIC
-    //PA_VIB_CAL_FAIL,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
     PA_OPTICAL_CAL_RESULT, //PIC-> ARM
@@ -110,7 +108,11 @@ extern pic_arm_pack_t force_cal_weight_pack;
 extern pic_arm_pack_t vib_cal_rdy_pack;
 extern pic_arm_pack_t optical_cal_length_pack;
 extern pic_arm_pack_t hall_effect_test_pack;
+extern pic_arm_pack_t send_sn_pack;
 extern pic_arm_pack_t get_profile_pack;
+
+extern volatile bool transfer_in_progress;
+
 
 typedef struct
 {

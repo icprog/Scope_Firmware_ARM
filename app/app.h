@@ -37,6 +37,8 @@
 #ifndef _APP_H
 #define _APP_H
 
+#include <stdint.h>
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Type Definitions
@@ -57,37 +59,27 @@
 typedef enum
 {
 	/* Application's state machine's initial state. */
-		APP_STATE_INIT = 0,
+	APP_STATE_INIT = 0,
     APP_STATE_POLLING = 1,
     APP_STATE_FORCE_CAL_INIT,
     APP_STATE_FORCE_CAL_WEIGHT,
     APP_STATE_OPTICAL_CAL_LENGTH,
     APP_STATE_FORCE_CAL_DATA,
     APP_STATE_OPTICAL_CAL_DATA,
-		APP_STATE_OPTICAL_CAL_RESULT,
+	APP_STATE_OPTICAL_CAL_RESULT,
     APP_STATE_FORCE_CAL_RDY,
     APP_STATE_VIB_CAL_RDY,
-		APP_STATE_HALL_EFFECT_RESULT,
+	APP_STATE_HALL_EFFECT_RESULT,
     APP_STATE_HALL_EFFECT_TEST,
     APP_STATE_PCB_TEST,
-		APP_STATE_PROFILE_TRANSFER,
-		APP_STATE_ACCELEROMETER,
+	APP_STATE_ACCELEROMETER,
+    APP_STATE_DEVICE_INFO,
+    APP_STATE_PROFILE_TRANSFER,
+
 } APP_STATES;
 
 
 
-// *****************************************************************************
-/* Application Data
-
-  Summary:
-    Holds application data
-
-  Description:
-    This structure holds the application's data.
-
-  Remarks:
-    Application strings and buffers are be defined outside this structure.
- */
 
 typedef struct
 {
@@ -98,6 +90,15 @@ typedef struct
 extern APP_DATA appData;
 
 
+/****** DEVICE INFO STRUCT *****/
+typedef struct{
+    uint8_t number_of_tests;
+    char serial_number[6];
+    char device_name[32];
+    uint8_t battery_capacity;
+}device_info_t;
+#define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
+extern device_info_t device_info;
 	
 // *****************************************************************************
 // *****************************************************************************

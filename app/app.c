@@ -96,6 +96,7 @@ extern uint16_t     profile_block_counter; //keeps track of current block of 250
 
 extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
+
 extern pic_arm_pack_t accelerometer_pack;
 extern void * tx_data_ptr; //where to pull data from to send to PIC
 
@@ -145,8 +146,7 @@ void APP_Initialize(void)
         /* Place the App state machine in its initial state. */
         appData.state = APP_STATE_INIT;		
 	
-		spi_init();	
-		spis_init();
+
 		spis_xfer_done = false;
 		profile_block_counter = 0;
 		init_LSM303();
@@ -296,6 +296,22 @@ void APP_Tasks(void)
             run_pcb_tests(pcb_test_results);
             pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
             send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEVICE_INFO:
+        {
+            SEGGER_RTT_printf(0, "\nserial number = ");
+            for(int i = 0; i < 5; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+            }
+            SEGGER_RTT_printf(0, "\ndevice name = ");
+            for(int i=0; i < 32; i++)
+            {
+                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+            }
+            
             appData.state = APP_STATE_POLLING;
             break;
         }

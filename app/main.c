@@ -145,17 +145,24 @@ static ble_beacon_init_t beacon_init;
 
 #define DEAD_BEEF                            0xDEADBEEF                                 /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
+device_info_t device_info;
+extern uint8_t dummy_buf[32];
+pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
+
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 						     						 m_pes; //probing error service
-ble_ps_t                              m_ps; //profile service
-static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
+
+
+static ble_pes_t 	 						 m_pes; //probing error service
+static ble_ps_t                              m_ps; //profile service
+static ble_hrs_t                             m_hrs;                                   /**< Structure used to identify the heart rate service. */
+
 static ble_slope_t                           m_slope;
-static ble_status_t													 m_status;
-cal_optical_t																 m_optical;
-cal_force_t																	 m_force;
-cal_hall_effect_t														 m_hall_effect;
-static cal_vib_t														 m_vib;    //vibration motor cal struct
+static ble_status_t							 m_status;
+cal_optical_t								 m_optical;
+cal_force_t									 m_force;
+cal_hall_effect_t							 m_hall_effect;
+static cal_vib_t							 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -414,7 +421,34 @@ static void timers_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void device_name_update(void)
+{
+    uint32_t                err_code;
+    ble_gap_conn_sec_mode_t sec_mode;
+    ble_advdata_t advdata;
+    
+    //change name
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+    err_code = sd_ble_gap_device_name_set(&sec_mode,
+                                          (const uint8_t *)device_info.device_name,
+                                          strlen(device_info.device_name));
+    APP_ERROR_CHECK(err_code);
+    // Build advertising data struct to pass into @ref ble_advertising_init.
+    memset(&advdata, 0, sizeof(advdata));
 
+    advdata.name_type               = BLE_ADVDATA_FULL_NAME;
+    advdata.include_appearance      = true;
+    advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
+    advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
+    advdata.uuids_complete.p_uuids  = m_adv_uuids;
+
+    ble_advdata_set(&advdata, NULL); //scan response data is NULL
+    SEGGER_RTT_printf(0, "device name = ");
+    for(int i = 0; i < 10; i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+    }
+}
 /**@brief Function for the GAP initialization.
  *
  * @details This function sets up all the necessary GAP (Generic Access Profile) parameters of the
@@ -428,9 +462,18 @@ static void gap_params_init(void)
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
+    SEGGER_RTT_printf(0, "serial number in gap init = ");
+    for(int i = 0; i < 5; i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+    }
     err_code = sd_ble_gap_device_name_set(&sec_mode,
-                                          (const uint8_t *)DEVICE_NAME,
-                                          strlen(DEVICE_NAME));
+                                          (const uint8_t *)device_info.device_name,
+                                          strlen(device_info.device_name));
+                                          
+//    err_code = sd_ble_gap_device_name_set(&sec_mode,
+//                                          (const uint8_t *)DEVICE_NAME,
+//                                          strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
 
     err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_HEART_RATE_SENSOR_HEART_RATE_BELT);
@@ -486,10 +529,10 @@ static void services_init(void)
 //    APP_ERROR_CHECK(err_code);
 //	
 	//initialize probe error service
-	ble_probe_error_service_init(&m_pes);
+	//ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
-   ble_profile_service_init(&m_ps);
+   //ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
     cal_optical_init_t optical_init;
@@ -773,7 +816,8 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_advertising_on_ble_evt(p_ble_evt);
     //cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
-	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+	//ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+   
 }
 
 
@@ -961,6 +1005,11 @@ static void buttons_leds_init(bool * p_erase_bonds)
     *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
 }
 
+void device_info_update(void)
+{
+    device_name_update();
+}
+
 
 /**@brief Function for the Power manager.
  */
@@ -1015,6 +1064,21 @@ static void shutdown_gpio_init(void)
 
 }
 
+
+void init_device_info(void)
+{
+    strcpy(device_info.serial_number, "NO SN");
+    strcpy(device_info.device_name, "SCOPE NO SN");
+    send_data_to_PIC(send_device_info_pack);
+    //wait for PIC to respond with device info
+    if(!transfer_in_progress)
+    {
+        while(!transfer_in_progress);
+    }
+    while(transfer_in_progress);
+}
+
+
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -1029,12 +1093,23 @@ int main(void)
 		//LSM303_DATA accel_data;
 	
     // Initialize.
+    spi_init();
+    spis_init();
     timers_init();
     shutdown_gpio_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
+    
+    
+    APP_Initialize();
+    nrf_delay_ms(1000);
+    APP_Tasks();
+    
+    if(appData.state != APP_STATE_PCB_TEST){
+        init_device_info();
+    }
     gap_params_init();
     advertising_init();
     services_init();
@@ -1045,8 +1120,8 @@ int main(void)
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-		SEGGER_RTT_WriteString(0, "Hello World!\n");
     
+
 
 	APP_Initialize();
 	
@@ -1063,7 +1138,8 @@ int main(void)
 			APP_Tasks();
 			power_manage();
 			
-		}
+	}
+
 
 }
 

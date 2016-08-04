@@ -64,7 +64,7 @@ uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
 
 /********  global variable for building a tx packet for PIC   **********/
-bool transfer_in_progress = false;
+volatile bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
@@ -78,6 +78,7 @@ pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optica
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 
+extern device_info_t device_info;
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -139,6 +140,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "setting spis_rx_trasnfer_length to %d", spis_rx_transfer_length);
         
         //TODO sort out where to put the data from the buffer
+        SEGGER_RTT_printf(0, "code = %d\n", packet->code);
         switch(packet->code)
         {
             case TEST_CODE:
@@ -180,7 +182,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 								
                 //SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
 
-								next_state = APP_STATE_PROFILE_TRANSFER;
+				next_state = APP_STATE_PROFILE_TRANSFER;
                 break;
             }
 						case PA_ACCELEROMETER:
@@ -201,6 +203,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
                 next_state = APP_STATE_PCB_TEST;
+                break;
+            }
+            case PA_DEVICE_INFO:
+            {
+                SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
+                rx_data_ptr = &device_info;
+                next_state = APP_STATE_DEVICE_INFO;
                 break;
             }
             default:

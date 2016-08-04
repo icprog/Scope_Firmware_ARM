@@ -44,14 +44,18 @@
 #define				SCOPE_CHAR_UUID_SYS_ID		0x2A23
 
 
+<<<<<<< HEAD
 #define DEVICE_NAME                          "AAA123"                           /**< Name of device. Will be included in the advertising data. */
 
+=======
+#define DEVICE_NAME                          "SCOPE "                           /**< Name of device. Will be included in the advertising data. */
+>>>>>>> 81637bfac69f6514e3383948e4fd1a9a776d9568
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
-#define SERIAL_NUMBER												 "SN 0001"
-#define MODEL_NUMBER												 "Scope V 1.0"
-#define HARDWARE_REVISION										 "HW rev 1.0"
-#define FIRMWARE_VERSION										 "FW v 1.0"
-#define SYSTEM_ID														 "SYS ID 0001"     //system id needs to be BLE spec compliant?
+#define SERIAL_NUMBER						 "SN 0001"
+#define MODEL_NUMBER						 "Scope V 1.0"
+#define HARDWARE_REVISION					 "HW rev 1.0"
+#define FIRMWARE_VERSION				     "FW v 1.0"
+#define SYSTEM_ID							 "SYS ID 0001"     //system id needs to be BLE spec compliant?
 
 /** @defgroup DIS_VENDOR_ID_SRC_VALUES Vendor ID Source values  
  * @{
@@ -113,6 +117,8 @@ typedef struct
  * @return      NRF_SUCCESS on successful initialization of service.
  */
 uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init);
+void serial_number_update(ble_evt_t * p_ble_evt); //TODO remove later
+
 
 #endif // BLE_DIS_H__
 
