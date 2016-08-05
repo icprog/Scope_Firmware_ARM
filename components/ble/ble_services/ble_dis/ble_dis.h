@@ -44,12 +44,11 @@
 #define				SCOPE_CHAR_UUID_SYS_ID		0x2A23
 
 
-<<<<<<< HEAD
+
 #define DEVICE_NAME                          "AAA123"                           /**< Name of device. Will be included in the advertising data. */
 
-=======
-#define DEVICE_NAME                          "SCOPE "                           /**< Name of device. Will be included in the advertising data. */
->>>>>>> 81637bfac69f6514e3383948e4fd1a9a776d9568
+
+
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
 #define SERIAL_NUMBER						 "SN 0001"
 #define MODEL_NUMBER						 "Scope V 1.0"
