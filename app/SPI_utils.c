@@ -50,7 +50,6 @@
 #include "calibration.h"
 #include "LSM303drv.h"
 
-
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
@@ -218,7 +217,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
-                rx_data_ptr = &raw_data_buffer;
+                rx_data_ptr = &raw_data;
                 break;
             }
             default:

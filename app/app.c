@@ -79,7 +79,6 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-uint8_t raw_data_buffer[256];
 extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
@@ -95,10 +94,9 @@ extern uint16_t     profile_block_counter; //keeps track of current block of 250
 
 extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-
 extern pic_arm_pack_t accelerometer_pack;
 extern void * tx_data_ptr; //where to pull data from to send to PIC
-
+subsampled_raw_data_t raw_data;
 // *****************************************************************************
 /* Application Data
 

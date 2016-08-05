@@ -1099,7 +1099,7 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
 
-    init_device_info();
+    //init_device_info();
     gap_params_init();
     advertising_init();
     services_init();
