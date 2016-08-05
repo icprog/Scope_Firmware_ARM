@@ -316,7 +316,6 @@ void APP_Tasks(void)
         case APP_STATE_RAW_DATA_RECEIVE:
         {
             SEGGER_RTT_printf(0, "\nreceived raw data!");
-            //SEGGER_RTT_printf(0, "raw force 10 = %d", 
             break;
         }
 
