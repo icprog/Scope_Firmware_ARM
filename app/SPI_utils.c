@@ -48,6 +48,7 @@
 #include "SEGGER_RTT.h"
 #include "app.h"
 #include "calibration.h"
+#include "LSM303drv.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
@@ -60,6 +61,7 @@ uint8_t       dummy_buf[32];
 uint8_t				profile_buffer[250];
 uint8_t    profile_data_in[1500]; // holder for profile data from PIC
 uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
+LSM303_DATA accel_data; //acelerometer data to pass to PIC
 
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool transfer_in_progress = false;
@@ -74,6 +76,7 @@ pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
+pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 
 extern device_info_t device_info;
 
@@ -96,16 +99,16 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         
         memcpy(m_tx_buf_s, &packet, PIC_ARM_HEADER_SIZE); //TODO: look into why this memcoy is necessary as well.
         //TODO: something weird with timing here. need the print statement to get correct values
-        SEGGER_RTT_printf(0, "sending:");
-        for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
-        {
-            SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
-        }
-        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
-        {
-            SEGGER_RTT_printf(0, "SPIS error");
-        }
-        
+        //SEGGER_RTT_printf(0, "sending:");
+//        for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
+//        {
+//            SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
+//        }
+//        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+//        {
+//            SEGGER_RTT_printf(0, "SPIS error");
+//        }
+        nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0);
         set_RDY();
     }
     else
@@ -124,8 +127,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     static APP_STATES next_state = APP_STATE_POLLING;
+		
     
-    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE)
+    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && transfer_in_progress == false)
     {
         SEGGER_RTT_printf(0, "parsing header packet\n");
         spis_rx_transfer_length = packet->length;
@@ -166,12 +170,28 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //            }
             case PA_PROFILE:
             {
-								rx_data_ptr = &profile_data_in[profile_block_counter * 250]; // holder; //set rx data pointer to profile buffer (size = 250)
-                SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
+//								rx_data_ptr = &profile_data_in[profile_block_counter * 250]; // holder; //set rx data pointer to profile buffer (size = 250)
+//								
+//                SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
+//								if(profile_block_counter<6)
+//								{
+//									profile_block_counter++;
+//								}
+//								next_state = APP_STATE_PROFILE_TRANSFER;
+								rx_data_ptr = &profile_data_in; // holder; //set rx data pointer to profile buffer (size = 250)
+								
+                //SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
 
 				next_state = APP_STATE_PROFILE_TRANSFER;
                 break;
             }
+						case PA_ACCELEROMETER:
+						{
+								//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+								
+							next_state = APP_STATE_ACCELEROMETER;
+								break;
+						}
             case PA_OPTICAL_CAL_RESULT:
             {
                 SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
@@ -208,6 +228,8 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
+				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
+			SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
         {
@@ -218,6 +240,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     }
     else
     {
+			//SEGGER_RTT_printf(0, " ***  ERROR  *** \n");
         return 1; //ERROR
     }
     return 0;
@@ -253,16 +276,16 @@ void spis_event_handler(nrf_drv_spis_event_t event)
             spis_rx_transfer_length -= rx_length;
         }
         
-//        SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
+        SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
 //        for(int i = 0; i < rx_length; i++)
 //        {
 //             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
 //        }
-//        SEGGER_RTT_printf(0, "\n");
-        
+        //SEGGER_RTT_printf(0, "\n");
+
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
-
+				SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {
@@ -287,7 +310,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 //            {
 //                SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&m_tx_buf_s)[i]);
 //            }
-//            spis_tx_transfer_length -= tx_length;
+            spis_tx_transfer_length -= tx_length;
         }
         
         //SEGGER_RTT_printf(0, "\nplanning on receiving %d bytes: ", rx_length);
@@ -421,12 +444,12 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 void set_RDY(void)
 {
     nrf_gpio_pin_set(SPIS_RDY_PIN);
-    SEGGER_RTT_printf(0, "\n setting RDY ");
+    //SEGGER_RTT_printf(0, "\n setting RDY ");
 }
 void clear_RDY(void)
 {
     nrf_gpio_pin_clear(SPIS_RDY_PIN);
-    SEGGER_RTT_printf(0, "\n clearing RDY ");
+    //SEGGER_RTT_printf(0, "\n clearing RDY ");
 }
 bool isRDY(void)
 {

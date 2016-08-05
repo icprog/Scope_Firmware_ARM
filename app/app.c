@@ -72,6 +72,8 @@
 #include "cal_optical.h"
 #include "cal_hall_effect.h"
 #include "pcb_test.h"
+#include "profile_service.h"
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -88,9 +90,16 @@ static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer
 extern cal_force_t                             m_force;
 extern cal_optical_t													 m_optical;
 extern cal_hall_effect_t											 m_hall_effect;
+extern ble_ps_t                            		 m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
 extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
+
+extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
+
+extern pic_arm_pack_t accelerometer_pack;
+extern void * tx_data_ptr; //where to pull data from to send to PIC
+
 // *****************************************************************************
 /* Application Data
 
@@ -137,9 +146,11 @@ void APP_Initialize(void)
         /* Place the App state machine in its initial state. */
         appData.state = APP_STATE_INIT;		
 	
-
+		spi_init();
+		spis_init();
 		spis_xfer_done = false;
 		profile_block_counter = 0;
+		init_LSM303();
 		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
@@ -184,14 +195,30 @@ void APP_Tasks(void)
 				{
 					//handle incoming profile data from PIC here
 					//profile_data_in[];
-					profile_block_counter++; //keeps track of current block of 250 bytes
-					if(profile_block_counter >= 6)
-					{
-							profile_block_counter = 0;
-							SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
-							//for(kk=0;kk<1500;kk++)SEGGER_RTT_printf(0, " %d ",profile_data_in[kk]);
-					}
+					//profile_block_counter++; //keeps track of current block of 250 bytes
+//				SEGGER_RTT_printf(0, "app data counter %d \n",profile_block_counter);
+//				if(profile_block_counter >= 5)
+//				{
+//						profile_block_counter = 0;
+//						SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
+//						for(kk=0;kk<75;kk+=20)profile_data_update(&m_ps, &profile_data_in[kk],20);
+//				}
+					SEGGER_RTT_WriteString(0, "Finished receiving profile \n");
+					for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
+					SEGGER_RTT_WriteString(0, "Finished sending profile \n");
 					appData.state = APP_STATE_POLLING;
+					break;
+				}
+				case APP_STATE_ACCELEROMETER:
+				{
+						accel_data = getLSM303data();
+						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+						SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
+						//tx_data_ptr = &accel_data;
+						nrf_delay_us(100); //TODO: remove
+						send_data_to_PIC(accelerometer_pack);
+						SEGGER_RTT_printf(0, "sent accelerometer pack\n");
+						appData.state = APP_STATE_POLLING;
 					break;
 				}
 //        case APP_STATE_VIB_CAL_RDY:

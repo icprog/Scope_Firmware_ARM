@@ -151,15 +151,18 @@ pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 	 						 m_pes; //probing error service
-static ble_ps_t                              m_ps; //profile service
+
+
+static ble_pes_t 	 						 							 m_pes; //probing error service
+ble_ps_t                             				 m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                   /**< Structure used to identify the heart rate service. */
+
 static ble_slope_t                           m_slope;
-static ble_status_t							 m_status;
-cal_optical_t								 m_optical;
-cal_force_t									 m_force;
-cal_hall_effect_t							 m_hall_effect;
-static cal_vib_t							 m_vib;    //vibration motor cal struct
+static ble_status_t							 						 m_status;
+cal_optical_t								 								 m_optical;
+cal_force_t									 								 m_force;
+cal_hall_effect_t							 							 m_hall_effect;
+static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -193,7 +196,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    {BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
+    //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
 
@@ -508,10 +511,10 @@ static void services_init(void)
 	
 	
     // Initialize Slope Service.
-//		ble_slope_init_t slope_init;
-//		memset(&slope_init, 0, sizeof(slope_init));
-//    err_code = ble_slope_init(&m_slope, &slope_init);
-//    APP_ERROR_CHECK(err_code);
+		ble_slope_init_t slope_init;
+		memset(&slope_init, 0, sizeof(slope_init));
+    err_code = ble_slope_init(&m_slope, &slope_init);
+    APP_ERROR_CHECK(err_code);
 		
 		// Initialize Device Information Service.
 		ble_dis_init_t dis_init;
@@ -520,34 +523,34 @@ static void services_init(void)
         APP_ERROR_CHECK(err_code);
 		
 //		// Initialize Device Status Service.
-//		ble_status_init_t status_init;
-//    memset(&status_init, 0, sizeof(status_init));
-//    err_code = ble_status_init(&m_status, &status_init);
-//    APP_ERROR_CHECK(err_code);
+		ble_status_init_t status_init;
+    memset(&status_init, 0, sizeof(status_init));
+    err_code = ble_status_init(&m_status, &status_init);
+    APP_ERROR_CHECK(err_code);
 //	
 	//initialize probe error service
-	//ble_probe_error_service_init(&m_pes);
+	ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
-   //ble_profile_service_init(&m_ps);
+   ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
-    cal_optical_init_t optical_init;
-    memset(&optical_init, 0, sizeof(optical_init));
-    err_code = cal_optical_init(&m_optical, &optical_init);
-    APP_ERROR_CHECK(err_code);
+//    cal_optical_init_t optical_init;
+//    memset(&optical_init, 0, sizeof(optical_init));
+//    err_code = cal_optical_init(&m_optical, &optical_init);
+//    APP_ERROR_CHECK(err_code);
 
     // Initialize Force Cal.
-    cal_force_init_t force_init;
-    memset(&force_init, 0, sizeof(force_init));
-    err_code = cal_force_init(&m_force, &force_init);
-    APP_ERROR_CHECK(err_code);
+//    cal_force_init_t force_init;
+//    memset(&force_init, 0, sizeof(force_init));
+//    err_code = cal_force_init(&m_force, &force_init);
+//    APP_ERROR_CHECK(err_code);
 		
 		// Initialize vib Cal.
-    cal_vib_init_t vib_init;
-    memset(&vib_init, 0, sizeof(vib_init));
-    err_code = cal_vib_init(&m_vib, &vib_init);
-    APP_ERROR_CHECK(err_code);
+//    cal_vib_init_t vib_init;
+//    memset(&vib_init, 0, sizeof(vib_init));
+//    err_code = cal_vib_init(&m_vib, &vib_init);
+//    APP_ERROR_CHECK(err_code);
 
 	// Initialize cal hall effect service.
     cal_hall_effect_init_t hall_effect_init;
@@ -811,9 +814,9 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
-    cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+    //cal_vib_on_ble_evt(&m_vib,p_ble_evt);
     cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
-	//ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
    
 }
 
@@ -1083,27 +1086,19 @@ int main(void)
     uint32_t err_code;
     bool erase_bonds;
 	
-	uint8_t kk = 0;  // counter for data send test
-	uint8_t send_data[20];  //send data test
+		uint8_t kk = 0;  // counter for data send test
+		uint8_t send_data[20];  //send data test
+		
+		uint8_t accel_id = 0;
+		//LSM303_DATA accel_data;
 	
-    // Initialize.
-    spi_init();
-    spis_init();
+ // Initialize.
     timers_init();
     shutdown_gpio_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
-    
-    
-    APP_Initialize();
-    nrf_delay_ms(1000);
-    APP_Tasks();
-    
-    if(appData.state != APP_STATE_PCB_TEST){
-        init_device_info();
-    }
     gap_params_init();
     advertising_init();
     services_init();
@@ -1114,38 +1109,29 @@ int main(void)
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
+		SEGGER_RTT_WriteString(0, "Hello World!\n");
     
-	//init_LSM303();
-	
+
+	APP_Initialize();
 	
 	//send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
 
-	kk = 0;
-	for(kk = 0;kk<20;kk++)
-	{
-		send_data[kk] = kk;
-	}
-	kk = 0;
-    
-    //device_info_update();
-    
+
+	//SEGGER_RTT_printf(0, "\n *** *** *** accel id : %d \n",accel_id);
     while(true)
     {
-        APP_Tasks();
-        //power_manage(); //TODO when ARM is asleep communication to PIc does not work
-            
-		kk++;
-		send_data[0] = kk;
-		
-        //nrf_delay_ms(1000);
-        //ble_probe_error_update(&m_pes, kk);
-		//profile_data_update(&m_ps, send_data, 10);
 
-		if(kk >=10) kk=0;
-
-        //power_manage();
-			//SEGGER_RTT_WriteString(0, "looping....\n");
+       
+      
+			APP_Tasks();
+			power_manage();
+			
 	}
 
+
 }
+
+
+
+
