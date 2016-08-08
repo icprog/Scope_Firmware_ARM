@@ -13,6 +13,10 @@
 #define TRANSFER_IDS_CHAR_UUID 0x321C
 #define DELETE_IDS_CHAR_UUID 0x321D
 #define PROFILE_ERROR_CHAR_UUID 0x321E
+#define PROFILE_LENGTH_CHAR_UUID 0x321F
+#define RAW_DATA_CHAR_UUID 0x3219
+
+
 
 
 /**@brief Battery Service event type. */
@@ -45,6 +49,8 @@ typedef struct {
     ble_gatts_char_handles_t    transfer_ids_char_handles;   //handles for the transfer ids characteristic attributes to our struct
     ble_gatts_char_handles_t    delete_ids_char_handles;   //handles for the delete ids characteristic attributes to our struct
     ble_gatts_char_handles_t    profile_error_char_handles;   //handles for the profile error characteristic attributes to our struct
+    ble_gatts_char_handles_t    raw_data_char_handles;   //handles for the profile error characteristic attributes to our struct
+    ble_gatts_char_handles_t    profile_length_char_handles;   //handles for the profile error characteristic attributes to our struct
 
 }ble_ps_t;
 
@@ -53,5 +59,6 @@ void ble_profile_service_init(ble_ps_t * p_profile_service);
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps_service, ble_evt_t * p_ble_evt);
 uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code);
 void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size); // send data to phone
-	
+uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length);
+
 #endif //PROFILE_SERVICE_H__

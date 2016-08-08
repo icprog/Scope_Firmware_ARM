@@ -80,6 +80,7 @@ pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6
 
 extern device_info_t device_info;
 
+
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
  * Then handle the subsequent data packets in the spis_event_handler.
@@ -210,6 +211,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
                 rx_data_ptr = &device_info;
                 next_state = APP_STATE_DEVICE_INFO;
+                break;
+            }
+            case PA_RAW_DATA:
+            {
+                SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
+                next_state = APP_STATE_RAW_DATA_RECEIVE;
+                rx_data_ptr = &raw_data;
                 break;
             }
             default:

@@ -69,6 +69,7 @@ typedef enum
     PA_DEVICE_STATUS,
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
+    PA_RAW_DATA,
     
     /******************  calibration codes  ****************/
     PA_PCB_TEST,

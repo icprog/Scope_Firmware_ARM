@@ -503,36 +503,36 @@ static void services_init(void)
 {
     uint32_t       err_code;
 	
-		//battery service init:
-		ble_bas_init_t bas_init;
-		memset(&bas_init, 0, sizeof(bas_init));
-		err_code = ble_bas_init(&m_bas, &bas_init);
-        APP_ERROR_CHECK(err_code);
-	
+    //battery service init:
+    ble_bas_init_t bas_init;
+    memset(&bas_init, 0, sizeof(bas_init));
+    err_code = ble_bas_init(&m_bas, &bas_init);
+    APP_ERROR_CHECK(err_code);
 	
     // Initialize Slope Service.
-		ble_slope_init_t slope_init;
-		memset(&slope_init, 0, sizeof(slope_init));
+    ble_slope_init_t slope_init;
+    memset(&slope_init, 0, sizeof(slope_init));
     err_code = ble_slope_init(&m_slope, &slope_init);
     APP_ERROR_CHECK(err_code);
 		
-		// Initialize Device Information Service.
-		ble_dis_init_t dis_init;
-        memset(&dis_init, 0, sizeof(dis_init));
-        err_code = ble_dis_init(&dis_init);
-        APP_ERROR_CHECK(err_code);
+    // Initialize Device Information Service.
+    ble_dis_init_t dis_init;
+    memset(&dis_init, 0, sizeof(dis_init));
+    err_code = ble_dis_init(&dis_init);
+    APP_ERROR_CHECK(err_code);
 		
-//		// Initialize Device Status Service.
-		ble_status_init_t status_init;
+
+    // Initialize Device Status Service.
+    ble_status_init_t status_init;
     memset(&status_init, 0, sizeof(status_init));
     err_code = ble_status_init(&m_status, &status_init);
     APP_ERROR_CHECK(err_code);
-//	
+	
 	//initialize probe error service
 	ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
-   ble_profile_service_init(&m_ps);
+    ble_profile_service_init(&m_ps);
 
     // Initialize Optical Cal.
 //    cal_optical_init_t optical_init;
@@ -540,23 +540,24 @@ static void services_init(void)
 //    err_code = cal_optical_init(&m_optical, &optical_init);
 //    APP_ERROR_CHECK(err_code);
 
-    // Initialize Force Cal.
+
+//    // Initialize Force Cal.
 //    cal_force_init_t force_init;
 //    memset(&force_init, 0, sizeof(force_init));
 //    err_code = cal_force_init(&m_force, &force_init);
 //    APP_ERROR_CHECK(err_code);
-		
-		// Initialize vib Cal.
+			
+//		// Initialize vib Cal.
 //    cal_vib_init_t vib_init;
 //    memset(&vib_init, 0, sizeof(vib_init));
 //    err_code = cal_vib_init(&m_vib, &vib_init);
 //    APP_ERROR_CHECK(err_code);
 
-	// Initialize cal hall effect service.
-    cal_hall_effect_init_t hall_effect_init;
-    memset(&hall_effect_init, 0, sizeof(hall_effect_init));
-    err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
-    APP_ERROR_CHECK(err_code);
+//	// Initialize cal hall effect service.
+//    cal_hall_effect_init_t hall_effect_init;
+//    memset(&hall_effect_init, 0, sizeof(hall_effect_init));
+//    err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
+//    APP_ERROR_CHECK(err_code);
 
 }
 
@@ -1060,8 +1061,6 @@ static void shutdown_gpio_init(void)
 
     err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
     APP_ERROR_CHECK(err_code);
-
-
 }
 
 
@@ -1099,6 +1098,8 @@ int main(void)
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
+
+    //init_device_info();
     gap_params_init();
     advertising_init();
     services_init();
@@ -1117,13 +1118,8 @@ int main(void)
 	//send_data_to_PIC(get_profile_pack); //test: send profile pack to PIC
 	SEGGER_RTT_WriteString(0, "main loop:\n");
 
-
-	//SEGGER_RTT_printf(0, "\n *** *** *** accel id : %d \n",accel_id);
     while(true)
     {
-
-       
-      
 			APP_Tasks();
 			power_manage();
 			
