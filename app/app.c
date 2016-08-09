@@ -73,6 +73,7 @@
 #include "cal_hall_effect.h"
 #include "pcb_test.h"
 #include "profile_service.h"
+#include "nrf_nvic.h"
 
 
 // *****************************************************************************
@@ -99,6 +100,8 @@ uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
 
 extern pic_arm_pack_t accelerometer_pack;
 extern void * tx_data_ptr; //where to pull data from to send to PIC
+
+
 
 // *****************************************************************************
 /* Application Data
@@ -166,6 +169,8 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
+	uint8_t * p_is_nested_critical_region;
+	
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -211,11 +216,13 @@ void APP_Tasks(void)
 				}
 				case APP_STATE_ACCELEROMETER:
 				{
+						//sd_nvic_critical_region_enter(p_is_nested_critical_region);
 						accel_data = getLSM303data();
+						//sd_nvic_critical_region_exit(0);
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-						SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
+						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
 						//tx_data_ptr = &accel_data;
-						nrf_delay_us(100); //TODO: remove
+						//nrf_delay_us(10); //TODO: remove
 						send_data_to_PIC(accelerometer_pack);
 						SEGGER_RTT_printf(0, "sent accelerometer pack\n");
 						appData.state = APP_STATE_POLLING;

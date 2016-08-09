@@ -51,6 +51,7 @@
 #include "LSM303drv.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
+
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
 static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
@@ -407,15 +408,18 @@ uint8_t SPIReadByte(uint8_t address, SPI_DEVICE device)
 
 void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, uint8_t length)
 {
-	
+	uint16_t spi_timeout = 0;
 	spi_xfer_done = false;
 	tx_buf[0] = address | 0x80;	// set read bit
 	APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, tx_buf, length, rx_buf, length));
 
 	while (!spi_xfer_done)
 	{
-			__WFE();
+			//__WFE();
+		spi_timeout++;
+		if(spi_timeout > 15000)break;
 	}
+	
 }
 
 void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)

@@ -131,7 +131,7 @@ LSM303_DATA getLSM303data(void)
 {
     LSM303_DATA data;
     uint8_t address, tx_buf[7], rx_buf[7];
-	
+		
 		nrf_gpio_cfg_output(ACC_CS_PIN);
 		nrf_gpio_pin_set(ACC_CS_PIN);
 		nrf_delay_us(1);
