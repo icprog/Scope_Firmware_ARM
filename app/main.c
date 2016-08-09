@@ -1099,6 +1099,8 @@ int main(void)
     beacon_adv_init();
     device_manager_init(erase_bonds);
 
+    strcpy(device_info.serial_number, "NO SN");
+    strcpy(device_info.device_name, "SCOPE NO SN");
     //init_device_info();
     gap_params_init();
     advertising_init();
@@ -1110,7 +1112,7 @@ int main(void)
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-		SEGGER_RTT_WriteString(0, "Hello World!\n");
+	SEGGER_RTT_WriteString(0, "Hello World!\n");
     
 
 	APP_Initialize();
@@ -1120,9 +1122,8 @@ int main(void)
 
     while(true)
     {
-			APP_Tasks();
-			power_manage();
-			
+        APP_Tasks();
+        //power_manage();
 	}
 
 

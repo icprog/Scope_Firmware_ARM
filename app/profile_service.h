@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "ble.h"
 #include "ble_srv_common.h"
+#include "app.h" //only for the raw data type. //TODO move its definition
 
 /********* UUIDS ************/
 #define PROFILE_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x88, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
@@ -60,5 +61,7 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps_service, ble_evt_t * p_ble_e
 uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code);
 void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size); // send data to phone
 uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length);
+void raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size);
+
 
 #endif //PROFILE_SERVICE_H__

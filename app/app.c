@@ -208,14 +208,14 @@ void APP_Tasks(void)
 				}
 				case APP_STATE_ACCELEROMETER:
 				{
-						accel_data = getLSM303data();
-						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-						SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
-						//tx_data_ptr = &accel_data;
-						nrf_delay_us(100); //TODO: remove
-						send_data_to_PIC(accelerometer_pack);
-						SEGGER_RTT_printf(0, "sent accelerometer pack\n");
-						appData.state = APP_STATE_POLLING;
+                    accel_data = getLSM303data();
+                    //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+                    SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
+                    //tx_data_ptr = &accel_data;
+                    nrf_delay_us(100); //TODO: remove
+                    send_data_to_PIC(accelerometer_pack);
+                    SEGGER_RTT_printf(0, "sent accelerometer pack\n");
+                    appData.state = APP_STATE_POLLING;
 					break;
 				}
 //        case APP_STATE_VIB_CAL_RDY:
@@ -316,6 +316,11 @@ void APP_Tasks(void)
         case APP_STATE_RAW_DATA_RECEIVE:
         {
             SEGGER_RTT_printf(0, "\nreceived raw data!");
+            for(int i=0;i<BYTES_RAW_DATA;i+=20)
+            {          
+                raw_data_update(&m_ps, &profile_data_in[i], 20);  //notify phone with raw data
+            }
+            appData.state = APP_STATE_POLLING;
             break;
         }
 

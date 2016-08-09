@@ -79,6 +79,7 @@ pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 
 extern device_info_t device_info;
+extern subsampled_raw_data_t raw_data;
 
 
 /*
@@ -132,7 +133,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     
     if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && transfer_in_progress == false)
     {
-        SEGGER_RTT_printf(0, "parsing header packet\n");
+        //SEGGER_RTT_printf(0, "parsing header packet\n");
         spis_rx_transfer_length = packet->length;
         if(spis_rx_transfer_length > 0)
         {
@@ -141,7 +142,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "setting spis_rx_trasnfer_length to %d", spis_rx_transfer_length);
         
         //TODO sort out where to put the data from the buffer
-        SEGGER_RTT_printf(0, "code = %d\n", packet->code);
+        //SEGGER_RTT_printf(0, "code = %d\n", packet->code);
         switch(packet->code)
         {
             case TEST_CODE:
@@ -157,7 +158,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_OPTICAL_CAL_DATA:
             {
-                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
+                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
                 //set up a place to store data and change state
                 next_state = APP_STATE_OPTICAL_CAL_DATA;
                 rx_data_ptr = &(cal_data.optical_data);
@@ -186,36 +187,35 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 				next_state = APP_STATE_PROFILE_TRANSFER;
                 break;
             }
-						case PA_ACCELEROMETER:
-						{
-								//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-								
-							next_state = APP_STATE_ACCELEROMETER;
-								break;
-						}
+            case PA_ACCELEROMETER:
+            {
+                //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+                next_state = APP_STATE_ACCELEROMETER;
+                break;
+            }
             case PA_OPTICAL_CAL_RESULT:
             {
-                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
+                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
                 next_state = APP_STATE_OPTICAL_CAL_RESULT;
                 rx_data_ptr = &(cal_data.optical_result);
                 break;
             }
             case PA_PCB_TEST:
             {
-                SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
+                //SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
                 next_state = APP_STATE_PCB_TEST;
                 break;
             }
             case PA_DEVICE_INFO:
             {
-                SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
+                //SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
                 rx_data_ptr = &device_info;
                 next_state = APP_STATE_DEVICE_INFO;
                 break;
             }
             case PA_RAW_DATA:
             {
-                SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
+                //SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
                 rx_data_ptr = &raw_data;
                 break;
@@ -233,15 +233,15 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     }
     else if(transfer_in_progress) //Data packet
     {
-        SEGGER_RTT_printf(0, "parsing data packet\n");
+        //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
 				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
-			SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
+			//SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
         {
-            SEGGER_RTT_printf(0, "finished transferring\n");
+            //SEGGER_RTT_printf(0, "finished transferring\n");
             transfer_in_progress = false;
             appData.state = next_state;
         }
@@ -260,7 +260,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
  */
 void spi_event_handler(nrf_drv_spi_evt_t const * p_event)
 {
-    SEGGER_RTT_printf(0, "SPI event handler");
+    //SEGGER_RTT_printf(0, "SPI event handler");
     spi_xfer_done = true;
 }
 
@@ -284,7 +284,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
             spis_rx_transfer_length -= rx_length;
         }
         
-        SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
+        //SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
 //        for(int i = 0; i < rx_length; i++)
 //        {
 //             SEGGER_RTT_printf(0, "0x%x  ", m_rx_buf_s[i]);
@@ -293,7 +293,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
-				SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
+				//SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {

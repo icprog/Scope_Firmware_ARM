@@ -134,13 +134,14 @@ typedef struct  data_header
 #define POINTS_PER_RAW_SIGNAL 1000
 typedef struct
 {
-    data_header_t metadata;
+    //data_header_t metadata;
+    uint8_t test_number;
+    uint8_t profile[1500];
     uint16_t force[POINTS_PER_RAW_SIGNAL];
     int8_t OpticalY[POINTS_PER_RAW_SIGNAL];
     uint8_t OpticalSqual[POINTS_PER_RAW_SIGNAL];
 }subsampled_raw_data_t;
 #define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
-extern subsampled_raw_data_t raw_data;
 	
 // *****************************************************************************
 // *****************************************************************************

@@ -7,7 +7,6 @@
 #include "SEGGER_RTT.h"
 
 
-
 void profile_char_add(ble_ps_t * p_ps)
 {
     
@@ -481,6 +480,60 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
         memset(&hvx_params, 0, sizeof(hvx_params));
 
         hvx_params.handle = p_ps->profile_char_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = gatts_value.offset;
+        hvx_params.p_len  = &gatts_value.len;
+        hvx_params.p_data = gatts_value.p_value;
+
+        err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+    }
+    else
+    {
+        err_code = NRF_ERROR_INVALID_STATE;
+    }
+}
+
+void raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
+{
+	if (p_ps == NULL)
+    {
+        //return NRF_ERROR_NULL;
+		SEGGER_RTT_printf(0, "error: null profile input \n");
+		return;
+    }
+    
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
+
+    // Initialize value struct.
+    memset(&gatts_value, 0, sizeof(gatts_value));
+
+    gatts_value.len     = size*sizeof(uint8_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = raw_data;
+
+    // Update data.
+    //TODO: change the char handle to the raw profile char eventually
+    err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
+                                      p_ps->profile_char_handles.value_handle,
+                                      &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        //SEGGER_RTT_printf(0, "data update success \n");
+    }
+    else
+    {
+        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+    }
+
+    // Send value if connected and notifying.
+    if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
+    {
+        ble_gatts_hvx_params_t hvx_params;
+
+        memset(&hvx_params, 0, sizeof(hvx_params));
+
+        hvx_params.handle = p_ps->profile_char_handles.value_handle; //TODO: change to raw  data char when we are using it
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = gatts_value.offset;
         hvx_params.p_len  = &gatts_value.len;
