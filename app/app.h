@@ -75,10 +75,8 @@ typedef enum
 	APP_STATE_ACCELEROMETER,
     APP_STATE_DEVICE_INFO,
     APP_STATE_PROFILE_TRANSFER,
-
+    APP_STATE_RAW_DATA_RECEIVE,
 } APP_STATES;
-
-
 
 
 typedef struct
@@ -99,6 +97,50 @@ typedef struct{
 }device_info_t;
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
 extern device_info_t device_info;
+    
+/***** meta data struct *****/
+typedef struct  data_header
+{
+    /**********  Environmental ************/
+    int8_t      temperature; // in degrees C
+    //Date and Time
+    //Location
+    
+    /*********** Test Specific  ***********/
+    uint32_t    test_num; //test number (device specific)
+    uint8_t     battery_capacity;
+    float       test_time; //seconds
+    
+    /********** Device Specific  *************/
+    uint8_t     accel_FS; //full scale of accelerometer
+    uint16_t    gyro_FS; 
+    uint16_t    force_cal[5]; //in ADC counts
+    float       optical_cal;
+    
+    /*************  User Settings ************/
+    
+    /*************  Versions and Revisions ************/
+    char        serial_number[6]; // device serial #
+    char*       PIC_firmware_version; //ex. 1.0.3
+    char*       ARM_firmware_version;
+    uint8_t     main_PCB_rev; //ex. 3
+    uint8_t     NRF_PCB_rev;
+   
+    //add the rest here...
+} data_header_t;
+#define BYTES_OF_METADATA sizeof(data_header_t)
+
+/******** RAW DATA STRUCT *******/
+#define POINTS_PER_RAW_SIGNAL 1000
+typedef struct
+{
+    data_header_t metadata;
+    uint16_t force[POINTS_PER_RAW_SIGNAL];
+    int8_t OpticalY[POINTS_PER_RAW_SIGNAL];
+    uint8_t OpticalSqual[POINTS_PER_RAW_SIGNAL];
+}subsampled_raw_data_t;
+#define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
+extern subsampled_raw_data_t raw_data;
 	
 // *****************************************************************************
 // *****************************************************************************

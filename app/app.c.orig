@@ -68,38 +68,21 @@
 #include "nrf_drv_config.h"
 #include "calibration.h"
 #include "cal_force.h"
-#include "nrf_drv_gpiote.h" //for the hall effect test
-#include "cal_optical.h"
-#include "cal_hall_effect.h"
-#include "pcb_test.h"
-#include "profile_service.h"
-#include "nrf_nvic.h"
+
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
+
 extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
 extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
 extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-extern cal_force_t                             m_force;
-extern cal_optical_t													 m_optical;
-extern cal_hall_effect_t											 m_hall_effect;
-extern ble_ps_t                            		 m_ps;
-extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
-extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
-
-extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
-uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-extern pic_arm_pack_t accelerometer_pack;
-extern void * tx_data_ptr; //where to pull data from to send to PIC
-
-subsampled_raw_data_t raw_data;
-
+extern cal_force_t                           m_force;
 // *****************************************************************************
 /* Application Data
 
@@ -146,11 +129,9 @@ void APP_Initialize(void)
         /* Place the App state machine in its initial state. */
         appData.state = APP_STATE_INIT;		
 	
-		spi_init();
+		spi_init();	
 		spis_init();
 		spis_xfer_done = false;
-		profile_block_counter = 0;
-		init_LSM303();
 		SEGGER_RTT_WriteString(0, "Init End \n");
 }
 
@@ -165,9 +146,6 @@ void APP_Initialize(void)
 
 void APP_Tasks(void)
 {   
-	uint16_t kk;
-	uint8_t * p_is_nested_critical_region;
-	
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -184,7 +162,7 @@ void APP_Tasks(void)
             if(~NRF_GPIO->IN & 1<<17)
             {
                     //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
-									SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
+                SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
                   init_LSM303();
                   LEDS_INVERT(BSP_LED_0_MASK);
                     while(~NRF_GPIO->IN & 1<<17);
@@ -193,38 +171,30 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-				case APP_STATE_PROFILE_TRANSFER:
-				{
-					//handle incoming profile data from PIC here
-					//profile_data_in[];
-					//profile_block_counter++; //keeps track of current block of 250 bytes
-//				SEGGER_RTT_printf(0, "app data counter %d \n",profile_block_counter);
-//				if(profile_block_counter >= 5)
-//				{
-//						profile_block_counter = 0;
-//						SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
-//						for(kk=0;kk<75;kk+=20)profile_data_update(&m_ps, &profile_data_in[kk],20);
-//				}
-					SEGGER_RTT_WriteString(0, "Finished receiving profile \n");
-					for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
-					SEGGER_RTT_WriteString(0, "Finished sending profile \n");
-					appData.state = APP_STATE_POLLING;
-					break;
-				}
-				case APP_STATE_ACCELEROMETER:
-				{
-						//sd_nvic_critical_region_enter(p_is_nested_critical_region);
-						accel_data = getLSM303data();
-						//sd_nvic_critical_region_exit(0);
-						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
-						//tx_data_ptr = &accel_data;
-						//nrf_delay_us(10); //TODO: remove
-						send_data_to_PIC(accelerometer_pack);
-						SEGGER_RTT_printf(0, "sent accelerometer pack\n");
-						appData.state = APP_STATE_POLLING;
-					break;
-				}
+<<<<<<< HEAD
+        case APP_STATE_VIB_CAL_RDY:
+        {
+            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+            send_data_to_PIC(vib_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_WEIGHT:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            cal_data.current_weight = 1;
+            send_data_to_PIC(force_cal_weight_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_LENGTH:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+            send_data_to_PIC(optical_cal_length_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+=======
 //        case APP_STATE_VIB_CAL_RDY:
 //        {
 //            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -246,86 +216,19 @@ void APP_Tasks(void)
 //            appData.state = APP_STATE_POLLING;
 //            break;
 //        }
+>>>>>>> f11a274ca7fe4f3b182546ad5d6a86ce23804c4c
         case APP_STATE_FORCE_CAL_DATA:
         {
-						uint16_t test[7];
             SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
             SEGGER_RTT_printf(0, "received force calibration data: ");
-            for(int i = 0; i < 7; i++)
+            for(int i = 0; i < 6; i++)
             {
                 SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
-								test[i] = i;
             }
-
 						cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_HALL_EFFECT_TEST:
-        {
-            if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
-            {
-                //communicate that the test failed!
-								cal_result_update(&m_hall_effect, 0);
-                appData.state = APP_STATE_POLLING;
-            }
-            if(cal_data.hall_status == 0) //test complete
-            {
-                //communicate that the test passed
-								cal_result_update(&m_hall_effect, 1);
-                appData.state = APP_STATE_POLLING;
-            }
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_DATA:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
-            optical_cal_update(&m_optical, cal_data.optical_data);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_RESULT:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
-            optical_cal_result_update(&m_optical, cal_data.optical_result);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_HALL_EFFECT_RESULT:
-        {
-            cal_result_update(&m_hall_effect, cal_data.hall_result);
-            break;
-        }
-        case APP_STATE_PCB_TEST:
-        {
-            run_pcb_tests(pcb_test_results);
-            pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
-            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_DEVICE_INFO:
-        {
-            SEGGER_RTT_printf(0, "\nserial number = ");
-            for(int i = 0; i < 5; i++)
-            {
-                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
-            }
-            SEGGER_RTT_printf(0, "\ndevice name = ");
-            for(int i=0; i < 32; i++)
-            {
-                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
-            }
-            
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_RAW_DATA_RECEIVE:
-        {
-            SEGGER_RTT_printf(0, "\nreceived raw data!");
-            break;
-        }
-
         default:
         {
             break;
@@ -418,8 +321,8 @@ void monitor(void)
 						
 						case 'w':
 						{
-								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
-								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
+								printf("\r\nLSM Who Am I: %x",getLSM303ID());
+								printf("\r\nL3G Who Am I: %x",getL3GD_ID());
 								prompt();											
 						}
 				}

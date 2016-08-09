@@ -265,6 +265,108 @@ void profile_error_char_add(ble_ps_t * p_ps)
     APP_ERROR_CHECK(err_code);
 }
 
+void raw_data_char_add(ble_ps_t * p_ps)
+{
+    
+    uint32_t err_code; // Variable to hold return codes from library and softdevice functions
+    
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    char_uuid.uuid      = RAW_DATA_CHAR_UUID;
+    BLE_UUID_BLE_ASSIGN(char_uuid, RAW_DATA_CHAR_UUID); //TODO might be redundant witht he previous line
+
+    /****** add read/write properties ******/
+    ble_gatts_char_md_t char_md;
+    memset(&char_md, 0, sizeof(char_md));
+    //char_md.char_props.write = 1;
+    //char_md.char_props.read = 1;
+    
+    /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
+    ble_gatts_attr_md_t cccd_md;
+    memset(&cccd_md, 0, sizeof(cccd_md));
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+    char_md.p_cccd_md           = &cccd_md;
+    char_md.char_props.notify   = 1;
+    
+    /*** Configure the attribute metadata ***/
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md)); 
+    attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
+    
+    /****Set read/write security levels to our characteristic ***/
+    //BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
+    
+    /**** Configure the characteristic value attribute  ****/
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));     
+    attr_char_value.p_uuid      = &char_uuid;
+    attr_char_value.p_attr_md   = &attr_md;
+    
+    /***  Set characteristic length in number of bytes  ****/
+    attr_char_value.max_len     = 20;
+    attr_char_value.init_len    = 20;
+    uint8_t value               = 0x00;
+    attr_char_value.p_value     = &value;
+    
+    /**** add it too the softdevice  *****/
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->raw_data_char_handles);
+    APP_ERROR_CHECK(err_code);
+}
+
+void profile_length_char_add(ble_ps_t * p_ps)
+{
+    
+    uint32_t err_code; // Variable to hold return codes from library and softdevice functions
+    
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    char_uuid.uuid      = PROFILE_LENGTH_CHAR_UUID;
+    BLE_UUID_BLE_ASSIGN(char_uuid, PROFILE_LENGTH_CHAR_UUID); //TODO might be redundant witht he previous line
+
+    /****** add read write properties ******/
+    ble_gatts_char_md_t char_md;
+    memset(&char_md, 0, sizeof(char_md));
+    //char_md.char_props.write = 1;
+    char_md.char_props.read = 1;
+    
+    /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
+    ble_gatts_attr_md_t cccd_md;
+    memset(&cccd_md, 0, sizeof(cccd_md));
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+    char_md.p_cccd_md           = &cccd_md;
+    char_md.char_props.notify   = 1;
+    
+    /*** Configure the attribute metadata ***/
+    ble_gatts_attr_md_t attr_md;
+    memset(&attr_md, 0, sizeof(attr_md)); 
+    attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
+    
+    /****Set read/write security levels to our characteristic ***/
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm); //needed for write or notify
+    
+    /**** Configure the characteristic value attribute  ****/
+    ble_gatts_attr_t    attr_char_value;
+    memset(&attr_char_value, 0, sizeof(attr_char_value));     
+    attr_char_value.p_uuid      = &char_uuid;
+    attr_char_value.p_attr_md   = &attr_md;
+    
+    /***  Set characteristic length in number of bytes  ****/
+    attr_char_value.max_len     = 2;
+    attr_char_value.init_len    = 2;
+    uint8_t value               = 0x00;
+    attr_char_value.p_value     = &value;
+    
+    /**** add it too the softdevice  *****/
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->profile_length_char_handles);
+    APP_ERROR_CHECK(err_code);
+}
+
 void ble_profile_service_init(ble_ps_t * p_profile_service)
 {
         uint32_t err_code; // Variable to hold return codes from library and softdevice functions
@@ -286,7 +388,57 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     transfer_ids_char_add(p_profile_service);
     delete_ids_char_add(p_profile_service);
     profile_error_char_add(p_profile_service);
+    profile_length_char_add(p_profile_service);
+    raw_data_char_add(p_profile_service);
     
+}
+
+uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length)
+{
+    if (p_ps == NULL)
+    {
+        return NRF_ERROR_NULL;
+    }
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
+        
+    memset(&gatts_value, 0, sizeof(gatts_value)); // Initialize value struct.
+    gatts_value.len     = sizeof(uint16_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = (uint8_t *)&length;
+    
+    //update the value
+    err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
+                                  p_ps->profile_length_char_handles.value_handle,
+                                  &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        //do something noe that length is set
+    }
+    else
+    {
+        return err_code;
+    }
+    
+    // Send value if connected and notifying.
+    if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID))
+    {
+        ble_gatts_hvx_params_t hvx_params;
+
+        memset(&hvx_params, 0, sizeof(hvx_params));
+
+        hvx_params.handle = p_ps->profile_length_char_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = gatts_value.offset;
+        hvx_params.p_len  = &gatts_value.len;
+        hvx_params.p_data = gatts_value.p_value;
+
+        err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+    }
+    else
+    {
+        err_code = NRF_ERROR_INVALID_STATE;
+    }
 }
 
 void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
