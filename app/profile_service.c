@@ -493,7 +493,7 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
     }
 }
 
-uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
+uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint8_t * bytes_sent)
 {
     static int count=0;
 	if (p_ps == NULL)
@@ -544,10 +544,12 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
         if (err_code == NRF_SUCCESS)
         {
             count+=gatts_value.len;
+            *bytes_sent = gatts_value.len;
             SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }
         else
         {
+            *bytes_sent = 0;
             SEGGER_RTT_printf(0, "error in profile data update fxn\n");
         }
 	}
@@ -595,11 +597,11 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 		SEGGER_RTT_WriteString(0, "profile null \n");
         return;
     }
-    SEGGER_RTT_WriteString(0, "profile evt handler \n");
+    //SEGGER_RTT_WriteString(0, "profile evt handler \n");
     switch (p_ble_evt->header.evt_id)
     {        
         case BLE_GATTS_EVT_WRITE:
-			SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
+			//SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
 			on_write_profile_service(p_ps, p_ble_evt);
             break;
         case BLE_GAP_EVT_CONNECTED:

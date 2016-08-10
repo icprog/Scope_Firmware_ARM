@@ -136,7 +136,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 
 void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
-		SEGGER_RTT_WriteString(0, "CAL OPTICAL BLE \n");
+	//SEGGER_RTT_WriteString(0, "CAL OPTICAL BLE \n");
     if (p_optical == NULL || p_ble_evt == NULL)
     {
 				SEGGER_RTT_WriteString(0, "optical NULL \n");
@@ -146,23 +146,23 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-					SEGGER_RTT_WriteString(0, "optical conn \n");
+					//SEGGER_RTT_WriteString(0, "optical conn \n");
             on_connect(p_optical, p_ble_evt);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
-					SEGGER_RTT_WriteString(0, "optical discon\n");
+					//SEGGER_RTT_WriteString(0, "optical discon\n");
             on_disconnect(p_optical, p_ble_evt);
             break;
 
         case BLE_GATTS_EVT_WRITE:
-					SEGGER_RTT_WriteString(0, "optical write \n");
+					//SEGGER_RTT_WriteString(0, "optical write \n");
             on_write(p_optical, p_ble_evt);
             break;
 
         default:
             // No implementation needed.
-				SEGGER_RTT_WriteString(0, "optical default \n");
+				//SEGGER_RTT_WriteString(0, "optical default \n");
             break;
     }
 }

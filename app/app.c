@@ -318,6 +318,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
+            uint8_t bytes_sent = 0;
             static int data_counts = 0;
             uint8_t counter = 0;
             uint32_t err_code;
@@ -325,27 +326,27 @@ void APP_Tasks(void)
              sending_data_to_phone = 1;
             uint8_t * raw_data_ptr = (uint8_t *)&raw_data;
             //nrf_drv_spis_uninit(&spis);
-            SEGGER_RTT_printf(0, "raw data size = %d\n", BYTES_RAW_DATA);
-            for(;data_counts<BYTES_RAW_DATA;data_counts+=20)
+            
+            while(data_counts<BYTES_RAW_DATA)
             {      
-				counter++;
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data)+data_counts, 20);  //notify phone with raw data
-							
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
+				data_counts += bytes_sent;			
                 if(data_counts >= BYTES_RAW_DATA)
                 {
                     done_flag = 1;
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
                 {
-                    data_counts +=20;
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }
                 counter++;
                 //SEGGER_RTT_printf(0, "\n data: %d",data_counts);
-            }
-						
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter >= 4)&& !done_flag)
+            }		
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
             {
                 counter = 0;
                 appData.state = APP_STATE_POLLING;
@@ -353,7 +354,6 @@ void APP_Tasks(void)
             }
             appData.state = APP_STATE_POLLING;
 			sending_data_to_phone = 0;
-			//spis_init();
             break;
         }
 

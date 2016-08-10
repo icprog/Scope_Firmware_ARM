@@ -132,21 +132,21 @@ LSM303_DATA getLSM303data(void)
     LSM303_DATA data;
     uint8_t address, tx_buf[7], rx_buf[7];
 		
-		nrf_gpio_cfg_output(ACC_CS_PIN);
-		nrf_gpio_pin_set(ACC_CS_PIN);
-		nrf_delay_us(1);
+    nrf_gpio_cfg_output(ACC_CS_PIN);
+    nrf_gpio_pin_set(ACC_CS_PIN);
+    nrf_delay_us(1);
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
-	  NRF_GPIO->OUTCLR = (1<<SPI_CS_ACC);
-		SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
-	  NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
+	NRF_GPIO->OUTCLR = (1<<SPI_CS_ACC);
+    SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
+	NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
 	
-		data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
-	  data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
-	  data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
+	data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
+	data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
+	data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
 	
-		nrf_gpio_pin_clear(ACC_CS_PIN);
+	nrf_gpio_pin_clear(ACC_CS_PIN);
     
     return(data);
 }

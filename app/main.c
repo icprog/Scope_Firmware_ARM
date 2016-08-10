@@ -762,7 +762,7 @@ static void advertising_init(void)
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t err_code;
-SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
+    //SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
@@ -804,7 +804,7 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
-	SEGGER_RTT_WriteString(0, "ble dispatch \n");
+	//SEGGER_RTT_WriteString(0, "ble dispatch \n");
     dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
