@@ -147,6 +147,7 @@ static ble_beacon_init_t beacon_init;
 
 device_info_t device_info;
 extern uint8_t dummy_buf[32];
+extern uint8_t sending_data_to_phone;
 pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
@@ -504,16 +505,16 @@ static void services_init(void)
     uint32_t       err_code;
 	
     //battery service init:
-    ble_bas_init_t bas_init;
-    memset(&bas_init, 0, sizeof(bas_init));
-    err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
+//    ble_bas_init_t bas_init;
+//    memset(&bas_init, 0, sizeof(bas_init));
+//    err_code = ble_bas_init(&m_bas, &bas_init);
+//    APP_ERROR_CHECK(err_code);
 	
     // Initialize Slope Service.
-    ble_slope_init_t slope_init;
-    memset(&slope_init, 0, sizeof(slope_init));
-    err_code = ble_slope_init(&m_slope, &slope_init);
-    APP_ERROR_CHECK(err_code);
+//    ble_slope_init_t slope_init;
+//    memset(&slope_init, 0, sizeof(slope_init));
+//    err_code = ble_slope_init(&m_slope, &slope_init);
+//    APP_ERROR_CHECK(err_code);
 		
     // Initialize Device Information Service.
     ble_dis_init_t dis_init;
@@ -529,7 +530,7 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 	
 	//initialize probe error service
-	ble_probe_error_service_init(&m_pes);
+//	ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
     ble_profile_service_init(&m_ps);
@@ -785,7 +786,8 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
             APP_ERROR_CHECK(err_code);
         
             break;
-
+				case BLE_EVT_TX_COMPLETE:
+					if(sending_data_to_phone) appData.state = APP_STATE_RAW_DATA_RECEIVE;
         default:
             // No implementation needed.
             break;

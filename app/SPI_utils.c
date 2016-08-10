@@ -63,7 +63,7 @@ uint8_t				profile_buffer[250];
 uint8_t    profile_data_in[1500]; // holder for profile data from PIC
 uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
-
+uint8_t sending_data_to_phone =0;
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
@@ -276,7 +276,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
     uint8_t rx_length, tx_length;
     uint8_t error_code = 0;
    
-    if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
+    if (event.evt_type == NRF_DRV_SPIS_XFER_DONE &&  sending_data_to_phone == 0)
     {
         /********* determine length of packet received  *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);
@@ -339,6 +339,7 @@ void spi_init(void)
 {
 		nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG(SPI_INSTANCE);
 		spi_config.ss_pin = SPI_CS_PIN;
+		
 	  /* TODO(rk): turn off CS pin in master SPI driver */
 		spi_config.mode = NRF_DRV_SPI_MODE_3;
 		APP_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler));
@@ -394,7 +395,7 @@ void spis_init(void)
 uint8_t SPIReadByte(uint8_t address, SPI_DEVICE device)
 {
 	uint8_t rx_buf[2], tx_buf[2], CS_pin;
-	
+	uint16_t spi_timeout = 0;
 	if (device == LSM_DEVICE)
 		CS_pin = SPI_CS_ACC;
 	else if (device == L3G_DEVICE)
@@ -409,8 +410,17 @@ uint8_t SPIReadByte(uint8_t address, SPI_DEVICE device)
 
 	while (!spi_xfer_done)
 	{
-			__WFE();
+			//__WFE();
+		spi_timeout++;
+		if(spi_timeout > 15000)
+		{
+			/*printf*/SEGGER_RTT_printf(0,"\n\r  timout!!!");
+			spi_xfer_done = true;
+			break;
+			
+		}
 	}
+	
 	return(rx_buf[1]);
 }
 
@@ -425,7 +435,14 @@ void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, u
 	{
 			//__WFE();
 		spi_timeout++;
-		if(spi_timeout > 15000)break;
+		if(spi_timeout > 15000)
+		{
+			/*printf*/SEGGER_RTT_printf(0,"\n\r  timout!!!");
+			spi_xfer_done = true;
+			spi_init();
+			break;
+			
+		}
 	}
 	
 }
@@ -433,7 +450,7 @@ void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, u
 void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 {
 		uint8_t rx_buf[2], tx_buf[2], CS_pin;
-	
+		uint16_t spi_timeout = 0;
 		if (device == LSM_DEVICE)
 				CS_pin = SPI_CS_ACC;
 		else if (device == L3G_DEVICE)
@@ -448,9 +465,17 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		NRF_GPIO->OUTSET = (1<<CS_pin);
 
 		while (!spi_xfer_done)
+	{
+			//__WFE();
+		spi_timeout++;
+		if(spi_timeout > 15000)
 		{
-				__WFE();
+			/*printf*/SEGGER_RTT_printf(0,"\n\r  timout!!!");
+			spi_xfer_done = true;
+			break;
+			
 		}
+	}
 }
 
 void set_RDY(void)
