@@ -74,6 +74,7 @@
 #include "pcb_test.h"
 #include "profile_service.h"
 #include "nrf_nvic.h"
+#include "ble_err.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -92,6 +93,8 @@ extern cal_hall_effect_t											 m_hall_effect;
 extern ble_ps_t                            		 m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
 extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
+extern uint8_t sending_data_to_phone;
+//extern nrf_drv_spis_t spis;/**< SPIS instance. */
 
 extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
@@ -211,8 +214,9 @@ void APP_Tasks(void)
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
 						//tx_data_ptr = &accel_data;
-                        //nrf_delay_us(10); //TODO: remove
-						//send_data_to_PIC(accelerometer_pack);
+
+						nrf_delay_us(90); //TODO: remove
+						send_data_to_PIC(accelerometer_pack);
 						//SEGGER_RTT_printf(0, "sent accelerometer pack\n");
 						appData.state = APP_STATE_POLLING;
 					break;
@@ -314,12 +318,47 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
+						static int data_counts = 0;
+						uint8_t counter = 0;
+						uint32_t err_code;
+						uint8_t done_flag = 0;
+						 sending_data_to_phone = 1;
+						//nrf_drv_spis_uninit(&spis);
             SEGGER_RTT_printf(0, "\nreceived raw data!");
-            for(int i=0;i<BYTES_RAW_DATA;i+=20)
-            {          
-                raw_data_update(&m_ps, &profile_data_in[i], 20);  //notify phone with raw data
+					SEGGER_RTT_printf(0, "\n data counts: %d", data_counts);
+            for(;data_counts<BYTES_RAW_DATA;data_counts+=20)
+            {      
+								counter++;
+								nrf_delay_us(250); //TODO: remove
+								nrf_delay_us(250); //TODO: remove
+                err_code = raw_data_update(&m_ps, &profile_data_in[data_counts], 20);  //notify phone with raw data
+								nrf_delay_us(250); //TODO: remove
+								nrf_delay_us(250); //TODO: remove
+							
+							if(data_counts >= BYTES_RAW_DATA)
+							{
+								done_flag = 1;
+							}
+								if(err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)
+								{
+									data_counts -=20;
+									break;
+									
+								}
+								SEGGER_RTT_printf(0, "\n data: %d",data_counts);
             }
+						
+						if((err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)&& !done_flag)
+								{
+									counter = 0;
+									appData.state = APP_STATE_POLLING;
+									break;
+									
+								}
+						//if(err_code == BLE_ERROR_NO_TX_BUFFERS)
             appData.state = APP_STATE_POLLING;
+						sending_data_to_phone = 0;
+						//spis_init();
             break;
         }
 

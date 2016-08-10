@@ -61,7 +61,7 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps_service, ble_evt_t * p_ble_e
 uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code);
 void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size); // send data to phone
 uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length);
-void raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size);
+uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size);
 
 
 #endif //PROFILE_SERVICE_H__

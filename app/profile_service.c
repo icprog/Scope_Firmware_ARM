@@ -493,13 +493,13 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
     }
 }
 
-void raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
+uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
 {
 	if (p_ps == NULL)
     {
         //return NRF_ERROR_NULL;
 		SEGGER_RTT_printf(0, "error: null profile input \n");
-		return;
+		return NRF_ERROR_INVALID_STATE;
     }
     
     uint32_t err_code = NRF_SUCCESS;
@@ -540,11 +540,22 @@ void raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
         hvx_params.p_data = gatts_value.p_value;
 
         err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
-    }
+				 if (err_code == NRF_SUCCESS)
+				{
+					SEGGER_RTT_printf(0, "data to phone: %d\n", size);
+				}
+				else
+				{
+						SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+				}
+		}
     else
     {
+			SEGGER_RTT_printf(0, "\n invalid conn handle \n");
+				
         err_code = NRF_ERROR_INVALID_STATE;
     }
+		return err_code;
 }
 
 void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
