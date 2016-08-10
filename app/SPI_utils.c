@@ -216,7 +216,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_RAW_DATA:
             {
-                //SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
+                SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
                 rx_data_ptr = &raw_data;
                 break;
@@ -237,12 +237,12 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
-				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
-			//SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
+		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
+        SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
         {
-            //SEGGER_RTT_printf(0, "finished transferring\n");
+            SEGGER_RTT_printf(0, "finished transferring\n");
             transfer_in_progress = false;
             appData.state = next_state;
         }
@@ -300,7 +300,6 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         {
             clear_RDY();
         }
-        
         
         /**********  determine length of the packet to send and new one to receive *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);

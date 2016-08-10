@@ -181,15 +181,6 @@ void APP_Tasks(void)
         }
         case APP_STATE_POLLING:
         {
-            if(~NRF_GPIO->IN & 1<<17)
-            {
-                    //printf("\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package.");
-									SEGGER_RTT_WriteString(0, "\n\rButton 1 pressed.  Sending LSM303 Initialization SPI package. \n");
-                  init_LSM303();
-                  LEDS_INVERT(BSP_LED_0_MASK);
-                    while(~NRF_GPIO->IN & 1<<17);
-            }
-            
             //monitor();
             break;
         }
@@ -220,9 +211,9 @@ void APP_Tasks(void)
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
 						//tx_data_ptr = &accel_data;
-						//nrf_delay_us(10); //TODO: remove
-						send_data_to_PIC(accelerometer_pack);
-						SEGGER_RTT_printf(0, "sent accelerometer pack\n");
+                        //nrf_delay_us(10); //TODO: remove
+						//send_data_to_PIC(accelerometer_pack);
+						//SEGGER_RTT_printf(0, "sent accelerometer pack\n");
 						appData.state = APP_STATE_POLLING;
 					break;
 				}

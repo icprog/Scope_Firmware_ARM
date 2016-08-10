@@ -1100,7 +1100,7 @@ int main(void)
     device_manager_init(erase_bonds);
 
     strcpy(device_info.serial_number, "NO SN");
-    strcpy(device_info.device_name, "SCOPE NO SN");
+    strcpy(device_info.device_name, "FUCK YOU");
     //init_device_info();
     gap_params_init();
     advertising_init();
