@@ -495,6 +495,7 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
 
 uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
 {
+    static int count=0;
 	if (p_ps == NULL)
     {
         //return NRF_ERROR_NULL;
@@ -540,15 +541,16 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size)
         hvx_params.p_data = gatts_value.p_value;
 
         err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
-				 if (err_code == NRF_SUCCESS)
-				{
-					SEGGER_RTT_printf(0, "data to phone: %d\n", size);
-				}
-				else
-				{
-						SEGGER_RTT_printf(0, "error in profile data update fxn\n");
-				}
-		}
+        if (err_code == NRF_SUCCESS)
+        {
+            count+=gatts_value.len;
+            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+        }
+        else
+        {
+            SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        }
+	}
     else
     {
 			SEGGER_RTT_printf(0, "\n invalid conn handle \n");

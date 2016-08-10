@@ -318,47 +318,42 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-						static int data_counts = 0;
-						uint8_t counter = 0;
-						uint32_t err_code;
-						uint8_t done_flag = 0;
-						 sending_data_to_phone = 1;
-						//nrf_drv_spis_uninit(&spis);
-            SEGGER_RTT_printf(0, "\nreceived raw data!");
-					SEGGER_RTT_printf(0, "\n data counts: %d", data_counts);
+            static int data_counts = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t done_flag = 0;
+             sending_data_to_phone = 1;
+            uint8_t * raw_data_ptr = (uint8_t *)&raw_data;
+            //nrf_drv_spis_uninit(&spis);
+            SEGGER_RTT_printf(0, "raw data size = %d\n", BYTES_RAW_DATA);
             for(;data_counts<BYTES_RAW_DATA;data_counts+=20)
             {      
-								counter++;
-								nrf_delay_us(250); //TODO: remove
-								nrf_delay_us(250); //TODO: remove
-                err_code = raw_data_update(&m_ps, &profile_data_in[data_counts], 20);  //notify phone with raw data
-								nrf_delay_us(250); //TODO: remove
-								nrf_delay_us(250); //TODO: remove
+				counter++;
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data)+data_counts, 20);  //notify phone with raw data
 							
-							if(data_counts >= BYTES_RAW_DATA)
-							{
-								done_flag = 1;
-							}
-								if(err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)
-								{
-									data_counts -=20;
-									break;
-									
-								}
-								SEGGER_RTT_printf(0, "\n data: %d",data_counts);
+                if(data_counts >= BYTES_RAW_DATA)
+                {
+                    done_flag = 1;
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)
+                {
+                    data_counts +=20;
+                    break;
+                    
+                }
+                counter++;
+                //SEGGER_RTT_printf(0, "\n data: %d",data_counts);
             }
 						
-						if((err_code == BLE_ERROR_NO_TX_PACKETS || counter >= 4)&& !done_flag)
-								{
-									counter = 0;
-									appData.state = APP_STATE_POLLING;
-									break;
-									
-								}
-						//if(err_code == BLE_ERROR_NO_TX_BUFFERS)
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter >= 4)&& !done_flag)
+            {
+                counter = 0;
+                appData.state = APP_STATE_POLLING;
+                break;
+            }
             appData.state = APP_STATE_POLLING;
-						sending_data_to_phone = 0;
-						//spis_init();
+			sending_data_to_phone = 0;
+			//spis_init();
             break;
         }
 
