@@ -46,23 +46,21 @@
 #include "app_trace.h"
 //#include "ble_dev_status.h"
 #include "SEGGER_RTT.h"
-#include "probe_error.h"
-#include "profile_service.h"
 #include "LSM303drv.h"
 #include "nrf_delay.h"
 #include "spi_utils.h"
 #include "app.h"
-#include "cal_vib.h"
-#include "cal_hall_effect.h"
 #include "calibration.h"
-//#include "SEGGER_RTT_printf.h"
 
 //services
 #include "probe_error.h"
 #include "profile_service.h"
-
 #include "cal_optical.h"
 #include "cal_force.h"
+#include "cal_vib.h"
+#include "cal_hall_effect.h"
+#include "probe_error.h"
+#include "profile_service.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -75,8 +73,6 @@
 
 #define APP_COMPANY_IDENTIFIER               0x0059                                     /**< Company identifier for Nordic Semiconductor ASA. as per www.bluetooth.org. */
 
-//#define BEACON_UUID 0xff, 0xfe, 0x2d, 0x12, 0x1e, 0x4b, 0x0f, 0xa4,\
-                    0x99, 0x4e, 0xce, 0xb5, 0x31, 0xf4, 0x05, 0x45 
 #define BEACON_UUID 0x00, 0x00, 0x29, 0x02, 0x00, 0x00, 0x10, 0x00, 0x80, 0x00, 0x00, 0x80, 0x5f, 0x9b, 0x34, 0xfb			//put in place to match the app							
 										
 #define BEACON_ADV_INTERVAL                  400                                        /**< The Beacon's advertising interval, in milliseconds*/
@@ -180,8 +176,8 @@ static sensorsim_state_t                     m_heart_rate_sim_state;            
 static sensorsim_cfg_t                       m_rr_interval_sim_cfg;                     /**< RR Interval sensor simulator configuration. */
 static sensorsim_state_t                     m_rr_interval_sim_state;                   /**< RR Interval sensor simulator state. */
 
+//defines variables to be used for app timers
 APP_TIMER_DEF(m_battery_timer_id);                                                      /**< Battery timer. */
-
 APP_TIMER_DEF(m_slope_timer_id);                                                        /**< Slope timer. */
 APP_TIMER_DEF(m_status_timer_id);                                                        /**< Status timer. */
 APP_TIMER_DEF(m_rr_interval_timer_id);                                                  /**< RR interval timer. */
@@ -560,48 +556,6 @@ static void services_init(void)
 //    err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
 //    APP_ERROR_CHECK(err_code);
 
-}
-
-
-
-///**@brief Function for initializing the sensor simulators.
-// */
-static void sensor_simulator_init(void)
-{
-//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-//    m_battery_sim_cfg.start_at_max = true;
-
-//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
-//	
-//		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
-//    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
-//    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
-//    m_slope_sim_cfg.start_at_max = true;
-
-//    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
-//	
-//		m_status_sim_cfg.min          = MIN_status_LEVEL;
-//    m_status_sim_cfg.max          = MAX_status_LEVEL;
-//    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
-//    m_status_sim_cfg.start_at_max = true;
-
-//    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
-
-//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-//    m_heart_rate_sim_cfg.start_at_max = false;
-
-//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-
-//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-//    m_rr_interval_sim_cfg.start_at_max = false;
-
-//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
 }
 
 
@@ -1107,7 +1061,6 @@ int main(void)
     gap_params_init();
     advertising_init();
     services_init();
-    //sensor_simulator_init();
     conn_params_init();
 	
     // Start execution.

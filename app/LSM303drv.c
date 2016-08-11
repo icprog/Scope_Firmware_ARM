@@ -134,12 +134,12 @@ LSM303_DATA getLSM303data(void)
 		
     nrf_gpio_cfg_output(ACC_CS_PIN);
     nrf_gpio_pin_set(ACC_CS_PIN);
-    nrf_delay_us(1);
+    nrf_delay_us(1); //TODO is this necessary?
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
 	NRF_GPIO->OUTCLR = (1<<SPI_CS_ACC);
-    SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
+    SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);//read in 7 bytes 2*3 axes + 1 bytes of header info
 	NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
 	
 	data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
