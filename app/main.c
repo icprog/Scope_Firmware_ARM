@@ -187,10 +187,10 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-	//{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
+	{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
-	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
+	{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
     //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
@@ -340,9 +340,7 @@ static void status_level_meas_timeout_handler(void * p_context)
 
 
 /**@brief Function for handling the RR interval timer timeout.
- *
  * @details This function will be called each time the RR interval timer expires.
- *
  * @param[in]   p_context   Pointer used for passing some arbitrary information (context) from the
  *                          app_start_timer() call to the timeout handler.
  */
@@ -507,6 +505,12 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
     
+    //battery service init:
+    ble_bas_init_t bas_init;
+    memset(&bas_init, 0, sizeof(bas_init));
+    err_code = ble_bas_init(&m_bas, &bas_init);
+    APP_ERROR_CHECK(err_code);
+    
     if(CALIBRATION)
     {
         // Initialize Optical Cal. service
@@ -536,17 +540,12 @@ static void services_init(void)
     }
     else
     {
-    //battery service init:
-//    ble_bas_init_t bas_init;
-//    memset(&bas_init, 0, sizeof(bas_init));
-//    err_code = ble_bas_init(&m_bas, &bas_init);
-//    APP_ERROR_CHECK(err_code);
 	
     // Initialize Slope Service.
-//    ble_slope_init_t slope_init;
-//    memset(&slope_init, 0, sizeof(slope_init));
-//    err_code = ble_slope_init(&m_slope, &slope_init);
-//    APP_ERROR_CHECK(err_code);
+    ble_slope_init_t slope_init;
+    memset(&slope_init, 0, sizeof(slope_init));
+    err_code = ble_slope_init(&m_slope, &slope_init);
+    APP_ERROR_CHECK(err_code);
         
     // Initialize Device Status Service.
     ble_status_init_t status_init;
@@ -555,7 +554,7 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 	
 	//initialize probe error service
-    //	ble_probe_error_service_init(&m_pes);
+    ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
     ble_profile_service_init(&m_ps);
