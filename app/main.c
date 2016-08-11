@@ -500,6 +500,42 @@ static void services_init(void)
 {
     uint32_t       err_code;
 	
+    
+    // Initialize Device Information Service.
+    ble_dis_init_t dis_init;
+    memset(&dis_init, 0, sizeof(dis_init));
+    err_code = ble_dis_init(&dis_init);
+    APP_ERROR_CHECK(err_code);
+    
+    if(CALIBRATION)
+    {
+        // Initialize Optical Cal. service
+        cal_optical_init_t optical_init;
+        memset(&optical_init, 0, sizeof(optical_init));
+        err_code = cal_optical_init(&m_optical, &optical_init);
+        APP_ERROR_CHECK(err_code);
+
+
+        // Initialize Force Cal. service
+        cal_force_init_t force_init;
+        memset(&force_init, 0, sizeof(force_init));
+        err_code = cal_force_init(&m_force, &force_init);
+        APP_ERROR_CHECK(err_code);
+                
+        // Initialize vib Cal. service
+        cal_vib_init_t vib_init;
+        memset(&vib_init, 0, sizeof(vib_init));
+        err_code = cal_vib_init(&m_vib, &vib_init);
+        APP_ERROR_CHECK(err_code);
+
+        // Initialize cal hall effect service.
+        cal_hall_effect_init_t hall_effect_init;
+        memset(&hall_effect_init, 0, sizeof(hall_effect_init));
+        err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
+        APP_ERROR_CHECK(err_code);
+    }
+    else
+    {
     //battery service init:
 //    ble_bas_init_t bas_init;
 //    memset(&bas_init, 0, sizeof(bas_init));
@@ -511,14 +547,7 @@ static void services_init(void)
 //    memset(&slope_init, 0, sizeof(slope_init));
 //    err_code = ble_slope_init(&m_slope, &slope_init);
 //    APP_ERROR_CHECK(err_code);
-		
-    // Initialize Device Information Service.
-    ble_dis_init_t dis_init;
-    memset(&dis_init, 0, sizeof(dis_init));
-    err_code = ble_dis_init(&dis_init);
-    APP_ERROR_CHECK(err_code);
-		
-
+        
     // Initialize Device Status Service.
     ble_status_init_t status_init;
     memset(&status_init, 0, sizeof(status_init));
@@ -526,35 +555,11 @@ static void services_init(void)
     APP_ERROR_CHECK(err_code);
 	
 	//initialize probe error service
-//	ble_probe_error_service_init(&m_pes);
+    //	ble_probe_error_service_init(&m_pes);
     
     //initialize profile service
     ble_profile_service_init(&m_ps);
-
-    // Initialize Optical Cal.
-//    cal_optical_init_t optical_init;
-//    memset(&optical_init, 0, sizeof(optical_init));
-//    err_code = cal_optical_init(&m_optical, &optical_init);
-//    APP_ERROR_CHECK(err_code);
-
-
-//    // Initialize Force Cal.
-//    cal_force_init_t force_init;
-//    memset(&force_init, 0, sizeof(force_init));
-//    err_code = cal_force_init(&m_force, &force_init);
-//    APP_ERROR_CHECK(err_code);
-			
-//		// Initialize vib Cal.
-//    cal_vib_init_t vib_init;
-//    memset(&vib_init, 0, sizeof(vib_init));
-//    err_code = cal_vib_init(&m_vib, &vib_init);
-//    APP_ERROR_CHECK(err_code);
-
-//	// Initialize cal hall effect service.
-//    cal_hall_effect_init_t hall_effect_init;
-//    memset(&hall_effect_init, 0, sizeof(hall_effect_init));
-//    err_code = cal_hall_effect_init(&m_hall_effect, &hall_effect_init);
-//    APP_ERROR_CHECK(err_code);
+    }
 
 }
 
@@ -754,22 +759,28 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
-	//SEGGER_RTT_WriteString(0, "ble dispatch \n");
+    
     dm_ble_evt_handler(p_ble_evt);
-    //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
-	ble_status_on_ble_evt(&m_status, p_ble_evt);
-	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-    ble_conn_params_on_ble_evt(p_ble_evt);
-    // bsp_btn_ble_on_ble_evt(p_ble_evt);
-	cal_force_on_ble_evt(&m_force,p_ble_evt);
-	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
     on_ble_evt(p_ble_evt);
+    ble_conn_params_on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
-    //cal_vib_on_ble_evt(&m_vib,p_ble_evt);
-    cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
-	ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+
+    if(CALIBRATION)
+    {
+        cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+        cal_hall_effect_on_ble_evt(&m_hall_effect, p_ble_evt);
+        cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+        cal_force_on_ble_evt(&m_force,p_ble_evt);
+    }
+    else
+    {
+        ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+        ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+        ble_status_on_ble_evt(&m_status, p_ble_evt);
+        ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+        ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+    }
+
    
 }
 

@@ -37,6 +37,8 @@
 #ifndef _APP_H
 #define _APP_H
 
+#define CALIBRATION 0
+
 #include <stdint.h>
 
 // *****************************************************************************
