@@ -334,6 +334,8 @@ void APP_Tasks(void)
                 if(data_counts >= BYTES_RAW_DATA)
                 {
                     done_flag = 1;
+                    appData.state = APP_STATE_POLLING;
+                    sending_data_to_phone = 0;
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
 
                 }
@@ -352,8 +354,6 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
-            appData.state = APP_STATE_POLLING;
-			sending_data_to_phone = 0;
             break;
         }
 
