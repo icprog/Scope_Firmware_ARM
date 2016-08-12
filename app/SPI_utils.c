@@ -427,20 +427,20 @@ void SPIReadMultipleBytes(uint8_t address, uint8_t * tx_buf, uint8_t * rx_buf, u
 {
 	uint16_t spi_timeout = 0;
 	spi_xfer_done = false;
-	tx_buf[0] = address | 0x80;	// set read bit
-	APP_ERROR_CHECK(nrf_drv_spi_transfer(&spi, tx_buf, length, rx_buf, length));
+	tx_buf[0] = address | 0x80;	// set read bit	 
+    uint32_t err_code = nrf_drv_spi_transfer(&spi, tx_buf, length, rx_buf, length);
 
 	while (!spi_xfer_done)
 	{
-			//__WFE();
+		//__WFE();
 		spi_timeout++;
 		if(spi_timeout > 15000)
 		{
 			/*printf*/SEGGER_RTT_printf(0,"\n\r  timout!!!");
+            nrf_delay_ms(50);
 			spi_xfer_done = true;
 			spi_init();
 			break;
-			
 		}
 	}
 	
@@ -464,7 +464,7 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		NRF_GPIO->OUTSET = (1<<CS_pin);
 
 		while (!spi_xfer_done)
-	{
+        {
 			//__WFE();
 		spi_timeout++;
 		if(spi_timeout > 15000)

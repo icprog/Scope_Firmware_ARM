@@ -209,13 +209,13 @@ void APP_Tasks(void)
 				{
 
 						//sd_nvic_critical_region_enter(p_is_nested_critical_region);
-						accel_data = getLSM303data();
+						//accel_data = getLSM303data();
 						//sd_nvic_critical_region_exit(0);
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
 						//SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
 						//tx_data_ptr = &accel_data;
 
-						nrf_delay_us(90); //TODO: remove
+						//nrf_delay_us(90); //TODO: remove
 						send_data_to_PIC(accelerometer_pack);
 						//SEGGER_RTT_printf(0, "sent accelerometer pack\n");
 						appData.state = APP_STATE_POLLING;

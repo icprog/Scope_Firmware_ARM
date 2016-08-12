@@ -134,7 +134,7 @@ LSM303_DATA getLSM303data(void)
 		
     nrf_gpio_cfg_output(ACC_CS_PIN);
     nrf_gpio_pin_set(ACC_CS_PIN);
-    nrf_delay_us(1); //TODO is this necessary?
+    //nrf_delay_us(1); //TODO is this necessary?
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
@@ -148,6 +148,6 @@ LSM303_DATA getLSM303data(void)
 	
 	nrf_gpio_pin_clear(ACC_CS_PIN);
     
-    return(data);
+    return data;
 }
 

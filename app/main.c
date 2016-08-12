@@ -90,7 +90,7 @@ static ble_beacon_init_t beacon_init;
 #define battery_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Battery level measurement interval (ticks). */                         
 #define slope_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(500, APP_TIMER_PRESCALER) /**< slope level measurement interval (ticks). */
 #define status_LEVEL_MEAS_INTERVAL           APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< status level measurement interval (ticks). */
-#define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(2, APP_TIMER_PRESCALER)
+#define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(20, APP_TIMER_PRESCALER)
 
 /*********  BLE connection params  ******/
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
@@ -114,6 +114,7 @@ static ble_beacon_init_t beacon_init;
 #define DEAD_BEEF                            0xDEADBEEF                                 /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 
+extern LSM303_DATA accel_data;
 device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
@@ -169,6 +170,8 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 static void acc_timeout_handler(void *p_context)
 {
     UNUSED_PARAMETER(p_context);
+    accel_data = getLSM303data();
+    //SEGGER_RTT_printf(0, "%d\n", accel_data.X);
 }
 static void battery_timeout_handler(void *p_context)
 {
@@ -792,13 +795,14 @@ int main(void)
     advertising_init();
     services_init();
     conn_params_init();
+    
+    APP_Initialize();
 	
     // Start execution.
-    application_timers_start();
+    //application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 
-	APP_Initialize();
 	SEGGER_RTT_WriteString(0, "main loop:\n");
 
     while(true)
