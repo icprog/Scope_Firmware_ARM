@@ -102,17 +102,21 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         
         memcpy(m_tx_buf_s, &packet, PIC_ARM_HEADER_SIZE); //TODO: look into why this memcoy is necessary as well.
         //TODO: something weird with timing here. need the print statement to get correct values
-        //SEGGER_RTT_printf(0, "sending:");
+//        SEGGER_RTT_printf(0, "sending:");
 //        for(int i = 0; i < PIC_ARM_HEADER_SIZE; i++)
 //        {
 //            SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
 //        }
-//        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
-//        {
-//            SEGGER_RTT_printf(0, "SPIS error");
-//        }
-        nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0);
-        set_RDY();
+        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        {
+            SEGGER_RTT_printf(0, "SPIS error");
+        }
+        //check that the SPIS semaphore is free before telling the PIC we are ready
+        NRF_SPIS_Type * p_spis = spis.p_reg;
+        if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
+        {
+            set_RDY(); 
+        }
     }
     else
     {
@@ -307,7 +311,6 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         
         
         memcpy(m_tx_buf_s, tx_data_ptr, tx_length); //copy data to send into tx buffer
-
         if(spis_tx_transfer_length != 0)
         {
             //TODO: assign pointer
@@ -368,12 +371,12 @@ void spis_init(void)
     spis_config.csn_pin         = SPIS_CS_PIN;
     spis_config.mode 			= NRF_DRV_SPIS_MODE_0; //NRF_DRV_SPIS_MODE_3;
 		//profile_block_counter = 0;
-	/*printf*/SEGGER_RTT_printf(0,"\n\r\n\rSPI Slave Configuration:");
-	/*printf*/SEGGER_RTT_printf(0,"\n\r  SCK pin: %d", spis_config.sck_pin);
-    /*printf*/SEGGER_RTT_printf(0,"\n\r  MOSI pin: %d", spis_config.mosi_pin);
-    /*printf*/SEGGER_RTT_printf(0,"\n\r  MISO pin: %d", spis_config.miso_pin);
-    /*printf*/SEGGER_RTT_printf(0,"\n\r  Chip Select pin: %d", spis_config.csn_pin);
-    /*printf*/SEGGER_RTT_printf(0,"\n\r  SPI Mode: %d", spis_config.mode);
+//	/*printf*/SEGGER_RTT_printf(0,"\n\r\n\rSPI Slave Configuration:");
+//	/*printf*/SEGGER_RTT_printf(0,"\n\r  SCK pin: %d", spis_config.sck_pin);
+//    /*printf*/SEGGER_RTT_printf(0,"\n\r  MOSI pin: %d", spis_config.mosi_pin);
+//    /*printf*/SEGGER_RTT_printf(0,"\n\r  MISO pin: %d", spis_config.miso_pin);
+//    /*printf*/SEGGER_RTT_printf(0,"\n\r  Chip Select pin: %d", spis_config.csn_pin);
+//    /*printf*/SEGGER_RTT_printf(0,"\n\r  SPI Mode: %d", spis_config.mode);
 
     if (nrf_drv_spis_init(&spis, &spis_config, spis_event_handler) == NRF_SUCCESS)
             /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Succeeded");

@@ -799,7 +799,7 @@ int main(void)
     APP_Initialize();
 	
     // Start execution.
-    //application_timers_start();
+    application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 
