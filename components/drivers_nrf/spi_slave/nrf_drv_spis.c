@@ -23,6 +23,7 @@
 #include "sdk_common.h"
 #include "nrf_assert.h"
 #include "SEGGER_RTT.h"
+#include "SPI_utils.h"
 
 
 #if !SPIS_COUNT
@@ -213,7 +214,6 @@ ret_code_t nrf_drv_spis_init(nrf_drv_spis_t const * const  p_instance,
     
     // Enable SPI slave device.        
     nrf_spis_enable(p_spis);
-    
     return NRF_SUCCESS;
 }
 
@@ -365,11 +365,13 @@ static void spis_irq_handler(NRF_SPIS_Type * p_spis, spis_cb_t * p_cb)
                 // No implementation required.
                 break;
         }
+        //set_RDY();//set the RDY line after the buffers have been set and the semaphore is released
     }
 
     // Check for SPI transaction complete event.
     if (nrf_spis_event_check(p_spis, NRF_SPIS_EVENT_END))
     {
+        //clear_RDY(); //clear the RDY while the SPIS semaphore is aquired by the CPU
         nrf_spis_event_clear(p_spis, NRF_SPIS_EVENT_END);
         
         switch (p_cb->spi_state)
