@@ -90,7 +90,7 @@ static ble_beacon_init_t beacon_init;
 #define battery_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Battery level measurement interval (ticks). */                         
 #define slope_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(500, APP_TIMER_PRESCALER) /**< slope level measurement interval (ticks). */
 #define status_LEVEL_MEAS_INTERVAL           APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< status level measurement interval (ticks). */
-#define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(20, APP_TIMER_PRESCALER)
+#define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(2, APP_TIMER_PRESCALER)
 
 /*********  BLE connection params  ******/
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
@@ -171,7 +171,8 @@ static void acc_timeout_handler(void *p_context)
 {
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
-    //SEGGER_RTT_printf(0, "%d\n", accel_data.X);
+    //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
+    SEGGER_RTT_printf(0, "%d\n", accel_data.X);
 }
 static void battery_timeout_handler(void *p_context)
 {
