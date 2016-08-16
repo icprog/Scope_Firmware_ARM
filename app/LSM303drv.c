@@ -110,8 +110,8 @@ void init_LSM303(void)
 		
 		SPIWriteReg(address, SPIData, LSM_DEVICE);
     
-    address = LSM_CTRL2;
-    SPIData = LSM_RANGE_16G;
+        address = LSM_CTRL2;
+        SPIData = LSM_RANGE_16G;
 		
 		SPIWriteReg(address, SPIData, LSM_DEVICE); 
 	
