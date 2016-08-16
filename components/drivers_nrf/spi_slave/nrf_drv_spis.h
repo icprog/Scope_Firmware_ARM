@@ -54,8 +54,8 @@
  
 #define NRF_DRV_SPIS_DEFAULT_CSN_PULLUP NRF_GPIO_PIN_NOPULL /**< Default pull-up configuration of the SPI CS. */
 #define NRF_DRV_SPIS_DEFAULT_MISO_DRIVE NRF_GPIO_PIN_S0S1   /**< Default drive configuration of the SPI MISO. */
-#define NRF_DRV_SPIS_DEFAULT_DEF        0xFF                /**< Default DEF character. */
-#define NRF_DRV_SPIS_DEFAULT_ORC        0xFF                /**< Default ORC character. */
+#define NRF_DRV_SPIS_DEFAULT_DEF        0xFA                /**< Default DEF character. */
+#define NRF_DRV_SPIS_DEFAULT_ORC        0xF5                /**< Default ORC character. */
  
 /**
 * @brief This value can be provided instead of a pin number for the signals MOSI
@@ -85,7 +85,7 @@ typedef enum
 {
     NRF_DRV_SPIS_BUFFERS_SET_DONE,          /**< Memory buffer set event. Memory buffers have been set successfully to the SPI slave device, and SPI transactions can be done. */
     NRF_DRV_SPIS_XFER_DONE,                 /**< SPI transaction event. SPI transaction has been completed. */  
-    NRF_DRV_SPIS_EVT_TYPE_MAX                    /**< Enumeration upper bound. */      
+    NRF_DRV_SPIS_EVT_TYPE_MAX               /**< Enumeration upper bound. */      
 } nrf_drv_spis_event_type_t;
 
 /** @brief Structure containing the event context from the SPI slave driver. */
