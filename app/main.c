@@ -172,7 +172,6 @@ static void acc_timeout_handler(void *p_context)
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
-    SEGGER_RTT_printf(0, "%d\n", accel_data.X);
 }
 static void battery_timeout_handler(void *p_context)
 {
@@ -808,6 +807,10 @@ int main(void)
 
     while(true)
     {
+        if(accel_flag)
+        {
+            accel_flag = 0;
+        }
         APP_Tasks();
         //power_manage();
 	}
