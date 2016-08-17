@@ -298,7 +298,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
-				//SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
+		//SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {
