@@ -469,7 +469,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
             APP_ERROR_CHECK(err_code);
             break;
         case BLE_ADV_EVT_IDLE:
-            sleep_mode_enter();
+            //sleep_mode_enter(); //TODO (JT): Don't go to sleep just yet! fix this in the future!
             break;
         default:
             break;
@@ -532,7 +532,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
         
             break;
-				case BLE_EVT_TX_COMPLETE:
+		case BLE_EVT_TX_COMPLETE:
 					if(sending_data_to_phone) appData.state = APP_STATE_RAW_DATA_RECEIVE; //TODO make this better
         default:
             // No implementation needed.
@@ -807,10 +807,6 @@ int main(void)
 
     while(true)
     {
-        if(accel_flag)
-        {
-            accel_flag = 0;
-        }
         APP_Tasks();
         //power_manage();
 	}
