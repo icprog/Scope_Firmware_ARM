@@ -800,7 +800,7 @@ int main(void)
 	
     // Start execution.
     application_timers_start();
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+    //err_code = ble_advertising_start(BLE_ADV_MODE_FAST); //TODO: advertize
     APP_ERROR_CHECK(err_code);
 
 	SEGGER_RTT_WriteString(0, "main loop:\n");
