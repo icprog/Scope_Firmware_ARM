@@ -70,13 +70,14 @@ typedef enum
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
     PA_RAW_DATA,
-    PA_ACCELEROMETER, //both ways, used to get accel data to PIC when queried
-
+    PA_ACCELEROMETER,  //both ways, send accel data to PIC when quaried  
+    PA_PROBE_ERROR, //PIC->ARM
+    PA_ARM_DONE, //ARM ->PIC
     
-    /******************  calibration codes  ****************/
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
     PA_DEVICE_INFO,
+     /******************  calibration codes  ****************/
     PA_CAL_START, //dummy code used to mark where cal codes start
             
     PA_FORCE_CAL_WEIGHT, //ARM -> PIC
@@ -88,8 +89,7 @@ typedef enum
     PA_VIB_CAL_RDY,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
-    PA_OPTICAL_CAL_RESULT, //PIC-> ARM
-    		
+    PA_OPTICAL_CAL_RESULT, //PIC-> ARM            
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;
@@ -110,6 +110,7 @@ extern pic_arm_pack_t optical_cal_length_pack;
 extern pic_arm_pack_t hall_effect_test_pack;
 extern pic_arm_pack_t send_sn_pack;
 extern pic_arm_pack_t get_profile_pack;
+extern pic_arm_pack_t arm_done_pack;
 
 extern volatile bool transfer_in_progress;
 

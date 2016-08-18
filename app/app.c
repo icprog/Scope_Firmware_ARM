@@ -73,6 +73,7 @@
 #include "cal_hall_effect.h"
 #include "pcb_test.h"
 #include "profile_service.h"
+#include "probe_error.h"
 #include "nrf_nvic.h"
 #include "ble_err.h"
 
@@ -87,10 +88,11 @@ static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	       
 extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
 extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
 static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-extern cal_force_t                             m_force;
-extern cal_optical_t													 m_optical;
-extern cal_hall_effect_t											 m_hall_effect;
-extern ble_ps_t                            		 m_ps;
+extern cal_force_t                   m_force;
+extern ble_pes_t 	 		m_pes; //probing error service
+extern cal_optical_t			 m_optical;
+extern cal_hall_effect_t			 m_hall_effect;
+extern ble_ps_t                  m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
 extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
 extern uint8_t sending_data_to_phone;
@@ -100,8 +102,8 @@ extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
 extern pic_arm_pack_t accelerometer_pack;
 extern void * tx_data_ptr; //where to pull data from to send to PIC
-
 subsampled_raw_data_t raw_data;
+data_header_t metadata;
 
 // *****************************************************************************
 /* Application Data
@@ -170,7 +172,6 @@ void APP_Tasks(void)
 {   
 	uint16_t kk;
 	uint8_t * p_is_nested_critical_region;
-	
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -187,11 +188,16 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-				case APP_STATE_PROFILE_TRANSFER:
-				{
-					//handle incoming profile data from PIC here
-					//profile_data_in[];
-					//profile_block_counter++; //keeps track of current block of 250 bytes
+        case APP_STATE_TRANSFER_PROFILE_IDS:
+        {
+            //profile_ids_update(&m_ps);
+            break;
+        }
+        case APP_STATE_PROFILE_TRANSFER:
+        {
+            //handle incoming profile data from PIC here
+            //profile_data_in[];
+            //profile_block_counter++; //keeps track of current block of 250 bytes
 //				SEGGER_RTT_printf(0, "app data counter %d \n",profile_block_counter);
 //				if(profile_block_counter >= 5)
 //				{
@@ -199,50 +205,53 @@ void APP_Tasks(void)
 //						SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
 //						for(kk=0;kk<75;kk+=20)profile_data_update(&m_ps, &profile_data_in[kk],20);
 //				}
-					SEGGER_RTT_WriteString(0, "Finished receiving profile \n");
-					for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
-					SEGGER_RTT_WriteString(0, "Finished sending profile \n");
-					appData.state = APP_STATE_POLLING;
-					break;
-				}
-				case APP_STATE_ACCELEROMETER:
-				{
+            
+            
+            
+            SEGGER_RTT_WriteString(0, "Finished receiving profile \n");
+            for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
+            SEGGER_RTT_WriteString(0, "Finished sending profile \n");
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_ACCELEROMETER:
+        {
 
-                    //sd_nvic_critical_region_enter(p_is_nested_critical_region);
-                    //accel_data = getLSM303data();
-                    //sd_nvic_critical_region_exit(0);
-                    //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-                    //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
-                    //tx_data_ptr = &accel_data;
+            //sd_nvic_critical_region_enter(p_is_nested_critical_region);
+            //accel_data = getLSM303data();
+            //sd_nvic_critical_region_exit(0);
+            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
+            //tx_data_ptr = &accel_data;
 
-                    //nrf_delay_us(90); //TODO: remove
-                    send_data_to_PIC(accelerometer_pack);
-                    //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
-                    //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
-                    appData.state = APP_STATE_POLLING;
-					break;
-				}
-//        case APP_STATE_VIB_CAL_RDY:
-//        {
-//            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
-//            send_data_to_PIC(vib_cal_rdy_pack);
-//            appData.state = APP_STATE_POLLING;
-//            break;
-//        }
-//        case APP_STATE_FORCE_CAL_WEIGHT:
-//        {
-//            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
-//            send_data_to_PIC(force_cal_weight_pack);
-//            appData.state = APP_STATE_POLLING;
-//            break;
-//        }
-//        case APP_STATE_OPTICAL_CAL_LENGTH:
-//        {
-//            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
-//            send_data_to_PIC(optical_cal_length_pack);
-//            appData.state = APP_STATE_POLLING;
-//            break;
-//        }
+            //nrf_delay_us(90); //TODO: remove
+            send_data_to_PIC(accelerometer_pack);
+            //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
+            //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_VIB_CAL_RDY:
+        {
+            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+            send_data_to_PIC(vib_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_WEIGHT:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            send_data_to_PIC(force_cal_weight_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_LENGTH:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+            send_data_to_PIC(optical_cal_length_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_FORCE_CAL_DATA:
         {
 						uint16_t test[7];
@@ -324,7 +333,7 @@ void APP_Tasks(void)
             uint8_t counter = 0;
             uint32_t err_code;
             uint8_t done_flag = 0;
-             sending_data_to_phone = 1;
+            sending_data_to_phone = 1;
             uint8_t * raw_data_ptr = (uint8_t *)&raw_data;
             //nrf_drv_spis_uninit(&spis);
             
@@ -337,6 +346,7 @@ void APP_Tasks(void)
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
 
                 }
@@ -355,6 +365,15 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
+            break;
+        }
+        case APP_STATE_PROBE_ERROR:
+        {
+            SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
+            uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
+            SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
+
+            appData.state = APP_STATE_POLLING;
             break;
         }
 

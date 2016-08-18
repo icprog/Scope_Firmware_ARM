@@ -59,11 +59,14 @@ volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance comp
 uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
-uint8_t				profile_buffer[250];
+uint8_t	    profile_buffer[250];
 uint8_t    profile_data_in[1500]; // holder for profile data from PIC
 uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t sending_data_to_phone =0;
+
+
+
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
@@ -78,6 +81,7 @@ pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
+pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_data;
@@ -177,18 +181,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //            }
             case PA_PROFILE:
             {
-//								rx_data_ptr = &profile_data_in[profile_block_counter * 250]; // holder; //set rx data pointer to profile buffer (size = 250)
-//								
-//                SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
-//								if(profile_block_counter<6)
-//								{
-//									profile_block_counter++;
-//								}
-//								next_state = APP_STATE_PROFILE_TRANSFER;
-								rx_data_ptr = &profile_data_in; // holder; //set rx data pointer to profile buffer (size = 250)
-								
-                //SEGGER_RTT_printf(0, "PROFILE part %d\n",profile_block_counter);
-
+				rx_data_ptr = &profile_data_in;
 				next_state = APP_STATE_PROFILE_TRANSFER;
                 break;
             }
@@ -225,6 +218,12 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 rx_data_ptr = &raw_data;
                 break;
             }
+            case PA_PROBE_ERROR:
+            {
+                rx_data_ptr = &(metadata.error_code);
+                next_state = APP_STATE_PROBE_ERROR;
+                break;
+            }
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
@@ -242,7 +241,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
 		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
-        SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
+        //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
         {
@@ -253,7 +252,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     }
     else
     {
-			//SEGGER_RTT_printf(0, " ***  ERROR  *** \n");
+		//SEGGER_RTT_printf(0, " ***  ERROR  *** \n");
         return 1; //ERROR
     }
     return 0;

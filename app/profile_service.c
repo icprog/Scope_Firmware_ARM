@@ -152,9 +152,9 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
-    uint8_t value               = 0x00;
+    attr_char_value.max_len     = 2;
+    attr_char_value.init_len    = 2;
+    uint8_t value               = 0x0000;
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
@@ -613,5 +613,58 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         default:
             // No implementation needed.
             break;
+    }
+}
+
+void profile_ids_update(ble_ps_t * p_ps, uint16_t max_profile_num)
+{
+    if (p_ps == NULL)
+    {
+        //return NRF_ERROR_NULL;
+		SEGGER_RTT_printf(0, "error: null profile input \n");
+		return;
+    }
+    
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
+
+    // Initialize value struct.
+    memset(&gatts_value, 0, sizeof(gatts_value));
+
+    gatts_value.len     = sizeof(uint16_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = (uint8_t *)&max_profile_num;
+
+    // Update data.
+    err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
+                                      p_ps->transfer_ids_char_handles.value_handle,
+                                      &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        //SEGGER_RTT_printf(0, "data update success \n");
+    }
+    else
+    {
+        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+    }
+
+    // Send value if connected and notifying.
+    if ((p_ps->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
+    {
+        ble_gatts_hvx_params_t hvx_params;
+
+        memset(&hvx_params, 0, sizeof(hvx_params));
+
+        hvx_params.handle = p_ps->transfer_ids_char_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = gatts_value.offset;
+        hvx_params.p_len  = &gatts_value.len;
+        hvx_params.p_data = gatts_value.p_value;
+
+        err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+    }
+    else
+    {
+        err_code = NRF_ERROR_INVALID_STATE;
     }
 }

@@ -122,7 +122,7 @@ pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 	 						 m_pes; //probing error service
+ble_pes_t 	 						         m_pes; //probing error service
 ble_ps_t                             		 m_ps; //profile service
 static ble_slope_t                           m_slope; //slope service
 static ble_status_t							 m_status;
@@ -469,7 +469,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
             APP_ERROR_CHECK(err_code);
             break;
         case BLE_ADV_EVT_IDLE:
-            sleep_mode_enter();
+            //sleep_mode_enter(); //TODO (JT): Don't go to sleep just yet! fix this in the future!
             break;
         default:
             break;
@@ -532,7 +532,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
         
             break;
-				case BLE_EVT_TX_COMPLETE:
+		case BLE_EVT_TX_COMPLETE:
 					if(sending_data_to_phone) appData.state = APP_STATE_RAW_DATA_RECEIVE; //TODO make this better
         default:
             // No implementation needed.
@@ -788,8 +788,10 @@ int main(void)
     device_manager_init(erase_bonds);
 
     strcpy(device_info.serial_number, "NO SN");
-    strcpy(device_info.device_name, "FUCK YOU");
+
+    strcpy(device_info.device_name, "SCOPE :)");
     init_device_info();
+
     
     gap_params_init();
     advertising_init();
@@ -807,7 +809,10 @@ int main(void)
 
     while(true)
     {
+<<<<<<< HEAD
 				printf("accel: %d", accel_data.Y);
+=======
+>>>>>>> a1e52baad2da16500fe3c2bdeade096946cfe349
         APP_Tasks();
         power_manage();
 	}
