@@ -199,11 +199,41 @@ void APP_Tasks(void)
         case APP_STATE_PROFILE_TRANSFER:
         {
             
-            SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
-            //for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
+            //SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            uint8_t bytes_sent = 0;
+            static int data_counts = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t done_flag = 0;
+            sending_data_to_phone = 1;
             
-            SEGGER_RTT_WriteString(0, "Finished sending profile \n");
-            appData.state = APP_STATE_POLLING;
+            while(data_counts<sizeof(profile_data_t))
+            {      
+                err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
+				data_counts += bytes_sent;			
+                if(data_counts >= sizeof(profile_data_t))
+                {
+                    done_flag = 1;
+                    appData.state = APP_STATE_POLLING;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
+                {
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    break;
+                    
+                }
+                counter++;
+            }		
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_PROFILE_TRANSFER;
+                appData.state = APP_STATE_POLLING;
+                break;
+            }
             break;
         }
         case APP_STATE_ACCELEROMETER:
@@ -255,7 +285,7 @@ void APP_Tasks(void)
 								test[i] = i;
             }
 
-						cal_points_update(&m_force, cal_data.force_data);
+			cal_points_update(&m_force, cal_data.force_data);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -326,8 +356,6 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
-            uint8_t * raw_data_ptr = (uint8_t *)&raw_data;
-            //nrf_drv_spis_uninit(&spis);
             
             while(data_counts<BYTES_RAW_DATA)
             {      
@@ -340,7 +368,6 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
-
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
                 {
@@ -354,6 +381,7 @@ void APP_Tasks(void)
             if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
             {
                 counter = 0;
+                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
                 appData.state = APP_STATE_POLLING;
                 break;
             }

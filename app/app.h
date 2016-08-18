@@ -87,7 +87,9 @@ typedef struct
 {
     /* The application's current state */
     APP_STATES state;
+    APP_STATES prev_state;
     uint16_t profile_id_to_transfer;
+    uint16_t raw_or_profile;
 
 } APP_DATA;
 extern APP_DATA appData;
@@ -145,6 +147,8 @@ typedef struct profile_data
     data_header_t metadata;
     uint8_t profile[PROFILE_MAX_COUNT];
 }profile_data_t;
+extern profile_data_t profile_data;
+
 
 
 /******** RAW DATA STRUCT *******/

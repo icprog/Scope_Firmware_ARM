@@ -533,7 +533,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         
             break;
 		case BLE_EVT_TX_COMPLETE:
-					if(sending_data_to_phone) appData.state = APP_STATE_RAW_DATA_RECEIVE; //TODO make this better
+            if(sending_data_to_phone) 
+            {
+                appData.state = appData.prev_state;
+            }
         default:
             // No implementation needed.
             break;
@@ -788,7 +791,7 @@ int main(void)
     device_manager_init(erase_bonds);
 
     strcpy(device_info.serial_number, "NO SN");
-    strcpy(device_info.device_name, "SCOPE :)");
+    strcpy(device_info.device_name, "SCOPE-A-DOPE");
     //init_device_info();
     
     gap_params_init();

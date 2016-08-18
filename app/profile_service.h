@@ -59,7 +59,7 @@ typedef struct {
 void ble_profile_service_init(ble_ps_t * p_profile_service);
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps_service, ble_evt_t * p_ble_evt);
 uint32_t ble_profile_update(ble_ps_t * p_ps, uint8_t probe_error_code);
-void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size); // send data to phone
+uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t size, uint8_t * bytes_sent); // send data to phone
 uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length);
 uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint8_t * bytes_sent);
 void profile_ids_update(ble_ps_t * p_ps, uint16_t max_profile_num);

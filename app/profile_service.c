@@ -152,9 +152,9 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 2;
-    attr_char_value.init_len    = 2;
-    uint8_t value               = 0x0000;
+    attr_char_value.max_len     = 4;
+    attr_char_value.init_len    = 4;
+    uint8_t value               = 0x00000000;
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
@@ -440,13 +440,14 @@ uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length)
     }
 }
 
-void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
+uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t size, uint8_t * bytes_sent)
 {
+    static int count=0;
 	if (p_ps == NULL)
     {
         //return NRF_ERROR_NULL;
 		SEGGER_RTT_printf(0, "error: null profile input \n");
-		return;
+		return NRF_ERROR_INVALID_STATE;
     }
     
     uint32_t err_code = NRF_SUCCESS;
@@ -457,7 +458,7 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
 
     gatts_value.len     = size*sizeof(uint8_t);
     gatts_value.offset  = 0;
-    gatts_value.p_value = send_data;
+    gatts_value.p_value = profile_data;
 
     // Update data.
     err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
@@ -486,11 +487,23 @@ void profile_data_update(ble_ps_t * p_ps, uint8_t * send_data, uint8_t size)
         hvx_params.p_data = gatts_value.p_value;
 
         err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+        if (err_code == NRF_SUCCESS)
+        {
+            count+=gatts_value.len;
+            *bytes_sent = gatts_value.len;
+            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+        }
+        else
+        {
+            *bytes_sent = 0;
+            SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        }
     }
     else
     {
         err_code = NRF_ERROR_INVALID_STATE;
     }
+    return err_code;
 }
 
 uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint8_t * bytes_sent)
@@ -566,18 +579,31 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
     profile_t * p_profile;
-    if(p_evt_write->handle == p_ps->transfer_ids_char_handles.cccd_handle)
+    if(p_evt_write->handle == p_ps->transfer_ids_char_handles.value_handle)
     {
-        appData.profile_id_to_transfer = *(p_evt_write->data);
-        SEGGER_RTT_printf(0,"profile_to_transfer: %d ", appData.profile_id_to_transfer);
-        //send_data_to_PIC()
+        appData.raw_or_profile = ((uint16_t *)(p_evt_write->data))[0];
+        appData.profile_id_to_transfer = ((uint16_t *)(p_evt_write->data))[1];
+        SEGGER_RTT_printf(0,"profile_to_transfer:  %d %d ", appData.raw_or_profile, appData.profile_id_to_transfer);
+        
+        /*
+        *if the phone requests the most recent profile, the one store in memeory,
+        * skip right to sending it, otherwise, ask the PIC for the correct profile data
+        */
+        if(appData.profile_id_to_transfer == profile_data.metadata.test_num && appData.raw_or_profile == 0)
+        {
+            appData.state = APP_STATE_PROFILE_TRANSFER;
+        }
+        else
+        {
+           //send_data_to_PIC()
+        }
 
     }
-    if(p_evt_write->handle == p_ps->location_char_handles.cccd_handle)
+    if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
-        metadata.location[0] = p_evt_write->data[0];
-        metadata.location[1] = p_evt_write->data[1];
-        SEGGER_RTT_printf(0,"location received: %f %f ", metadata.location[0], metadata.location[1] );
+        metadata.location[0] = ((float *)(p_evt_write->data))[0];
+        metadata.location[1] = ((float *)(p_evt_write->data))[1];
+        SEGGER_RTT_printf(0,"location received \n");
         //send_data_to_PIC()
 
     }
@@ -613,7 +639,7 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {        
         case BLE_GATTS_EVT_WRITE:
-			//SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
+			SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
 			on_write_profile_service(p_ps, p_ble_evt);
             break;
         case BLE_GAP_EVT_CONNECTED:
