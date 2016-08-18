@@ -6,69 +6,6 @@
 #include "app_error.h"
 #include "SEGGER_RTT.h"
 
-//static void on_ble_write(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
-//{
-//    
-//    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-
-//    if (
-//        (p_evt_write->handle == p_pes->char_handles.cccd_handle)
-//        &&
-//        (p_evt_write->len == 2)
-//       )
-//    {
-//        // CCCD written, call application event handler
-//        if (p_pes->evt_handler != NULL)
-//        {
-//            ble_pes_evt_t evt;
-
-//            if (ble_srv_is_notification_enabled(p_evt_write->data))
-//            {
-//                evt.evt_type = BLE_PES_EVT_NOTIFICATION_ENABLED;
-//            }
-//            else
-//            {
-//                evt.evt_type = BLE_PES_EVT_NOTIFICATION_DISABLED;
-//            }
-
-//            p_pes->evt_handler(p_pes, &evt);
-//        }
-//    }
-
-
-//    // Decclare buffer variable to hold received data. The data can only be 32 bit long.
-//    uint32_t data_buffer;
-//    // Pupulate ble_gatts_value_t structure to hold received data and metadata.
-//    ble_gatts_value_t rx_data;
-//    rx_data.len = sizeof(uint32_t);
-//    rx_data.offset = 0;
-//    rx_data.p_value = (uint8_t*)&data_buffer;
-//    
-//    // Check if write event is performed on our characteristic or the CCCD
-//    if(p_ble_evt->evt.gatts_evt.params.write.handle == p_our_service->char_handles.value_handle)
-//    {
-//        // Get data
-//        sd_ble_gatts_value_get(p_our_service->conn_handle, p_our_service->char_handles.value_handle, &rx_data);
-//        // Print handle and value 
-//        //printf("Value received on handle %#06x: %#010x\r\n", p_ble_evt->evt.gatts_evt.params.write.handle, data_buffer);
-//    }
-//    else if(p_ble_evt->evt.gatts_evt.params.write.handle == p_our_service->char_handles.cccd_handle)
-//    {
-//        // Get data
-//        sd_ble_gatts_value_get(p_our_service->conn_handle, p_our_service->char_handles.cccd_handle, &rx_data);
-//        // Print handle and value 
-//        //printf("Value received on handle %#06x: %#06x\r\n", p_ble_evt->evt.gatts_evt.params.write.handle, data_buffer);
-//        if(data_buffer == 0x0001)
-//        {
-//            //printf("Notification enabled\r\n");
-//        }
-//        else if(data_buffer == 0x0000)
-//        {
-//            //printf("Notification disabled\r\n");
-//        }
-//    }
-//}
-
 
 void ble_probe_error_service_on_ble_evt(ble_pes_t * p_pes, ble_evt_t * p_ble_evt)
 {
@@ -76,9 +13,6 @@ void ble_probe_error_service_on_ble_evt(ble_pes_t * p_pes, ble_evt_t * p_ble_evt
     // OUR_JOB: Step 3.D Implement switch case handling BLE events related to our service. 
     switch (p_ble_evt->header.evt_id)
     {        
-        case BLE_GATTS_EVT_WRITE:
-            //on_ble_write(p_pes, p_ble_evt);
-            break;
         case BLE_GAP_EVT_CONNECTED:
             p_pes->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
@@ -209,7 +143,7 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
 
             
             err_code = sd_ble_gatts_hvx(p_pes->conn_handle, &hvx_params);
-            SEGGER_RTT_printf(0, "notifying %d", probe_error_code);
+            //SEGGER_RTT_printf(0, "notifying %d", probe_error_code);
         }
         else
         {

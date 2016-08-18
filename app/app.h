@@ -78,6 +78,8 @@ typedef enum
     APP_STATE_DEVICE_INFO,
     APP_STATE_PROFILE_TRANSFER,
     APP_STATE_RAW_DATA_RECEIVE,
+    APP_STATE_TRANSFER_PROFILE_IDS,
+    APP_STATE_PROBE_ERROR,
 } APP_STATES;
 
 
@@ -88,6 +90,8 @@ typedef struct
 
 } APP_DATA;
 extern APP_DATA appData;
+
+
 
 
 /****** DEVICE INFO STRUCT *****/
@@ -112,6 +116,7 @@ typedef struct  data_header
     uint32_t    test_num; //test number (device specific)
     uint8_t     battery_capacity;
     float       test_time; //seconds
+    uint8_t     error_code;
     
     /********** Device Specific  *************/
     uint8_t     accel_FS; //full scale of accelerometer
@@ -131,6 +136,15 @@ typedef struct  data_header
     //add the rest here...
 } data_header_t;
 #define BYTES_OF_METADATA sizeof(data_header_t)
+extern data_header_t metadata;
+
+#define PROFILE_MAX_COUNT 3000
+typedef struct profile_data
+{
+    data_header_t metadata;
+    uint8_t profile[PROFILE_MAX_COUNT];
+}profile_data_t;
+
 
 /******** RAW DATA STRUCT *******/
 #define POINTS_PER_RAW_SIGNAL 1000

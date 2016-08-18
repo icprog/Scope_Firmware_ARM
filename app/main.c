@@ -122,7 +122,7 @@ pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 	 						 m_pes; //probing error service
+ble_pes_t 	 						         m_pes; //probing error service
 ble_ps_t                             		 m_ps; //profile service
 static ble_slope_t                           m_slope; //slope service
 static ble_status_t							 m_status;
@@ -788,7 +788,7 @@ int main(void)
     device_manager_init(erase_bonds);
 
     strcpy(device_info.serial_number, "NO SN");
-    strcpy(device_info.device_name, "FUCK YOU");
+    strcpy(device_info.device_name, "SCOPE :)");
     //init_device_info();
     
     gap_params_init();
@@ -808,7 +808,7 @@ int main(void)
     while(true)
     {
         APP_Tasks();
-        //power_manage();
+        power_manage();
 	}
 }
 
