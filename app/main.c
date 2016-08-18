@@ -790,7 +790,7 @@ int main(void)
     strcpy(device_info.serial_number, "NO SN");
 
     strcpy(device_info.device_name, "SCOPE :)");
-    init_device_info();
+    //init_device_info();
 
     
     gap_params_init();
@@ -809,10 +809,7 @@ int main(void)
 
     while(true)
     {
-<<<<<<< HEAD
-				printf("accel: %d", accel_data.Y);
-=======
->>>>>>> a1e52baad2da16500fe3c2bdeade096946cfe349
+
         APP_Tasks();
         power_manage();
 	}
