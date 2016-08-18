@@ -12,7 +12,7 @@
 #define PROFILE_CHAR_UUID 0x321A
 #define PROFILE_IDS_CHAR_UUID 0x321B
 #define TRANSFER_IDS_CHAR_UUID 0x321C
-#define DELETE_IDS_CHAR_UUID 0x321D
+#define LOCATION_CHAR_UUID 0x321D
 #define PROFILE_ERROR_CHAR_UUID 0x321E
 #define PROFILE_LENGTH_CHAR_UUID 0x321F
 #define RAW_DATA_CHAR_UUID 0x3219
@@ -48,7 +48,7 @@ typedef struct {
     ble_gatts_char_handles_t    profile_char_handles;   //handles for the profile characteristic attributes to our struct
     ble_gatts_char_handles_t    profile_ids_char_handles;   //handles for the profile ids characteristic attributes to our struct
     ble_gatts_char_handles_t    transfer_ids_char_handles;   //handles for the transfer ids characteristic attributes to our struct
-    ble_gatts_char_handles_t    delete_ids_char_handles;   //handles for the delete ids characteristic attributes to our struct
+    ble_gatts_char_handles_t    location_char_handles;   //handles for the location characteristic attributes to our struct
     ble_gatts_char_handles_t    profile_error_char_handles;   //handles for the profile error characteristic attributes to our struct
     ble_gatts_char_handles_t    raw_data_char_handles;   //handles for the profile error characteristic attributes to our struct
     ble_gatts_char_handles_t    profile_length_char_handles;   //handles for the profile error characteristic attributes to our struct

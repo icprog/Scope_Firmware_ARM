@@ -87,6 +87,7 @@ typedef struct
 {
     /* The application's current state */
     APP_STATES state;
+    uint16_t profile_id_to_transfer;
 
 } APP_DATA;
 extern APP_DATA appData;
@@ -110,7 +111,7 @@ typedef struct  data_header
     /**********  Environmental ************/
     int8_t      temperature; // in degrees C
     //Date and Time
-    //Location
+    float       location[2];//Location
     
     /*********** Test Specific  ***********/
     uint32_t    test_num; //test number (device specific)

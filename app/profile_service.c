@@ -101,9 +101,9 @@ void profile_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
-    uint8_t value               = 0x00;
+    attr_char_value.max_len     = sizeof(uint16_t);
+    attr_char_value.init_len    = sizeof(uint16_t);
+    uint8_t value               = 0x0000;
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
@@ -162,15 +162,15 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     APP_ERROR_CHECK(err_code);
 }
 
-void delete_ids_char_add(ble_ps_t * p_ps)
+void location_char_add(ble_ps_t * p_ps)
 {
     
     uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    char_uuid.uuid      = DELETE_IDS_CHAR_UUID;
-    BLE_UUID_BLE_ASSIGN(char_uuid, DELETE_IDS_CHAR_UUID); //TODO might be redundant witht he previous line
+    char_uuid.uuid      = LOCATION_CHAR_UUID;
+    BLE_UUID_BLE_ASSIGN(char_uuid, LOCATION_CHAR_UUID); //TODO might be redundant witht he previous line
 
     /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
@@ -203,13 +203,13 @@ void delete_ids_char_add(ble_ps_t * p_ps)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
-    uint8_t value               = 0x00;
+    attr_char_value.max_len     = 8;
+    attr_char_value.init_len    = 8;
+    uint8_t value               = 0x0000000000000000;
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/
-    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->delete_ids_char_handles);
+    err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->location_char_handles);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -385,7 +385,7 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     profile_char_add(p_profile_service);
     profile_ids_char_add(p_profile_service);
     transfer_ids_char_add(p_profile_service);
-    delete_ids_char_add(p_profile_service);
+    location_char_add(p_profile_service);
     profile_error_char_add(p_profile_service);
     profile_length_char_add(p_profile_service);
     raw_data_char_add(p_profile_service);
@@ -564,12 +564,24 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 
 void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
-	//need to get data from PIC
-
-    SEGGER_RTT_printf(0, "profile data write fxn\n");
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
     profile_t * p_profile;
-    if ((p_evt_write->handle == p_ps->profile_char_handles.cccd_handle) && (p_evt_write->len == 2))
+    if(p_evt_write->handle == p_ps->transfer_ids_char_handles.cccd_handle)
+    {
+        appData.profile_id_to_transfer = *(p_evt_write->data);
+        SEGGER_RTT_printf(0,"profile_to_transfer: %d ", appData.profile_id_to_transfer);
+        //send_data_to_PIC()
+
+    }
+    if(p_evt_write->handle == p_ps->location_char_handles.cccd_handle)
+    {
+        metadata.location[0] = p_evt_write->data[0];
+        metadata.location[1] = p_evt_write->data[1];
+        SEGGER_RTT_printf(0,"location received: %f %f ", metadata.location[0], metadata.location[1] );
+        //send_data_to_PIC()
+
+    }
+    else if ((p_evt_write->handle == p_ps->profile_char_handles.cccd_handle) && (p_evt_write->len == 2))
     {
         // CCCD written, call application event handler
         if (p_ps->evt_handler != NULL)
@@ -637,7 +649,7 @@ void profile_ids_update(ble_ps_t * p_ps, uint16_t max_profile_num)
 
     // Update data.
     err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
-                                      p_ps->transfer_ids_char_handles.value_handle,
+                                      p_ps->profile_ids_char_handles.value_handle,
                                       &gatts_value);
     if (err_code == NRF_SUCCESS)
     {
@@ -645,7 +657,7 @@ void profile_ids_update(ble_ps_t * p_ps, uint16_t max_profile_num)
     }
     else
     {
-        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        SEGGER_RTT_printf(0, "error %d in profile ids update\n", err_code);
     }
 
     // Send value if connected and notifying.
@@ -655,13 +667,21 @@ void profile_ids_update(ble_ps_t * p_ps, uint16_t max_profile_num)
 
         memset(&hvx_params, 0, sizeof(hvx_params));
 
-        hvx_params.handle = p_ps->transfer_ids_char_handles.value_handle;
+        hvx_params.handle = p_ps->profile_ids_char_handles.value_handle;
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = gatts_value.offset;
         hvx_params.p_len  = &gatts_value.len;
         hvx_params.p_data = gatts_value.p_value;
 
         err_code = sd_ble_gatts_hvx(p_ps->conn_handle, &hvx_params);
+        if (err_code == NRF_SUCCESS)
+        {
+            //SEGGER_RTT_printf(0, "data update success \n");
+        }
+        else
+        {
+            SEGGER_RTT_printf(0, "error %d in profile ids update\n", err_code);
+        }
     }
     else
     {

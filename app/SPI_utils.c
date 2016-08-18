@@ -60,7 +60,6 @@ uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
 uint8_t	    profile_buffer[250];
-uint8_t    profile_data_in[1500]; // holder for profile data from PIC
 uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t sending_data_to_phone =0;
@@ -85,6 +84,7 @@ pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_data;
+extern profile_data_t profile_data;
 
 
 /*
@@ -181,8 +181,8 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //            }
             case PA_PROFILE:
             {
-				rx_data_ptr = &profile_data_in;
-				next_state = APP_STATE_PROFILE_TRANSFER;
+				rx_data_ptr = &profile_data;
+				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
                 break;
             }
             case PA_ACCELEROMETER:

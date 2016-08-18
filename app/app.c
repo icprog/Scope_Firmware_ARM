@@ -91,7 +91,7 @@ static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer
 extern cal_force_t                   m_force;
 extern ble_pes_t 	 		m_pes; //probing error service
 extern cal_optical_t			 m_optical;
-extern cal_hall_effect_t			 m_hall_effect;
+extern cal_hall_effect_t	m_hall_effect;
 extern ble_ps_t                  m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
 extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
@@ -104,6 +104,7 @@ extern pic_arm_pack_t accelerometer_pack;
 extern void * tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t raw_data;
 data_header_t metadata;
+profile_data_t profile_data;
 
 // *****************************************************************************
 /* Application Data
@@ -190,26 +191,17 @@ void APP_Tasks(void)
         }
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
-            //profile_ids_update(&m_ps);
+            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", profile_data.metadata.test_num);
+            profile_ids_update(&m_ps, profile_data.metadata.test_num);
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_PROFILE_TRANSFER:
         {
-            //handle incoming profile data from PIC here
-            //profile_data_in[];
-            //profile_block_counter++; //keeps track of current block of 250 bytes
-//				SEGGER_RTT_printf(0, "app data counter %d \n",profile_block_counter);
-//				if(profile_block_counter >= 5)
-//				{
-//						profile_block_counter = 0;
-//						SEGGER_RTT_WriteString(0, "Finished receiving profile from PIC \n");
-//						for(kk=0;kk<75;kk+=20)profile_data_update(&m_ps, &profile_data_in[kk],20);
-//				}
             
+            SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            //for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
             
-            
-            SEGGER_RTT_WriteString(0, "Finished receiving profile \n");
-            for(kk=0;kk<1500;kk+=20) profile_data_update(&m_ps, &profile_data_in[kk],20);  //notify phone with profile data
             SEGGER_RTT_WriteString(0, "Finished sending profile \n");
             appData.state = APP_STATE_POLLING;
             break;
