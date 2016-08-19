@@ -90,12 +90,10 @@ typedef struct
     APP_STATES prev_state;
     uint16_t profile_id_to_transfer;
     uint16_t raw_or_profile;
+    uint16_t ble_status;
 
 } APP_DATA;
 extern APP_DATA appData;
-
-
-
 
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
@@ -116,7 +114,7 @@ typedef struct  data_header
     float       location[2];//Location
     
     /*********** Test Specific  ***********/
-    uint32_t    test_num; //test number (device specific)
+    uint16_t    test_num; //test number (device specific)
     uint8_t     battery_capacity;
     float       test_time; //seconds
     uint8_t     error_code;
@@ -131,8 +129,8 @@ typedef struct  data_header
     
     /*************  Versions and Revisions ************/
     char        serial_number[6]; // device serial #
-    char*       PIC_firmware_version; //ex. 1.0.3
-    char*       ARM_firmware_version;
+    char        PIC_firmware_version[8]; //ex. 1.0.3
+    char        ARM_firmware_version[8];
     uint8_t     main_PCB_rev; //ex. 3
     uint8_t     NRF_PCB_rev;
    

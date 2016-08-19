@@ -73,6 +73,7 @@ typedef enum
     PA_ACCELEROMETER,  //both ways, send accel data to PIC when quaried  
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
+    PA_PROFILE_ID,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,

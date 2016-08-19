@@ -154,6 +154,7 @@ void APP_Initialize(void)
 	
 		spi_init();
 		spis_init();
+        appData.ble_status = 0;
 		spis_xfer_done = false;
 		profile_block_counter = 0;
 		init_LSM303();
@@ -192,13 +193,21 @@ void APP_Tasks(void)
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
             SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", profile_data.metadata.test_num);
-            profile_ids_update(&m_ps, profile_data.metadata.test_num);
-            appData.state = APP_STATE_POLLING;
+            if(appData.ble_status == 1)
+            {
+                profile_ids_update(&m_ps, profile_data.metadata.test_num);
+                appData.state = APP_STATE_POLLING;
+            }
+            else
+            {
+                send_data_to_PIC(arm_done_pack);
+                appData.state = APP_STATE_POLLING;
+                SEGGER_RTT_printf(0, "phone not connected. ARM is done");
+            }
             break;
         }
         case APP_STATE_PROFILE_TRANSFER:
         {
-            
             //SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
             uint8_t bytes_sent = 0;
             static int data_counts = 0;
@@ -218,6 +227,10 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
+                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
+                    
+
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
                 {

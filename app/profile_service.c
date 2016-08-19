@@ -470,7 +470,7 @@ uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t si
     }
     else
     {
-        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        SEGGER_RTT_printf(0, "error %d in profile update\n", err_code);
     }
 
     // Send value if connected and notifying.
@@ -496,7 +496,7 @@ uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t si
         else
         {
             *bytes_sent = 0;
-            SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+            SEGGER_RTT_printf(0, "error %d in profile update\n", err_code);
         }
     }
     else
@@ -537,7 +537,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     }
     else
     {
-        SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+        SEGGER_RTT_printf(0, "error in raw data update fxn\n");
     }
 
     // Send value if connected and notifying.
@@ -563,7 +563,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         else
         {
             *bytes_sent = 0;
-            SEGGER_RTT_printf(0, "error in profile data update fxn\n");
+            SEGGER_RTT_printf(0, "error %d in raw data update\n", err_code);
         }
 	}
     else
@@ -599,34 +599,13 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         }
 
     }
-    if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
+    else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
-        metadata.location[0] = ((float *)(p_evt_write->data))[0];
-        metadata.location[1] = ((float *)(p_evt_write->data))[1];
         SEGGER_RTT_printf(0,"location received \n");
+        memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         //send_data_to_PIC()
 
     }
-    else if ((p_evt_write->handle == p_ps->profile_char_handles.cccd_handle) && (p_evt_write->len == 2))
-    {
-        // CCCD written, call application event handler
-        if (p_ps->evt_handler != NULL)
-        {
-            profile_evt_t evt;
-//                if (ble_srv_is_notification_enabled(p_evt_write->data))
-//                {
-                evt.evt_type = PROFILE_EVT_NOTIFICATION_ENABLED;
-                SEGGER_RTT_printf(0, "profile data notification enabled *** *** *** \n");
-//                }
-//                else
-//                {
-                //evt.evt_type = PROFILE_EVT_NOTIFICATION_DISABLED;
-//                }
-
-        }
-    }
-
-	
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
@@ -639,7 +618,7 @@ void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {        
         case BLE_GATTS_EVT_WRITE:
-			SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
+			//SEGGER_RTT_WriteString(0, "profile evt handler --write evt \n");
 			on_write_profile_service(p_ps, p_ble_evt);
             break;
         case BLE_GAP_EVT_CONNECTED:

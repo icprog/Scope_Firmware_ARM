@@ -181,6 +181,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //            }
             case PA_PROFILE:
             {
+                SEGGER_RTT_printf(0, "PA_PROFILE\n");
 				rx_data_ptr = &profile_data;
 				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
                 break;
