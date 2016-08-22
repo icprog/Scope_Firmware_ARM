@@ -123,12 +123,12 @@ typedef struct  data_header
     uint8_t     accel_FS; //full scale of accelerometer
     uint16_t    gyro_FS; 
     uint16_t    force_cal[5]; //in ADC counts
-    float       optical_cal;
+    uint16_t       optical_cal;
     
     /*************  User Settings ************/
     
     /*************  Versions and Revisions ************/
-    char        serial_number[6]; // device serial #
+    char        serial_number[8]; // device serial #
     char        PIC_firmware_version[8]; //ex. 1.0.3
     char        ARM_firmware_version[8];
     uint8_t     main_PCB_rev; //ex. 3
