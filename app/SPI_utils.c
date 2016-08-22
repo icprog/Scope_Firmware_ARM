@@ -65,11 +65,13 @@ volatile bool device_info_received = false;
 
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool transfer_in_progress = false;
+volatile bool raw_data_transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
 void * tx_data_ptr; //where to pull data from to send to PIC
 
+/********  pic arm pack varaibles  *******/
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_weight), 1};
@@ -78,9 +80,10 @@ pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optica
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
+pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 
 extern device_info_t device_info;
-extern subsampled_raw_data_t raw_data;
+//extern subsampled_raw_data_t raw_data;
 extern profile_data_t profile_data;
 
 
@@ -215,7 +218,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
-                rx_data_ptr = &raw_data;
+                rx_data_ptr = &raw_data_buff;
                 break;
             }
             case PA_PROBE_ERROR:

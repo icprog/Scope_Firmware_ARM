@@ -162,6 +162,9 @@ typedef struct
     uint8_t OpticalSqual[POINTS_PER_RAW_SIGNAL];
 }subsampled_raw_data_t;
 #define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
+    
+#define RAW_DATA_BUFFER_SIZE 2000
+extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
 	
 // *****************************************************************************
 // *****************************************************************************

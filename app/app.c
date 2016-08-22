@@ -82,29 +82,26 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-extern nrf_drv_spis_config_t spis_config;
-static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
-extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
-extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
-static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-extern cal_force_t                   m_force;
-extern ble_pes_t 	 		m_pes; //probing error service
-extern cal_optical_t			 m_optical;
-extern cal_hall_effect_t	m_hall_effect;
-extern ble_ps_t                  m_ps;
-extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
-extern uint8_t sending_data_to_phone;
-extern volatile bool device_info_received;
-
-//extern nrf_drv_spis_t spis;/**< SPIS instance. */
-
-extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
-uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-extern pic_arm_pack_t accelerometer_pack;
-extern void * tx_data_ptr; //where to pull data from to send to PIC
-subsampled_raw_data_t raw_data;
-data_header_t metadata;
-profile_data_t profile_data;
+extern nrf_drv_spis_config_t    spis_config;
+static const                    nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
+extern uint8_t                  m_tx_buf_s[4];           											/**< TX buffer. */
+extern uint8_t                  m_rx_buf_s[5];    													/**< RX buffer. */
+static const uint8_t            m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
+extern cal_force_t              m_force;
+extern ble_pes_t 	 		    m_pes; //probing error service
+extern cal_optical_t			m_optical;
+extern cal_hall_effect_t	    m_hall_effect;
+extern ble_ps_t                 m_ps;
+extern uint8_t                  sending_data_to_phone;
+extern volatile bool            device_info_received;
+extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
+uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
+extern pic_arm_pack_t           accelerometer_pack;
+extern void *                   tx_data_ptr; //where to pull data from to send to PIC
+//subsampled_raw_data_t           raw_data;
+data_header_t                   metadata;
+profile_data_t                  profile_data;
+uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 
 // *****************************************************************************
 /* Application Data
@@ -363,39 +360,50 @@ void APP_Tasks(void)
         case APP_STATE_RAW_DATA_RECEIVE:
         {
             uint8_t bytes_sent = 0;
-            static int data_counts = 0;
+            static int raw_data_counts = 0;
+            static int buffer_data_counts = 0;
             uint8_t counter = 0;
             uint32_t err_code;
-            uint8_t done_flag = 0;
+            bool buffer_done_flag = false;
+            bool raw_data_done_flag = false;
             sending_data_to_phone = 1;
             
-            while(data_counts<BYTES_RAW_DATA)
+            while(buffer_data_counts<RAW_DATA_BUFFER_SIZE)
             {      
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
-				data_counts += bytes_sent;			
-                if(data_counts >= BYTES_RAW_DATA)
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, 20, &bytes_sent);  //notify phone with raw data
+				buffer_data_counts += bytes_sent;
+                raw_data_counts += bytes_sent;
+                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
                 {
-                    done_flag = 1;
+                    buffer_done_flag = true;
+                    appData.state = APP_STATE_POLLING;
+                    send_data_to_PIC(raw_data_ack_pack);
+                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+                }
+                if(raw_data_counts >= BYTES_RAW_DATA)
+                {
+                    raw_data_done_flag = true;
                     appData.state = APP_STATE_POLLING;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
                 {
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
                     
                 }
                 counter++;
                 //SEGGER_RTT_printf(0, "\n data: %d",data_counts);
             }		
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
             {
                 counter = 0;
                 appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
                 appData.state = APP_STATE_POLLING;
-                break;
+                break; //TODO (JT): might be redudant with next break
             }
             break;
         }

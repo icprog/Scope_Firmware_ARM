@@ -491,7 +491,7 @@ uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t si
         {
             count+=gatts_value.len;
             *bytes_sent = gatts_value.len;
-            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+            //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }
         else
         {
@@ -558,7 +558,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         {
             count+=gatts_value.len;
             *bytes_sent = gatts_value.len;
-            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+            //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }
         else
         {
