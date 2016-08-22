@@ -118,6 +118,7 @@ extern LSM303_DATA accel_data;
 device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
+extern volatile bool device_info_received;
 pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
@@ -184,6 +185,7 @@ static void slope_timeout_handler(void *p_context)
 static void status_timeout_handler(void *p_context)
 {
     UNUSED_PARAMETER(p_context);
+    ble_status_status_level_update(&m_status, appData.ble_status);
 }
 
 /**@brief Function for the Timer initialization.
@@ -254,12 +256,18 @@ static void gap_params_init(void)
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
-//    SEGGER_RTT_printf(0, "serial number in gap init = ");
-//    for(int i = 0; i < 5; i++)
-//    {
-//        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
-//    }
-//    SEGGER_RTT_printf(0, "\n");
+    SEGGER_RTT_printf(0, "serial number in gap init = ");
+    for(int i = 0; i < 5; i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+    }
+    SEGGER_RTT_printf(0, "\n");
+    SEGGER_RTT_printf(0, "device name in gap init = ");
+    for(int i = 0; i < strlen(device_info.device_name); i++)
+    {
+        SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+    }
+    SEGGER_RTT_printf(0, "\n");
     err_code = sd_ble_gap_device_name_set(&sec_mode,
                                           (const uint8_t *)device_info.device_name,
                                           strlen(device_info.device_name));
@@ -512,14 +520,15 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
+        {
             appData.ble_status = 1;
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
-
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
-            
+            SEGGER_RTT_printf(0, "connected!");
             break;
+        }
 
         case BLE_GAP_EVT_DISCONNECTED:
             appData.ble_status = 0;
@@ -768,13 +777,16 @@ void init_device_info(void)
 {
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
-    send_data_to_PIC(send_device_info_pack);
-    //wait for PIC to respond with device info
-    if(!transfer_in_progress)
+    while(!device_info_received)
     {
-        while(!transfer_in_progress);
+        APP_Tasks();
+        nrf_delay_ms(1);
+        //SEGGER_RTT_printf(0, "sending device info request\n");
+        send_data_to_PIC(send_device_info_pack);
     }
-    while(transfer_in_progress);
+    SEGGER_RTT_printf(0, "got device info\n");
+
+    //wait for PIC to respond with device info
 }
 
 
@@ -784,8 +796,10 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
+    
 
  // Initialize.
+
     timers_init();
     shutdown_gpio_init();
     ble_stack_init();
@@ -794,18 +808,19 @@ int main(void)
 
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE-A-DOPE");
+    
     //init_device_info();
-
     
     gap_params_init();
     advertising_init();
     services_init();
     conn_params_init();
-    
+
     APP_Initialize();
-	
+
     // Start execution.
     application_timers_start();
+    SEGGER_RTT_WriteString(0, "starting adv\n");
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST); //TODO: advertize
     APP_ERROR_CHECK(err_code);
 

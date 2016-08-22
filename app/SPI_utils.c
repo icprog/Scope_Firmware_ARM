@@ -55,7 +55,6 @@ static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI i
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 nrf_drv_spis_config_t spis_config = NRF_DRV_SPIS_DEFAULT_CONFIG(SPIS_INSTANCE);
 static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instance completed the transfer. */
-volatile bool spis_xfer_done; /**< Flag used to indicate that SPIS instance completed the transfer. */
 uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
@@ -63,7 +62,7 @@ uint8_t	    profile_buffer[250];
 uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t sending_data_to_phone =0;
-
+volatile bool device_info_received = false;
 
 
 /********  global variable for building a tx packet for PIC   **********/
@@ -78,7 +77,7 @@ pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_weight), 1};
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
-pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 0};
+pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 
@@ -96,6 +95,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
     //TODO while(spis_tx_transfer_length) 
     if(spis_tx_transfer_length == 0) /* Header packet */
     {
+        uint32_t err_code;
         header_packet_t packet;
         packet.start_byte = PIC_ARM_START_BYTE;
         packet.stop_byte = PIC_ARM_STOP_BYTE;
@@ -111,9 +111,10 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 //        {
 //            SEGGER_RTT_printf(0, "  0x%x", ((uint8_t *)&packet)[i]);
 //        }
-        if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0) != NRF_SUCCESS)
+        err_code = nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, 0);
+        if (err_code != NRF_SUCCESS)
         {
-            SEGGER_RTT_printf(0, "SPIS error");
+            SEGGER_RTT_printf(0, "SPIS error %d in send_data_to_PIC\n", err_code);
         }
         //check that the SPIS semaphore is free before telling the PIC we are ready
         NRF_SPIS_Type * p_spis = spis.p_reg;
@@ -188,7 +189,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_ACCELEROMETER:
             {
-                //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
+                //SEGGER_RTT_printf(0, "PA_ACCELEROMETER\n");
                 next_state = APP_STATE_ACCELEROMETER;
                 break;
             }
@@ -201,13 +202,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_PCB_TEST:
             {
-                //SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
+                SEGGER_RTT_printf(0, "PA_PCB_TEST\n");
                 next_state = APP_STATE_PCB_TEST;
                 break;
             }
             case PA_DEVICE_INFO:
             {
-                //SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
+                SEGGER_RTT_printf(0, "PA_DEVICE_INFO\n");
                 rx_data_ptr = &device_info;
                 next_state = APP_STATE_DEVICE_INFO;
                 break;
@@ -325,10 +326,9 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         }
         
         //SEGGER_RTT_printf(0, "\nplanning on receiving %d bytes: ", rx_length);
-        spis_xfer_done = true; //TODO remove
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)
         {
-            SEGGER_RTT_printf(0, "SPIS error");
+            SEGGER_RTT_printf(0, "SPIS error: failed to set buffers in interrupt");
         }  
     }
 }
@@ -379,18 +379,25 @@ void spis_init(void)
 //    /*printf*/SEGGER_RTT_printf(0,"\n\r  SPI Mode: %d", spis_config.mode);
 
     if (nrf_drv_spis_init(&spis, &spis_config, spis_event_handler) == NRF_SUCCESS)
-            /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Succeeded");
+    {
+           // /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Succeeded");
+    }
     else
+    {
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Initialization Failed");
-            
+    }      
     if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, PIC_ARM_HEADER_SIZE, m_rx_buf_s, PIC_ARM_HEADER_SIZE) == NRF_SUCCESS) //dummy lengths
-          /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
+    {
+          ///*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Succeeded");
+    }
     else
+    {
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");
+    }
     
     /******* initialize RDY pin  ********/
     nrf_gpio_cfg_output(SPIS_RDY_PIN);
-    SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
+   // SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
 }
 
 
