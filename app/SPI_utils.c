@@ -58,8 +58,6 @@ static volatile bool spi_xfer_done;  /**< Flag used to indicate that SPI instanc
 uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
-uint8_t	    profile_buffer[250];
-uint16_t   profile_block_counter; //keeps track of current block of 250 bytes
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
 uint8_t sending_data_to_phone =0;
 volatile bool device_info_received = false;
@@ -370,7 +368,6 @@ void spis_init(void)
 {
     spis_config.csn_pin         = SPIS_CS_PIN;
     spis_config.mode 			= NRF_DRV_SPIS_MODE_0; //NRF_DRV_SPIS_MODE_3;
-		//profile_block_counter = 0;
 //	/*printf*/SEGGER_RTT_printf(0,"\n\r\n\rSPI Slave Configuration:");
 //	/*printf*/SEGGER_RTT_printf(0,"\n\r  SCK pin: %d", spis_config.sck_pin);
 //    /*printf*/SEGGER_RTT_printf(0,"\n\r  MOSI pin: %d", spis_config.mosi_pin);

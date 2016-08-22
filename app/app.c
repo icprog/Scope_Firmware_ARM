@@ -93,7 +93,6 @@ extern cal_optical_t			 m_optical;
 extern cal_hall_effect_t	m_hall_effect;
 extern ble_ps_t                  m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
-extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
 
@@ -150,14 +149,11 @@ APP_DATA appData;
 void APP_Initialize(void)
 {
 		SEGGER_RTT_WriteString(0, "APP Init Start \n");
-        /* Place the App state machine in its initial state. */
         appData.state = APP_STATE_INIT;		
-	
-		spi_init();
-		spis_init();
+//		spi_init();
+//		spis_init();
         appData.ble_status = 0;
         appData.status = 0;
-		profile_block_counter = 0;
 		init_LSM303();
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
 }
@@ -174,7 +170,6 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
-	uint8_t * p_is_nested_critical_region;
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -189,7 +184,6 @@ void APP_Tasks(void)
         case APP_STATE_POLLING:
         {
             //SEGGER_RTT_WriteString(0, "APP_STATE_POLLING \n");
-
             //monitor();
             break;
         }
@@ -257,7 +251,6 @@ void APP_Tasks(void)
         case APP_STATE_ACCELEROMETER:
         {
 
-            //sd_nvic_critical_region_enter(p_is_nested_critical_region);
             //accel_data = getLSM303data();
             //sd_nvic_critical_region_exit(0);
             //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");

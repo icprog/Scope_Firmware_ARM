@@ -809,7 +809,11 @@ int main(void)
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE-A-DOPE");
     
-    //init_device_info();
+    spi_init();
+	spis_init();
+    appData.state = APP_STATE_POLLING;		
+
+    init_device_info();
     
     gap_params_init();
     advertising_init();
