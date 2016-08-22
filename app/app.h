@@ -91,15 +91,16 @@ typedef struct
     uint16_t profile_id_to_transfer;
     uint16_t raw_or_profile;
     uint16_t ble_status;
+    uint8_t status;
 
 } APP_DATA;
 extern APP_DATA appData;
 
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
-    uint8_t number_of_tests;
     char serial_number[6];
     char device_name[32];
+    uint16_t number_of_tests;
     uint8_t battery_capacity;
 }device_info_t;
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
@@ -123,7 +124,9 @@ typedef struct  data_header
     uint8_t     accel_FS; //full scale of accelerometer
     uint16_t    gyro_FS; 
     uint16_t    force_cal[5]; //in ADC counts
-    uint16_t       optical_cal;
+
+    uint16_t    optical_cal;
+
     
     /*************  User Settings ************/
     

@@ -83,7 +83,6 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-extern volatile bool spis_xfer_done; 													/**< Flag used to indicate that SPIS instance completed the transfer. */
 extern nrf_drv_spis_config_t spis_config;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
 extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
@@ -95,8 +94,9 @@ extern cal_optical_t			 m_optical;
 extern cal_hall_effect_t	m_hall_effect;
 extern ble_ps_t                  m_ps;
 extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
-extern uint16_t     profile_block_counter; //keeps track of current block of 250 bytes
 extern uint8_t sending_data_to_phone;
+extern volatile bool device_info_received;
+
 //extern nrf_drv_spis_t spis;/**< SPIS instance. */
 
 extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
@@ -149,17 +149,14 @@ APP_DATA appData;
 
 void APP_Initialize(void)
 {
-		SEGGER_RTT_WriteString(0, "Init Start \n");
-        /* Place the App state machine in its initial state. */
+		SEGGER_RTT_WriteString(0, "APP Init Start \n");
         appData.state = APP_STATE_INIT;		
-	
-		spi_init();
-		spis_init();
+//		spi_init();
+//		spis_init();
         appData.ble_status = 0;
-		spis_xfer_done = false;
-		profile_block_counter = 0;
+        appData.status = 0;
 		init_LSM303();
-		SEGGER_RTT_WriteString(0, "Init End \n");
+		SEGGER_RTT_WriteString(0, "APP Init End \n");
 }
 
 
@@ -174,7 +171,6 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
-	uint8_t * p_is_nested_critical_region;
 	//SEGGER_RTT_WriteString(0, "App tasks start \n");
     switch (appData.state)
     {
@@ -188,6 +184,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_POLLING:
         {
+            //SEGGER_RTT_WriteString(0, "APP_STATE_POLLING \n");
             //monitor();
             break;
         }
@@ -216,6 +213,7 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
+            appData.status = 3;
             
             while(data_counts<sizeof(profile_data_t))
             {      
@@ -227,6 +225,7 @@ void APP_Tasks(void)
 										//nrf_spis_int_disable(p_spis, DISABLE_ALL);
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
+                    appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
@@ -256,7 +255,6 @@ void APP_Tasks(void)
         case APP_STATE_ACCELEROMETER:
         {
 
-            //sd_nvic_critical_region_enter(p_is_nested_critical_region);
             //accel_data = getLSM303data();
             //sd_nvic_critical_region_exit(0);
             //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
@@ -351,6 +349,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_DEVICE_INFO:
         {
+            device_info_received = true;
             SEGGER_RTT_printf(0, "\nserial number = ");
             for(int i = 0; i < 5; i++)
             {
