@@ -82,20 +82,6 @@ typedef enum
     APP_STATE_PROBE_ERROR,
 } APP_STATES;
 
-
-typedef struct
-{
-    /* The application's current state */
-    APP_STATES state;
-    APP_STATES prev_state;
-    uint16_t profile_id_to_transfer;
-    uint16_t raw_or_profile;
-    uint16_t ble_status;
-    uint8_t status;
-
-} APP_DATA;
-extern APP_DATA appData;
-
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
     char serial_number[6];
@@ -164,7 +150,27 @@ typedef struct
 #define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
     
 #define RAW_DATA_BUFFER_SIZE 2000
+#define BYTES_RAW_TEST_DATA 41072
 extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
+
+typedef struct profile_id
+{
+    uint16_t type;
+    uint16_t test_num;
+}profile_id_t;
+
+typedef struct
+{
+    /* The application's current state */
+    APP_STATES state;
+    APP_STATES prev_state;
+    profile_id_t profile_id;
+    uint16_t ble_status;
+    uint8_t status;
+    uint8_t accelerometer_enable;
+
+} APP_DATA;
+extern APP_DATA appData;
 	
 // *****************************************************************************
 // *****************************************************************************

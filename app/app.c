@@ -149,6 +149,7 @@ void APP_Initialize(void)
         appData.state = APP_STATE_INIT;		
 //		spi_init();
 //		spis_init();
+        appData.accelerometer_enable = 1;
         appData.ble_status = 0;
         appData.status = 0;
 		init_LSM303();
@@ -255,7 +256,10 @@ void APP_Tasks(void)
             //tx_data_ptr = &accel_data;
 
             //nrf_delay_us(90); //TODO: remove
-            send_data_to_PIC(accelerometer_pack);
+            if(appData.accelerometer_enable)
+            {
+                send_data_to_PIC(accelerometer_pack);
+            }
             //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
             //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
             appData.state = APP_STATE_POLLING;
@@ -349,11 +353,12 @@ void APP_Tasks(void)
                 SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
             }
             SEGGER_RTT_printf(0, "\ndevice name = ");
-            for(int i=0; i < 32; i++)
+            for(int i=0; i <strlen(device_info.device_name); i++)
             {
                 SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
             }
-            
+            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
+
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -377,17 +382,21 @@ void APP_Tasks(void)
                 {
                     buffer_done_flag = true;
                     appData.state = APP_STATE_POLLING;
+                    buffer_data_counts = 0;
                     send_data_to_PIC(raw_data_ack_pack);
                     SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                 }
-                if(raw_data_counts >= BYTES_RAW_DATA)
+                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
                 {
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                     raw_data_done_flag = true;
                     appData.state = APP_STATE_POLLING;
+                    raw_data_counts = 0;
                     sending_data_to_phone = 0;
+                    send_data_to_PIC(raw_data_ack_pack);
+                    nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
-                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
                 {

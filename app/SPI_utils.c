@@ -81,6 +81,8 @@ pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
+pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
+pic_arm_pack_t stop_accel_pack = {PA_STOP_ACCEL, dummy_buf, 0};
 
 extern device_info_t device_info;
 //extern subsampled_raw_data_t raw_data;
@@ -116,13 +118,24 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         if (err_code != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error %d in send_data_to_PIC\n", err_code);
+            return 1;
         }
         //check that the SPIS semaphore is free before telling the PIC we are ready
         NRF_SPIS_Type * p_spis = spis.p_reg;
-        if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
-        {
-            set_RDY(); 
-        }
+//        if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
+//        {
+//            set_RDY(); 
+//        }
+//        else
+//        {
+//            SEGGER_RTT_printf(0, "Oh Shit! SPIS semaphore not free\n");
+//            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
+//            return 1;
+//        }
+        //while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
+        set_RDY(); 
+
+
     }
     else
     {
