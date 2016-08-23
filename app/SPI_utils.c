@@ -118,7 +118,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         if (err_code != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error %d in send_data_to_PIC\n", err_code);
-            return 1;
+            return err_code;
         }
         //check that the SPIS semaphore is free before telling the PIC we are ready
         NRF_SPIS_Type * p_spis = spis.p_reg;
