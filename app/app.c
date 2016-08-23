@@ -404,6 +404,7 @@ void APP_Tasks(void)
                     appData.state = APP_STATE_POLLING;
                     raw_data_counts = 0;
                     sending_data_to_phone = 0;
+                    appData.accelerometer_enable = 1;
                     send_data_to_PIC(raw_data_ack_pack);
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);

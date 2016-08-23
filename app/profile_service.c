@@ -597,16 +597,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         {           
             appData.accelerometer_enable = 0;
             appData.state = APP_STATE_SEND_PROFILE_ID;
-//            while(send_data_to_PIC(stop_accel_pack))
-//            {
-//                SEGGER_RTT_printf(0,"oops try again\n");
-//                nrf_delay_ms(500);
-//            }
-//            nrf_delay_ms(500);//delay to wait for accelerometer to turn off
-//            send_data_to_PIC(profile_id_pack);
-            //SEGGER_RTT_printf(0,"sent profile id to PIC\n");
         }
-
     }
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {

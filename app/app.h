@@ -103,6 +103,7 @@ typedef struct  data_header
     
     /*********** Test Specific  ***********/
     uint16_t    test_num; //test number (device specific)
+    uint16_t    profile_depth;
     uint8_t     battery_capacity;
     float       test_time; //seconds
     uint8_t     error_code;
@@ -151,7 +152,7 @@ typedef struct
 #define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
     
 #define RAW_DATA_BUFFER_SIZE 2000
-#define BYTES_RAW_TEST_DATA 41072
+#define BYTES_RAW_TEST_DATA 41076
 extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
 
 typedef struct profile_id
