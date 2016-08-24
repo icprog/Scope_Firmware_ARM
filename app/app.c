@@ -76,7 +76,11 @@
 #include "probe_error.h"
 #include "nrf_nvic.h"
 #include "ble_err.h"
+
 #include "nrf_drv_spis.h"
+
+#include "timers.h"
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -204,6 +208,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_SEND_PROFILE_ID:
         {
+            application_timers_stop();
             nrf_delay_ms(500); 
             SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
@@ -212,6 +217,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_PROFILE_TRANSFER:
         {
+            
             //SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
             uint8_t bytes_sent = 0;
             static int data_counts = 0;
@@ -231,9 +237,11 @@ void APP_Tasks(void)
 										//nrf_spis_int_disable(p_spis, DISABLE_ALL);
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
+                    appData.prev_state = APP_STATE_PROFILE_TRANSFER;
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
+                    application_timers_start();
                     appData.accelerometer_enable = 1;
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
@@ -426,13 +434,14 @@ void APP_Tasks(void)
                     raw_data_counts = 0;
                     sending_data_to_phone = 0;
                     appData.accelerometer_enable = 1;
+                    application_timers_start();
                     send_data_to_PIC(raw_data_ack_pack);
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
                 {
-                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
                 }
                 counter++;
