@@ -1,0 +1,101 @@
+
+#include <stdint.h>
+#include "app_timer.h"
+#include "timers.h"
+#include "LSM303drv.h"
+#include "ble_status.h"
+#include "app.h"
+
+extern LSM303_DATA accel_data;
+extern ble_status_t  m_status;
+
+/**@brief Function for the Timer initialization.
+ * @details Initializes the timer module. This creates and starts application timers.
+ */
+void timers_init(void)
+{
+    uint32_t err_code;
+
+    // Initialize timer module.
+    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+
+    // Create timers.
+    err_code = app_timer_create(&m_acc_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                acc_timeout_handler);
+    err_code = app_timer_create(&m_battery_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                battery_timeout_handler);
+	err_code = app_timer_create(&m_slope_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                slope_timeout_handler);
+	err_code = app_timer_create(&m_status_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                status_timeout_handler);
+	
+    APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for starting application timers.
+ */
+void application_timers_start(void)
+{
+    uint32_t err_code;
+
+    // Start application timers.
+    err_code = app_timer_start(m_battery_timer_id, battery_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+    
+	
+	err_code = app_timer_start(m_slope_timer_id, slope_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+	
+	err_code = app_timer_start(m_status_timer_id, status_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+    
+
+    err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+}
+
+void application_timers_stop(void)
+{
+    uint32_t err_code;
+
+    // Stop application timers.
+    err_code = app_timer_stop(m_battery_timer_id);
+    APP_ERROR_CHECK(err_code);
+    
+	
+	err_code = app_timer_stop(m_slope_timer_id);
+    APP_ERROR_CHECK(err_code);
+    
+	
+	err_code = app_timer_stop(m_status_timer_id);
+    APP_ERROR_CHECK(err_code);
+    
+
+    err_code = app_timer_stop(m_acc_timer_id);
+    APP_ERROR_CHECK(err_code);
+}
+
+/********** app timer handlers  ***********/
+void acc_timeout_handler(void *p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    accel_data = getLSM303data();
+    //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
+}
+void battery_timeout_handler(void *p_context)
+{
+    UNUSED_PARAMETER(p_context);
+}
+void slope_timeout_handler(void *p_context)
+{
+    UNUSED_PARAMETER(p_context);
+}
+void status_timeout_handler(void *p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    ble_status_status_level_update(&m_status, appData.ble_status);
+}
