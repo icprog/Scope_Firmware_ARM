@@ -132,7 +132,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 //            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
 //            return 1;
 //        }
-        while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
+        //while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
         set_RDY(); 
 
 

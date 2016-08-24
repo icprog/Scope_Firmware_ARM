@@ -377,73 +377,73 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-//            uint8_t bytes_sent;
-////            sending_data_to_phone = 1;
-//              static int raw_data_counts = 0;
-//              static int buffer_data_counts = 0;
-//            uint8_t counter = 0;
-////            uint32_t err_code;
-//            uint8_t ble_packet_length;
-////            bool buffer_done_flag = false;
-////            bool raw_data_done_flag = false;
-//            
-////            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
-//            while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
-//            {      
-//                if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
-//                {
-//                    ble_packet_length = BYTES_RAW_TEST_DATA - raw_data_counts;
-//                    bytes_sent = BYTES_RAW_TEST_DATA - raw_data_counts;
-//                }
-//                else
-//                {
-//                    ble_packet_length = 20;
-//                    bytes_sent = 20;
-//                }
-////                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
-//                
-//				buffer_data_counts += bytes_sent;
-//                raw_data_counts += bytes_sent;
-//                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
-//                {
-//                    //buffer_done_flag = true;
-//                    appData.prev_state = APP_STATE_POLLING;
-//                    nrf_delay_ms(2);
-//                    send_data_to_PIC(raw_data_ack_pack);
-//                    appData.state = APP_STATE_POLLING;
-//                    buffer_data_counts = 0;
-//                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
-////                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
-////                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
-//                }
-//                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
-//                {
-////                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
-////                    raw_data_done_flag = true;
-////                    buffer_done_flag = true;
-//                    appData.state = APP_STATE_POLLING;
-//                    buffer_data_counts = 0;
-//                    raw_data_counts = 0;
-//                    sending_data_to_phone = 0;
-//                    appData.accelerometer_enable = 1;
-//                    send_data_to_PIC(raw_data_ack_pack);
-//                    nrf_delay_ms(5);
-//                    send_data_to_PIC(arm_done_pack);
-//                }
-////                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
-////                {
-////                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
-////                    break;
-////                }
-//                counter++;
-//            }
-////            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
-////            {
-////                counter = 0;
-////                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
-////                appData.state = APP_STATE_POLLING;
-////                break; //TODO (JT): might be redudant with next break
-////            }
+            uint8_t bytes_sent;
+            sending_data_to_phone = 1;
+              static int raw_data_counts = 0;
+              static int buffer_data_counts = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t ble_packet_length;
+            bool buffer_done_flag = false;
+            bool raw_data_done_flag = false;
+            
+//            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
+            while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
+            {      
+                if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
+                {
+                    ble_packet_length = BYTES_RAW_TEST_DATA - raw_data_counts;
+                    bytes_sent = BYTES_RAW_TEST_DATA - raw_data_counts;
+                }
+                else
+                {
+                    ble_packet_length = 20;
+                    bytes_sent = 20;
+                }
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
+                
+				buffer_data_counts += bytes_sent;
+                raw_data_counts += bytes_sent;
+                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
+                {
+                    buffer_done_flag = true;
+                    appData.prev_state = APP_STATE_POLLING;
+                    nrf_delay_ms(2);
+                    send_data_to_PIC(raw_data_ack_pack);
+                    appData.state = APP_STATE_POLLING;
+                    buffer_data_counts = 0;
+                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
+                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+                }
+                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
+                {
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+                    raw_data_done_flag = true;
+                    buffer_done_flag = true;
+                    appData.state = APP_STATE_POLLING;
+                    buffer_data_counts = 0;
+                    raw_data_counts = 0;
+                    sending_data_to_phone = 0;
+                    appData.accelerometer_enable = 1;
+                    send_data_to_PIC(raw_data_ack_pack);
+                    nrf_delay_ms(5);
+                    send_data_to_PIC(arm_done_pack);
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
+                {
+                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    break;
+                }
+                counter++;
+            }
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
+                appData.state = APP_STATE_POLLING;
+                break; //TODO (JT): might be redudant with next break
+            }
             break;
         }
         case APP_STATE_PROBE_ERROR:
