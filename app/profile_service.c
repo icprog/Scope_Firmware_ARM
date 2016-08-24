@@ -5,7 +5,7 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 #include "SEGGER_RTT.h"
-
+#include "SPI_utils.h"
 
 void profile_char_add(ble_ps_t * p_ps)
 {
@@ -491,7 +491,7 @@ uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t si
         {
             count+=gatts_value.len;
             *bytes_sent = gatts_value.len;
-            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+            //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }
         else
         {
@@ -527,9 +527,8 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     gatts_value.p_value = raw_data;
 
     // Update data.
-    //TODO: change the char handle to the raw profile char eventually
     err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
-                                      p_ps->profile_char_handles.value_handle,
+                                      p_ps->raw_data_char_handles.value_handle,
                                       &gatts_value);
     if (err_code == NRF_SUCCESS)
     {
@@ -538,6 +537,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     else
     {
         SEGGER_RTT_printf(0, "error in raw data update fxn\n");
+        return err_code;
     }
 
     // Send value if connected and notifying.
@@ -547,7 +547,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 
         memset(&hvx_params, 0, sizeof(hvx_params));
 
-        hvx_params.handle = p_ps->profile_char_handles.value_handle; //TODO: change to raw  data char when we are using it
+        hvx_params.handle = p_ps->raw_data_char_handles.value_handle; //TODO: change to raw  data char when we are using it
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = gatts_value.offset;
         hvx_params.p_len  = &gatts_value.len;
@@ -558,7 +558,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         {
             count+=gatts_value.len;
             *bytes_sent = gatts_value.len;
-            SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+            //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }
         else
         {
@@ -568,8 +568,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 	}
     else
     {
-			SEGGER_RTT_printf(0, "\n invalid conn handle \n");
-				
+        SEGGER_RTT_printf(0, "\n invalid conn handle \n");	
         err_code = NRF_ERROR_INVALID_STATE;
     }
 		return err_code;
@@ -581,23 +580,23 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     profile_t * p_profile;
     if(p_evt_write->handle == p_ps->transfer_ids_char_handles.value_handle)
     {
-        appData.raw_or_profile = ((uint16_t *)(p_evt_write->data))[0];
-        appData.profile_id_to_transfer = ((uint16_t *)(p_evt_write->data))[1];
-        SEGGER_RTT_printf(0,"profile_to_transfer:  %d %d ", appData.raw_or_profile, appData.profile_id_to_transfer);
+        memcpy(&(appData.profile_id), (p_evt_write->data), sizeof(profile_id_t));
+        SEGGER_RTT_printf(0,"profile_to_transfer:  type = %d num = %d \n", appData.profile_id.type, appData.profile_id.test_num);
         
         /*
         *if the phone requests the most recent profile, the one store in memeory,
         * skip right to sending it, otherwise, ask the PIC for the correct profile data
         */
-        if(appData.profile_id_to_transfer == profile_data.metadata.test_num && appData.raw_or_profile == 0)
+        if(appData.profile_id.test_num == profile_data.metadata.test_num && appData.profile_id.type == 0)
         {
+            SEGGER_RTT_printf(0, "send the profile that is already in memory\n");
             appData.state = APP_STATE_PROFILE_TRANSFER;
         }
         else
-        {
-           //send_data_to_PIC()
+        {           
+            appData.accelerometer_enable = 0;
+            appData.state = APP_STATE_SEND_PROFILE_ID;
         }
-
     }
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
@@ -605,7 +604,6 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
         //send_data_to_PIC()
-
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)

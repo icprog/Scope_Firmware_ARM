@@ -69,11 +69,12 @@ typedef enum
     PA_DEVICE_STATUS,
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
-    PA_RAW_DATA,
+    PA_RAW_DATA, //ARM->PIC = ACK. PIC->ARM = DATA
     PA_ACCELEROMETER,  //both ways, send accel data to PIC when quaried  
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
     PA_PROFILE_ID,
+    PA_LOCATION_TIME,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -112,8 +113,13 @@ extern pic_arm_pack_t hall_effect_test_pack;
 extern pic_arm_pack_t send_sn_pack;
 extern pic_arm_pack_t get_profile_pack;
 extern pic_arm_pack_t arm_done_pack;
+extern pic_arm_pack_t raw_data_ack_pack;
+extern pic_arm_pack_t profile_id_pack;
+extern pic_arm_pack_t stop_accel_pack;
+extern pic_arm_pack_t location_time_pack;
 
 extern volatile bool transfer_in_progress;
+extern volatile bool raw_data_transfer_in_progress;
 
 
 typedef struct

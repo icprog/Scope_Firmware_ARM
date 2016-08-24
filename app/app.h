@@ -80,21 +80,8 @@ typedef enum
     APP_STATE_RAW_DATA_RECEIVE,
     APP_STATE_TRANSFER_PROFILE_IDS,
     APP_STATE_PROBE_ERROR,
+    APP_STATE_SEND_PROFILE_ID,
 } APP_STATES;
-
-
-typedef struct
-{
-    /* The application's current state */
-    APP_STATES state;
-    APP_STATES prev_state;
-    uint16_t profile_id_to_transfer;
-    uint16_t raw_or_profile;
-    uint16_t ble_status;
-    uint8_t status;
-
-} APP_DATA;
-extern APP_DATA appData;
 
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
@@ -116,6 +103,7 @@ typedef struct  data_header
     
     /*********** Test Specific  ***********/
     uint16_t    test_num; //test number (device specific)
+    uint16_t    profile_depth;
     uint8_t     battery_capacity;
     float       test_time; //seconds
     uint8_t     error_code;
@@ -164,6 +152,29 @@ typedef struct
     uint8_t OpticalSqual[POINTS_PER_RAW_SIGNAL];
 }subsampled_raw_data_t;
 #define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
+    
+#define RAW_DATA_BUFFER_SIZE 2000
+#define BYTES_RAW_TEST_DATA 41076
+extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
+
+typedef struct profile_id
+{
+    uint16_t type;
+    uint16_t test_num;
+}profile_id_t;
+
+typedef struct
+{
+    /* The application's current state */
+    APP_STATES state;
+    APP_STATES prev_state;
+    profile_id_t profile_id;
+    uint16_t ble_status;
+    uint8_t status;
+    uint8_t accelerometer_enable;
+
+} APP_DATA;
+extern APP_DATA appData;
 	
 // *****************************************************************************
 // *****************************************************************************

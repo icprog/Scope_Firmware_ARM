@@ -83,29 +83,26 @@
 // Section: Global Data Definitions
 // *****************************************************************************
 // *****************************************************************************
-extern nrf_drv_spis_config_t spis_config;
-static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
-extern uint8_t       m_tx_buf_s[4];           											/**< TX buffer. */
-extern uint8_t       m_rx_buf_s[5];    													/**< RX buffer. */
-static const uint8_t m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
-extern cal_force_t                   m_force;
-extern ble_pes_t 	 		m_pes; //probing error service
-extern cal_optical_t			 m_optical;
-extern cal_hall_effect_t	m_hall_effect;
-extern ble_ps_t                  m_ps;
-extern uint8_t			profile_data_in[1500]; // holder for profile data from PIC
-extern uint8_t sending_data_to_phone;
-extern volatile bool device_info_received;
-
-//extern nrf_drv_spis_t spis;/**< SPIS instance. */
-
-extern LSM303_DATA accel_data; //acelerometer data to pass to PIC
-uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-extern pic_arm_pack_t accelerometer_pack;
-extern void * tx_data_ptr; //where to pull data from to send to PIC
-subsampled_raw_data_t raw_data;
-data_header_t metadata;
-profile_data_t profile_data;
+extern nrf_drv_spis_config_t    spis_config;
+static const                    nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);	            /**< SPIS instance. */
+extern uint8_t                  m_tx_buf_s[4];           											/**< TX buffer. */
+extern uint8_t                  m_rx_buf_s[5];    													/**< RX buffer. */
+static const uint8_t            m_length = sizeof(m_tx_buf_s);        								/**< Transfer length. */
+extern cal_force_t              m_force;
+extern ble_pes_t 	 		    m_pes; //probing error service
+extern cal_optical_t			m_optical;
+extern cal_hall_effect_t	    m_hall_effect;
+extern ble_ps_t                 m_ps;
+extern uint8_t                  sending_data_to_phone;
+extern volatile bool            device_info_received;
+extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
+uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
+extern pic_arm_pack_t           accelerometer_pack;
+extern void *                   tx_data_ptr; //where to pull data from to send to PIC
+//subsampled_raw_data_t           raw_data;
+data_header_t                   metadata;
+profile_data_t                  profile_data;
+uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 
 // *****************************************************************************
 /* Application Data
@@ -153,6 +150,7 @@ void APP_Initialize(void)
         appData.state = APP_STATE_INIT;		
 //		spi_init();
 //		spis_init();
+        appData.accelerometer_enable = 1;
         appData.ble_status = 0;
         appData.status = 0;
 		init_LSM303();
@@ -204,6 +202,14 @@ void APP_Tasks(void)
             }
             break;
         }
+        case APP_STATE_SEND_PROFILE_ID:
+        {
+            nrf_delay_ms(500); 
+            SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
+            send_data_to_PIC(profile_id_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_PROFILE_TRANSFER:
         {
             //SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
@@ -228,6 +234,7 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
+                    appData.accelerometer_enable = 1;
                     SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -237,7 +244,7 @@ void APP_Tasks(void)
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
                 {
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }
@@ -262,7 +269,11 @@ void APP_Tasks(void)
             //tx_data_ptr = &accel_data;
 
             //nrf_delay_us(90); //TODO: remove
-            send_data_to_PIC(accelerometer_pack);
+            if(appData.accelerometer_enable)
+            {
+                send_data_to_PIC(accelerometer_pack);
+            }
+                
             //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
             //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
             appData.state = APP_STATE_POLLING;
@@ -356,51 +367,83 @@ void APP_Tasks(void)
                 SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
             }
             SEGGER_RTT_printf(0, "\ndevice name = ");
-            for(int i=0; i < 32; i++)
+            for(int i=0; i <strlen(device_info.device_name); i++)
             {
                 SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
             }
-            
+            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-            uint8_t bytes_sent = 0;
-            static int data_counts = 0;
-            uint8_t counter = 0;
-            uint32_t err_code;
-            uint8_t done_flag = 0;
-            sending_data_to_phone = 1;
-            
-            while(data_counts<BYTES_RAW_DATA)
-            {      
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
-				data_counts += bytes_sent;			
-                if(data_counts >= BYTES_RAW_DATA)
-                {
-                    done_flag = 1;
-                    appData.state = APP_STATE_POLLING;
-                    sending_data_to_phone = 0;
-                    send_data_to_PIC(arm_done_pack);
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
-                }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
-                {
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
-                    break;
-                    
-                }
-                counter++;
-                //SEGGER_RTT_printf(0, "\n data: %d",data_counts);
-            }		
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
-            {
-                counter = 0;
-                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
-                appData.state = APP_STATE_POLLING;
-                break;
-            }
+//            uint8_t bytes_sent;
+////            sending_data_to_phone = 1;
+//              static int raw_data_counts = 0;
+//              static int buffer_data_counts = 0;
+//            uint8_t counter = 0;
+////            uint32_t err_code;
+//            uint8_t ble_packet_length;
+////            bool buffer_done_flag = false;
+////            bool raw_data_done_flag = false;
+//            
+////            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
+//            while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
+//            {      
+//                if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
+//                {
+//                    ble_packet_length = BYTES_RAW_TEST_DATA - raw_data_counts;
+//                    bytes_sent = BYTES_RAW_TEST_DATA - raw_data_counts;
+//                }
+//                else
+//                {
+//                    ble_packet_length = 20;
+//                    bytes_sent = 20;
+//                }
+////                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
+//                
+//				buffer_data_counts += bytes_sent;
+//                raw_data_counts += bytes_sent;
+//                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
+//                {
+//                    //buffer_done_flag = true;
+//                    appData.prev_state = APP_STATE_POLLING;
+//                    nrf_delay_ms(2);
+//                    send_data_to_PIC(raw_data_ack_pack);
+//                    appData.state = APP_STATE_POLLING;
+//                    buffer_data_counts = 0;
+//                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
+////                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+////                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+//                }
+//                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
+//                {
+////                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+////                    raw_data_done_flag = true;
+////                    buffer_done_flag = true;
+//                    appData.state = APP_STATE_POLLING;
+//                    buffer_data_counts = 0;
+//                    raw_data_counts = 0;
+//                    sending_data_to_phone = 0;
+//                    appData.accelerometer_enable = 1;
+//                    send_data_to_PIC(raw_data_ack_pack);
+//                    nrf_delay_ms(5);
+//                    send_data_to_PIC(arm_done_pack);
+//                }
+////                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
+////                {
+////                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+////                    break;
+////                }
+//                counter++;
+//            }
+////            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
+////            {
+////                counter = 0;
+////                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
+////                appData.state = APP_STATE_POLLING;
+////                break; //TODO (JT): might be redudant with next break
+////            }
             break;
         }
         case APP_STATE_PROBE_ERROR:

@@ -526,7 +526,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
-            SEGGER_RTT_printf(0, "connected!");
+            SEGGER_RTT_printf(0, "connected!\n");
             break;
         }
 
@@ -541,6 +541,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             advertising_init();
             err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
             APP_ERROR_CHECK(err_code);
+            SEGGER_RTT_printf(0, "disconnected!\n");
         
             break;
 		case BLE_EVT_TX_COMPLETE:
@@ -777,14 +778,18 @@ void init_device_info(void)
 {
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
+//    while(!device_info_received)
+//    {
+//        APP_Tasks();
+        nrf_delay_ms(500);
+        //SEGGER_RTT_printf(0, "sending device info request\n");
+        send_data_to_PIC(send_device_info_pack);
+//    }
+    //SEGGER_RTT_printf(0, "got device info\n");
     while(!device_info_received)
     {
         APP_Tasks();
-        nrf_delay_ms(1);
-        //SEGGER_RTT_printf(0, "sending device info request\n");
-        send_data_to_PIC(send_device_info_pack);
     }
-    SEGGER_RTT_printf(0, "got device info\n");
 
     //wait for PIC to respond with device info
 }
@@ -828,6 +833,8 @@ int main(void)
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST); //TODO: advertize
     APP_ERROR_CHECK(err_code);
 
+    SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
+    profile_ids_update(&m_ps, device_info.number_of_tests);
 	SEGGER_RTT_WriteString(0, "main loop:\n");
 
     while(true)
