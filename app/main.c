@@ -541,7 +541,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             advertising_init();
             err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
             APP_ERROR_CHECK(err_code);
-            SEGGER_RTT_printf(0, "connected!\n");
+            SEGGER_RTT_printf(0, "disconnected!\n");
         
             break;
 		case BLE_EVT_TX_COMPLETE:
@@ -781,7 +781,7 @@ void init_device_info(void)
 //    while(!device_info_received)
 //    {
 //        APP_Tasks();
-        nrf_delay_ms(200);
+        nrf_delay_ms(500);
         //SEGGER_RTT_printf(0, "sending device info request\n");
         send_data_to_PIC(send_device_info_pack);
 //    }

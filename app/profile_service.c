@@ -527,7 +527,6 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     gatts_value.p_value = raw_data;
 
     // Update data.
-    //TODO: change the char handle to the raw profile char eventually
     err_code = sd_ble_gatts_value_set(p_ps->conn_handle,
                                       p_ps->raw_data_char_handles.value_handle,
                                       &gatts_value);
@@ -538,6 +537,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     else
     {
         SEGGER_RTT_printf(0, "error in raw data update fxn\n");
+        return err_code;
     }
 
     // Send value if connected and notifying.
@@ -568,8 +568,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 	}
     else
     {
-			SEGGER_RTT_printf(0, "\n invalid conn handle \n");
-				
+        SEGGER_RTT_printf(0, "\n invalid conn handle \n");	
         err_code = NRF_ERROR_INVALID_STATE;
     }
 		return err_code;
@@ -605,7 +604,6 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
         //send_data_to_PIC()
-
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)

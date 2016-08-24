@@ -82,7 +82,7 @@ pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
-pic_arm_pack_t stop_accel_pack = {PA_STOP_ACCEL, dummy_buf, 0};
+pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
 
 extern device_info_t device_info;
 //extern subsampled_raw_data_t raw_data;
@@ -132,7 +132,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 //            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
 //            return 1;
 //        }
-        //while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
+        while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
         set_RDY(); 
 
 
@@ -230,6 +230,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_RAW_DATA:
             {
                 SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
+                //nrf_delay_ms(1000);
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
                 rx_data_ptr = &raw_data_buff;
                 break;
@@ -303,7 +304,6 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         {
             spis_rx_transfer_length -= rx_length;
         }
-        
         //SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);
 //        for(int i = 0; i < rx_length; i++)
 //        {

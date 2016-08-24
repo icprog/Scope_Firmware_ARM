@@ -74,7 +74,7 @@ typedef enum
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
     PA_PROFILE_ID,
-    PA_STOP_ACCEL,
+    PA_LOCATION_TIME,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -116,6 +116,7 @@ extern pic_arm_pack_t arm_done_pack;
 extern pic_arm_pack_t raw_data_ack_pack;
 extern pic_arm_pack_t profile_id_pack;
 extern pic_arm_pack_t stop_accel_pack;
+extern pic_arm_pack_t location_time_pack;
 
 extern volatile bool transfer_in_progress;
 extern volatile bool raw_data_transfer_in_progress;
