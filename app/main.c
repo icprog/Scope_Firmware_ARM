@@ -40,7 +40,7 @@
 #include "sensorsim.h"
 #include "bsp_btn_ble.h"
 #include "softdevice_handler.h"
-#include "app_timer.h"
+#include "timers.h"
 #include "device_manager.h"
 #include "pstorage.h"
 #include "app_trace.h"
@@ -84,14 +84,6 @@ static ble_beacon_init_t beacon_init;
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
 
-#define APP_TIMER_PRESCALER                  3                                          /**< Value of the RTC1 PRESCALER register. */
-#define APP_TIMER_OP_QUEUE_SIZE              4                                          /**< Size of timer operation queues. */
-
-#define battery_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Battery level measurement interval (ticks). */                         
-#define slope_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(500, APP_TIMER_PRESCALER) /**< slope level measurement interval (ticks). */
-#define status_LEVEL_MEAS_INTERVAL           APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< status level measurement interval (ticks). */
-#define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(2, APP_TIMER_PRESCALER)
-
 /*********  BLE connection params  ******/
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
 #define MAX_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)          /**< Maximum acceptable connection interval (1 second). */
@@ -126,18 +118,11 @@ static ble_bas_t                             m_bas;                             
 ble_pes_t 	 						         m_pes; //probing error service
 ble_ps_t                             		 m_ps; //profile service
 static ble_slope_t                           m_slope; //slope service
-static ble_status_t							 m_status;
+ble_status_t							     m_status;
 cal_optical_t								 m_optical;
 cal_force_t			    					 m_force;
 cal_hall_effect_t						     m_hall_effect;
 static cal_vib_t							 m_vib;    //vibration motor cal struct
-
-//defines variables to be used for app timers
-APP_TIMER_DEF(m_acc_timer_id);
-APP_TIMER_DEF(m_slope_timer_id);
-APP_TIMER_DEF(m_battery_timer_id);                                                      /**< Battery timer. */
-APP_TIMER_DEF(m_status_timer_id);   
-/**< Status timer. */
 
 static dm_application_instance_t             m_app_handle;                              /**< Application identifier allocated by device manager. */
 
@@ -166,53 +151,6 @@ uint8_t SLOPE_GLOBAL = 0;
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
     app_error_handler(DEAD_BEEF, line_num, p_file_name);
-}
-/********** app timer handlers  ***********/
-static void acc_timeout_handler(void *p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    accel_data = getLSM303data();
-    //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
-}
-static void battery_timeout_handler(void *p_context)
-{
-    UNUSED_PARAMETER(p_context);
-}
-static void slope_timeout_handler(void *p_context)
-{
-    UNUSED_PARAMETER(p_context);
-}
-static void status_timeout_handler(void *p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    ble_status_status_level_update(&m_status, appData.ble_status);
-}
-
-/**@brief Function for the Timer initialization.
- * @details Initializes the timer module. This creates and starts application timers.
- */
-static void timers_init(void)
-{
-    uint32_t err_code;
-
-    // Initialize timer module.
-    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-
-    // Create timers.
-    err_code = app_timer_create(&m_acc_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                acc_timeout_handler);
-    err_code = app_timer_create(&m_battery_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                battery_timeout_handler);
-	err_code = app_timer_create(&m_slope_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                slope_timeout_handler);
-	err_code = app_timer_create(&m_status_timer_id,
-                                APP_TIMER_MODE_REPEATED,
-                                status_timeout_handler);
-	
-    APP_ERROR_CHECK(err_code);
 }
 
 static void device_name_update(void)
@@ -362,31 +300,6 @@ static void services_init(void)
     ble_profile_service_init(&m_ps);
     }
 
-}
-
-
-/**@brief Function for starting application timers.
- */
-static void application_timers_start(void)
-{
-    uint32_t err_code;
-
-    // Start application timers.
-    err_code = app_timer_start(m_battery_timer_id, battery_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
-    
-	
-	err_code = app_timer_start(m_slope_timer_id, slope_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
-    
-	
-	err_code = app_timer_start(m_status_timer_id, status_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
-    
-
-    err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
-    
 }
 
 
@@ -778,20 +691,12 @@ void init_device_info(void)
 {
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
-//    while(!device_info_received)
-//    {
-//        APP_Tasks();
-        nrf_delay_ms(500);
-        //SEGGER_RTT_printf(0, "sending device info request\n");
-        send_data_to_PIC(send_device_info_pack);
-//    }
-    //SEGGER_RTT_printf(0, "got device info\n");
+    nrf_delay_ms(500);
+    send_data_to_PIC(send_device_info_pack);
     while(!device_info_received)
     {
         APP_Tasks();
     }
-
-    //wait for PIC to respond with device info
 }
 
 
@@ -839,7 +744,6 @@ int main(void)
 
     while(true)
     {
-
         APP_Tasks();
         power_manage();
 	}
