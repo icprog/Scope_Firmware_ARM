@@ -715,9 +715,6 @@ int main(void)
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
-
-    strcpy(device_info.serial_number, "NO SN");
-    strcpy(device_info.device_name, "SCOPE-A-DOPE");
     
     spi_init();
 	spis_init();

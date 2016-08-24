@@ -129,7 +129,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 //        else
 //        {
 //            SEGGER_RTT_printf(0, "Oh Shit! SPIS semaphore not free\n");
-//            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
+            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
 //            return 1;
 //        }
         //while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
@@ -230,7 +230,6 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_RAW_DATA:
             {
                 SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
-                //nrf_delay_ms(1000);
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
                 rx_data_ptr = &raw_data_buff;
                 break;
