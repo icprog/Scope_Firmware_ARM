@@ -654,6 +654,11 @@ static void power_manage(void)
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
     nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
+    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
+    {
+        NVIC_SystemReset();
+    }
+    
 }
 /**
  * @brief Function for configuring: PIN_IN pin for input, PIN_OUT pin for output, 
