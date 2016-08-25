@@ -40,6 +40,7 @@
 #define CALIBRATION 0
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -81,6 +82,7 @@ typedef enum
     APP_STATE_TRANSFER_PROFILE_IDS,
     APP_STATE_PROBE_ERROR,
     APP_STATE_SEND_PROFILE_ID,
+    APP_STATE_SPIS_FAIL,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -172,7 +174,9 @@ typedef struct
     uint16_t ble_status;
     uint8_t status;
     uint8_t accelerometer_enable;
-
+    uint16_t data_counts;
+    bool SPIS_timeout_flag;
+    bool transfer_in_progress;
 } APP_DATA;
 extern APP_DATA appData;
 	

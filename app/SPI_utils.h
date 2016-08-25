@@ -75,6 +75,7 @@ typedef enum
     PA_ARM_DONE, //ARM ->PIC
     PA_PROFILE_ID,
     PA_LOCATION_TIME,
+    PA_TIMEOUT,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -117,8 +118,8 @@ extern pic_arm_pack_t raw_data_ack_pack;
 extern pic_arm_pack_t profile_id_pack;
 extern pic_arm_pack_t stop_accel_pack;
 extern pic_arm_pack_t location_time_pack;
+extern pic_arm_pack_t spis_fail_pack;
 
-extern volatile bool transfer_in_progress;
 extern volatile bool raw_data_transfer_in_progress;
 
 

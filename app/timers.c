@@ -5,9 +5,11 @@
 #include "LSM303drv.h"
 #include "ble_status.h"
 #include "app.h"
+#include "SEGGER_RTT.h"
 
 extern LSM303_DATA accel_data;
 extern ble_status_t  m_status;
+extern uint16_t spis_rx_transfer_length;
 
 /**@brief Function for the Timer initialization.
  * @details Initializes the timer module. This creates and starts application timers.
@@ -88,6 +90,14 @@ void acc_timeout_handler(void *p_context)
 }
 void battery_timeout_handler(void *p_context)
 {
+    if(appData.SPIS_timeout_flag == 1)
+    {
+        SEGGER_RTT_printf(0, "transfer timed out :(\n");
+        appData.transfer_in_progress = false;
+        spis_rx_transfer_length = 0;
+        appData.state = APP_STATE_SPIS_FAIL;
+    }
+    appData.SPIS_timeout_flag = 0;
     UNUSED_PARAMETER(p_context);
 }
 void slope_timeout_handler(void *p_context)

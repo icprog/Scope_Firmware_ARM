@@ -64,7 +64,6 @@ volatile bool device_info_received = false;
 
 
 /********  global variable for building a tx packet for PIC   **********/
-volatile bool transfer_in_progress = false;
 volatile bool raw_data_transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
@@ -83,6 +82,7 @@ pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
 pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
+pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 
 extern device_info_t device_info;
 //extern subsampled_raw_data_t raw_data;
@@ -122,20 +122,18 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         }
         //check that the SPIS semaphore is free before telling the PIC we are ready
         NRF_SPIS_Type * p_spis = spis.p_reg;
-//        if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
-//        {
-//            set_RDY(); 
-//        }
-//        else
-//        {
-//            SEGGER_RTT_printf(0, "Oh Shit! SPIS semaphore not free\n");
-            SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
-//            return 1;
-//        }
-        //while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
-        set_RDY(); 
-
-
+        if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
+        {
+            set_RDY(); 
+        }
+        else
+        {
+            while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE)
+            {
+                SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
+            }
+            set_RDY(); 
+        }
     }
     else
     {
@@ -155,13 +153,14 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     static APP_STATES next_state = APP_STATE_POLLING;
 		
     
-    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && transfer_in_progress == false)
+    if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && appData.transfer_in_progress == false)
     {
         //SEGGER_RTT_printf(0, "parsing header packet\n");
         spis_rx_transfer_length = packet->length;
         if(spis_rx_transfer_length > 0)
         {
-            transfer_in_progress = true;
+            appData.SPIS_timeout_flag = 1;
+            appData.transfer_in_progress = true;
         }
         //SEGGER_RTT_printf(0, "setting spis_rx_trasnfer_length to %d", spis_rx_transfer_length);
         
@@ -246,12 +245,12 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 break;
             }
         }
-        if(!transfer_in_progress)
+        if(!appData.transfer_in_progress)
         {
             appData.state = next_state;
         }
     }
-    else if(transfer_in_progress) //Data packet
+    else if(appData.transfer_in_progress) //Data packet
     {
         //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
@@ -261,8 +260,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
         {
+            appData.SPIS_timeout_flag = 0;
             SEGGER_RTT_printf(0, "finished transferring\n");
-            transfer_in_progress = false;
+            appData.transfer_in_progress = false;
             appData.state = next_state;
         }
     }
@@ -312,7 +312,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 
         /*** parse the received packet ****/
         parse_packet_from_PIC(m_rx_buf_s, rx_length); //sets spis_rx_transfer_length
-		//SEGGER_RTT_printf(0, "\n %d \n", transfer_in_progress);
+		//SEGGER_RTT_printf(0, "\n %d \n", appData.transfer_in_progress);
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {

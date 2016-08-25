@@ -156,6 +156,7 @@ void APP_Initialize(void)
 //		spis_init();
         appData.accelerometer_enable = 1;
         appData.ble_status = 0;
+        appData.data_counts = 0;
         appData.status = 0;
 		init_LSM303();
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
@@ -220,37 +221,41 @@ void APP_Tasks(void)
             
             //SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
             uint8_t bytes_sent = 0;
-            static int data_counts = 0;
+            //static int data_counts = 0;
             uint8_t counter = 0;
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
             appData.status = 3;
             
-            while(data_counts<sizeof(profile_data_t))
+            while(appData.data_counts<sizeof(profile_data_t))
             {      
-                err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
-								data_counts += bytes_sent;			
-                if(data_counts >= sizeof(profile_data_t))
+
+                err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;			
+                if(appData.data_counts >= sizeof(profile_data_t))
+
                 {
 										//nrf_drv_common_irq_disable(p_instance->irq);
 										//nrf_spis_int_disable(p_spis, DISABLE_ALL);
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
-                    appData.prev_state = APP_STATE_PROFILE_TRANSFER;
+                    appData.prev_state = APP_STATE_POLLING;
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    application_timers_start();
                     appData.accelerometer_enable = 1;
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
+
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
 
+                    appData.data_counts = 0;
+
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3)
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
                 {
                     //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
@@ -464,7 +469,13 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-
+        case APP_STATE_SPIS_FAIL:
+        {
+            SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
+            send_data_to_PIC(spis_fail_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         default:
         {
             break;
