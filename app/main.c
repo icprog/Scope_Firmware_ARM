@@ -751,7 +751,7 @@ int main(void)
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
     profile_ids_update(&m_ps, device_info.number_of_tests);
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-	ble_debug_update(&m_ds,debug_out_string, 7);
+	//ble_debug_update(&m_ds,debug_out_string, 7);  //send debug to phone
     while(true)
     {
         APP_Tasks();
