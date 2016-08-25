@@ -99,3 +99,4 @@ void status_timeout_handler(void *p_context)
     UNUSED_PARAMETER(p_context);
     ble_status_status_level_update(&m_status, appData.ble_status);
 }
+
