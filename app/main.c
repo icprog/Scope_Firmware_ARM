@@ -61,6 +61,7 @@
 #include "cal_hall_effect.h"
 #include "probe_error.h"
 #include "profile_service.h"
+#include "debug.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -123,6 +124,7 @@ cal_optical_t								 m_optical;
 cal_force_t			    					 m_force;
 cal_hall_effect_t						     m_hall_effect;
 static cal_vib_t							 m_vib;    //vibration motor cal struct
+ble_dbs_t						m_ds;
 
 static dm_application_instance_t             m_app_handle;                              /**< Application identifier allocated by device manager. */
 
@@ -298,7 +300,11 @@ static void services_init(void)
     
     //initialize profile service
     ble_profile_service_init(&m_ps);
+			
+		//init debug service:
+		ble_debug_service_init(&m_ds);
     }
+		
 
 }
 
@@ -498,6 +504,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_status_on_ble_evt(&m_status, p_ble_evt);
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
+				ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
     }
 }
 
@@ -706,7 +713,8 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-    
+//		char debug_out_string[20];
+//    sprintf(debug_out_string,"oh shit");
 
  // Initialize.
 
@@ -738,10 +746,11 @@ int main(void)
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
     profile_ids_update(&m_ps, device_info.number_of_tests);
 	SEGGER_RTT_WriteString(0, "main loop:\n");
-
+	ble_debug_update(&m_ds,debug_out_string, 7);
     while(true)
     {
         APP_Tasks();
+
         power_manage();
 	}
 }
