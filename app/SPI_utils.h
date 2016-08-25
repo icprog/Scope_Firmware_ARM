@@ -66,6 +66,7 @@ typedef enum
 typedef enum
 {
     TEST_CODE,
+    PA_RESTART,
     PA_DEVICE_STATUS,
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
