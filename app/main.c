@@ -114,10 +114,10 @@ extern volatile bool device_info_received;
 pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
-static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
+ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
 ble_pes_t 	 						         m_pes; //probing error service
 ble_ps_t                             		 m_ps; //profile service
-static ble_slope_t                           m_slope; //slope service
+ble_slope_t                                  m_slope; //slope service
 ble_status_t							     m_status;
 cal_optical_t								 m_optical;
 cal_force_t			    					 m_force;
@@ -483,6 +483,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     on_ble_evt(p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
+    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 
     if(CALIBRATION)
     {
@@ -747,6 +748,7 @@ int main(void)
     while(true)
     {
         APP_Tasks();
+        ble_slope_level_update(&m_slope, 38);
         power_manage();
 	}
 }

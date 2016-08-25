@@ -131,7 +131,7 @@ void ble_slope_on_ble_evt(ble_slope_t * p_slope, ble_evt_t * p_ble_evt);
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-uint32_t ble_slope_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level);
+uint32_t ble_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level);
 
 #endif // BLE_slope_H__
 
