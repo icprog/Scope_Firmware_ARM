@@ -392,8 +392,8 @@ void APP_Tasks(void)
         {
             uint8_t bytes_sent;
             sending_data_to_phone = 1;
-              static int raw_data_counts = 0;
-              static int buffer_data_counts = 0;
+            static int raw_data_counts = 0;
+            static int buffer_data_counts = 0;
             uint8_t counter = 0;
             uint32_t err_code;
             uint8_t ble_packet_length;
@@ -444,7 +444,7 @@ void APP_Tasks(void)
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3) //limit sending to 4 packet per connection interval
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
                 {
                     SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
