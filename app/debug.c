@@ -11,7 +11,7 @@
 
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {
-	SEGGER_RTT_printf(0, "debug evt");
+	//SEGGER_RTT_printf(0, "debug evt");
 		if (p_dbs == NULL || p_ble_evt == NULL)
     {
         return;
@@ -111,7 +111,7 @@ void ble_debug_service_init(ble_dbs_t * p_debug_service)
 
 static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
 {
-				SEGGER_RTT_printf(0, "debug write");
+				//SEGGER_RTT_printf(0, "debug write");
         ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
         if (
