@@ -83,6 +83,7 @@ typedef enum
     APP_STATE_PROBE_ERROR,
     APP_STATE_SEND_PROFILE_ID,
     APP_STATE_SPIS_FAIL,
+		APP_STATE_RAW_SUB_DATA_RECEIVE,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -146,7 +147,7 @@ extern profile_data_t profile_data;
 #define POINTS_PER_RAW_SIGNAL 1000
 typedef struct
 {
-    //data_header_t metadata;
+    data_header_t metadata;
     uint8_t test_number;
     uint8_t profile[1500];
     uint16_t force[POINTS_PER_RAW_SIGNAL];

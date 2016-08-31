@@ -197,7 +197,7 @@ static void gap_params_init(void)
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
     SEGGER_RTT_printf(0, "serial number in gap init = ");
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i <= 5; i++)
     {
         SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
     }
@@ -730,7 +730,7 @@ int main(void)
     device_manager_init(erase_bonds);
     
     spi_init();
-	spis_init();
+		spis_init();
     appData.state = APP_STATE_POLLING;		
 
     init_device_info();
@@ -750,8 +750,13 @@ int main(void)
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
     profile_ids_update(&m_ps, device_info.number_of_tests);
-	SEGGER_RTT_WriteString(0, "main loop:\n");
-	//ble_debug_update(&m_ds,debug_out_string, 7);  //send debug to phone
+		SEGGER_RTT_WriteString(0, "main loop:\n");
+		char debug_out_string[20];
+    sprintf(debug_out_string,"* DEBUG TEST STRING*");
+	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
+		//char debug_out_string[20];
+    sprintf(debug_out_string,"*DEBUG TEST STRING 2");
+	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     while(true)
     {
         APP_Tasks();

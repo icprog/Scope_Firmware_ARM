@@ -71,6 +71,7 @@ typedef enum
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
     PA_RAW_DATA, //ARM->PIC = ACK. PIC->ARM = DATA
+		PA_RAW_SUB_DATA, //subsampled raw data
     PA_ACCELEROMETER,  //both ways, send accel data to PIC when quaried  
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
