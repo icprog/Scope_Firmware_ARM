@@ -103,10 +103,11 @@ extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern pic_arm_pack_t           accelerometer_pack;
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
-//subsampled_raw_data_t           raw_data;
+subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
+uint8_t													raw_sub_buff[BYTES_RAW_SUB_DATA];
 
 // *****************************************************************************
 /* Application Data
@@ -288,9 +289,9 @@ void APP_Tasks(void)
             while(appData.data_counts<sizeof(subsampled_raw_data_t))
             {      
 
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_buff)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
 								appData.data_counts += bytes_sent;			
-                if(appData.data_counts >= sizeof(profile_data_t))
+                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
 
                 {
 										//nrf_drv_common_irq_disable(p_instance->irq);
@@ -303,7 +304,7 @@ void APP_Tasks(void)
                     send_data_to_PIC(arm_done_pack);
                     appData.accelerometer_enable = 1;
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
-                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
+                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
 
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);

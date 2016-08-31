@@ -86,9 +86,10 @@ pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.locat
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 
 extern device_info_t device_info;
-//extern subsampled_raw_data_t raw_data;
+extern subsampled_raw_data_t raw_sub_data;
 extern profile_data_t profile_data;
 extern ble_dbs_t						m_ds;
+extern uint8_t					raw_sub_buff[BYTES_RAW_SUB_DATA];
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -245,7 +246,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 						{
 								SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
                 next_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
-                rx_data_ptr = &raw_data_buff;
+                rx_data_ptr = &raw_sub_buff;
                 break;
 						}
             case PA_PROBE_ERROR:
@@ -275,7 +276,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
-		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
+				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
         //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring
