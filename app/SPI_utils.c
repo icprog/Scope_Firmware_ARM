@@ -49,6 +49,7 @@
 #include "app.h"
 #include "calibration.h"
 #include "LSM303drv.h"
+#include "debug.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 
@@ -85,9 +86,10 @@ pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.locat
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 
 extern device_info_t device_info;
-//extern subsampled_raw_data_t raw_data;
+extern subsampled_raw_data_t raw_sub_data;
 extern profile_data_t profile_data;
-
+extern ble_dbs_t						m_ds;
+extern uint8_t					raw_sub_buff[BYTES_RAW_SUB_DATA];
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -151,7 +153,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     static APP_STATES next_state = APP_STATE_POLLING;
-		
+		char debug_out_string[20];
     
     if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && appData.transfer_in_progress == false)
     {
@@ -196,14 +198,21 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_PROFILE:
             {
                 SEGGER_RTT_printf(0, "PA_PROFILE\n");
-				rx_data_ptr = &profile_data;
-				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
+								rx_data_ptr = &profile_data;
+								next_state = APP_STATE_TRANSFER_PROFILE_IDS;
                 break;
             }
             case PA_ACCELEROMETER:
             {
                 //SEGGER_RTT_printf(0, "PA_ACCELEROMETER\n");
-                next_state = APP_STATE_ACCELEROMETER;
+								
+//								sprintf(debug_out_string,"* DEBUG TEST STRING*");
+//								ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
+//								//char debug_out_string[20];
+//								sprintf(debug_out_string,"*DEBUG TEST STRING 2");
+//								ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
+							
+														next_state = APP_STATE_ACCELEROMETER;
                 break;
             }
             case PA_OPTICAL_CAL_RESULT:
@@ -233,6 +242,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 rx_data_ptr = &raw_data_buff;
                 break;
             }
+						case PA_RAW_SUB_DATA:
+						{
+								SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
+                next_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
+                rx_data_ptr = &raw_sub_buff;
+                break;
+						}
             case PA_PROBE_ERROR:
             {
                 rx_data_ptr = &(metadata.error_code);
@@ -260,7 +276,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
-		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
+				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
         //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         if(spis_rx_transfer_length == 0) //finished transferring

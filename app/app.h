@@ -83,6 +83,7 @@ typedef enum
     APP_STATE_PROBE_ERROR,
     APP_STATE_SEND_PROFILE_ID,
     APP_STATE_SPIS_FAIL,
+		APP_STATE_RAW_SUB_DATA_RECEIVE,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -144,16 +145,16 @@ extern profile_data_t profile_data;
 
 /******** RAW DATA STRUCT *******/
 #define POINTS_PER_RAW_SIGNAL 1000
-typedef struct
+typedef struct raw_sub_data
 {
-    //data_header_t metadata;
+    data_header_t metadata;
     uint8_t test_number;
     uint8_t profile[1500];
     uint16_t force[POINTS_PER_RAW_SIGNAL];
     int8_t OpticalY[POINTS_PER_RAW_SIGNAL];
     uint8_t OpticalSqual[POINTS_PER_RAW_SIGNAL];
 }subsampled_raw_data_t;
-#define BYTES_RAW_DATA sizeof(subsampled_raw_data_t)
+#define BYTES_RAW_SUB_DATA sizeof(subsampled_raw_data_t)
     
 #define RAW_DATA_BUFFER_SIZE 2000
 #define BYTES_RAW_TEST_DATA 41076

@@ -204,7 +204,7 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
     {
         err_code = char_add(SCOPE_CHAR_UUID_SN,
                             p_dis_init->serial_num_str.p_str,
-                            p_dis_init->serial_num_str.length,
+                            /*p_dis_init->serial_num_str.length*/ 6,
                             &p_dis_init->dis_attr_md,
                             &serial_num_handles);
         if (err_code != NRF_SUCCESS)
@@ -302,7 +302,7 @@ void serial_number_update(ble_evt_t * p_ble_evt)
     // Initialize value struct.
     memset(&gatts_value, 0, sizeof(gatts_value));
 
-    gatts_value.len     = strlen(device_info.serial_number);// sizeof(uint8_t);
+    gatts_value.len     = 6;//strlen(device_info.serial_number);// sizeof(uint8_t);
     gatts_value.offset  = 0;
     gatts_value.p_value = (uint8_t *)device_info.serial_number;
 
@@ -314,7 +314,7 @@ void serial_number_update(ble_evt_t * p_ble_evt)
     {
         SEGGER_RTT_printf(0, "serial_number update success \n");
         SEGGER_RTT_printf(0, "serial number = ");
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i <= 5; i++)
         {
             SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
         }
