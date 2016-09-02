@@ -116,6 +116,6 @@ void status_timeout_handler(void *p_context)
 {
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
-    ble_status_status_level_update(&m_status, appData.ble_status);
+    ble_status_status_level_update(&m_status, appData.status);
 }
 

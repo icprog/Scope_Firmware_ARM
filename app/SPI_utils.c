@@ -189,17 +189,17 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 rx_data_ptr = &(cal_data.optical_data);
                 break;
             }
-//            case PA_DEVICE_STATUS:
-//            {
-//                //SEGGER_RTT_printf(0, "DEV STATUS\n");
-//                
-//                break;
-//            }
+            case PA_DEVICE_STATUS:
+            {
+                //SEGGER_RTT_printf(0, "DEV STATUS\n");
+                rx_data_ptr = &(appData.ble_status);
+                break;
+            }
             case PA_PROFILE:
             {
                 SEGGER_RTT_printf(0, "PA_PROFILE\n");
-								rx_data_ptr = &profile_data;
-								next_state = APP_STATE_TRANSFER_PROFILE_IDS;
+				rx_data_ptr = &profile_data;
+				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
                 break;
             }
             case PA_ACCELEROMETER:

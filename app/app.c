@@ -157,6 +157,7 @@ void APP_Initialize(void)
         appData.data_counts = 0;
         appData.status = 0;
 		init_LSM303();
+        SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
 }
 
