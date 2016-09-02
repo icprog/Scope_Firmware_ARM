@@ -242,13 +242,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 rx_data_ptr = &raw_data_buff;
                 break;
             }
-						case PA_RAW_SUB_DATA:
-						{
-								SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
+            case PA_RAW_SUB_DATA:
+            {
+				SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
                 next_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
                 rx_data_ptr = &raw_sub_data;
                 break;
-						}
+			}
             case PA_PROBE_ERROR:
             {
                 rx_data_ptr = &(metadata.error_code);

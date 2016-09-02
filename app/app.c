@@ -274,7 +274,7 @@ void APP_Tasks(void)
             break;
         }
 				
-				case APP_STATE_RAW_SUB_DATA_RECEIVE:
+		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
             
             SEGGER_RTT_WriteString(0, "APP_STATE_RAW_SUBSAMPLED \n");
@@ -288,9 +288,8 @@ void APP_Tasks(void)
             
             while(appData.data_counts<sizeof(subsampled_raw_data_t))
             {      
-
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
-								appData.data_counts += bytes_sent;			
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_buff)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;			
                 if(appData.data_counts >= sizeof(subsampled_raw_data_t))
 
                 {
