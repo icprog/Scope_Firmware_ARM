@@ -233,7 +233,7 @@ void APP_Tasks(void)
             {      
 
                 err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
-				appData.data_counts += bytes_sent;			
+								appData.data_counts += bytes_sent;			
                 if(appData.data_counts >= sizeof(profile_data_t))
 
                 {
@@ -289,7 +289,7 @@ void APP_Tasks(void)
             while(appData.data_counts<sizeof(subsampled_raw_data_t))
             {      
 
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_buff)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
 								appData.data_counts += bytes_sent;			
                 if(appData.data_counts >= sizeof(subsampled_raw_data_t))
 
@@ -328,6 +328,7 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
+						APP_Initialize();
             break;
         }
         case APP_STATE_ACCELEROMETER:
