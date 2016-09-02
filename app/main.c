@@ -195,18 +195,18 @@ static void gap_params_init(void)
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
 
-    SEGGER_RTT_printf(0, "serial number in gap init = ");
-    for(int i = 0; i <= 5; i++)
-    {
-        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
-    }
-    SEGGER_RTT_printf(0, "\n");
-    SEGGER_RTT_printf(0, "device name in gap init = ");
-    for(int i = 0; i < strlen(device_info.device_name); i++)
-    {
-        SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
-    }
-    SEGGER_RTT_printf(0, "\n");
+//    SEGGER_RTT_printf(0, "serial number in gap init = ");
+//    for(int i = 0; i <= 5; i++)
+//    {
+//        SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
+//    }
+//    SEGGER_RTT_printf(0, "\n");
+//    SEGGER_RTT_printf(0, "device name in gap init = ");
+//    for(int i = 0; i < strlen(device_info.device_name); i++)
+//    {
+//        SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
+//    }
+//    SEGGER_RTT_printf(0, "\n");
     err_code = sd_ble_gap_device_name_set(&sec_mode,
                                           (const uint8_t *)device_info.device_name,
                                           strlen(device_info.device_name));
