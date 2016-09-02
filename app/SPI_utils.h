@@ -121,6 +121,7 @@ extern pic_arm_pack_t profile_id_pack;
 extern pic_arm_pack_t stop_accel_pack;
 extern pic_arm_pack_t location_time_pack;
 extern pic_arm_pack_t spis_fail_pack;
+extern pic_arm_pack_t send_device_info_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 

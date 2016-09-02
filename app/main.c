@@ -112,7 +112,6 @@ device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
-pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -260,7 +259,6 @@ static void services_init(void)
         memset(&optical_init, 0, sizeof(optical_init));
         err_code = cal_optical_init(&m_optical, &optical_init);
         APP_ERROR_CHECK(err_code);
-
 
         // Initialize Force Cal. service
         cal_force_init_t force_init;
@@ -706,6 +704,7 @@ void init_device_info(void)
     strcpy(device_info.device_name, "SCOPE NO SN");
     nrf_delay_ms(500);
     send_data_to_PIC(send_device_info_pack);
+    SEGGER_RTT_printf(0, "sent device info request\n");
     while(!device_info_received)
     {
         APP_Tasks();
@@ -719,10 +718,12 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-//		char debug_out_string[20];
-//    sprintf(debug_out_string,"oh shit");
+//	char debug_out_string[20];
+//  sprintf(debug_out_string,"oh shit");
 
  // Initialize.
+    SEGGER_RTT_WriteString(0, "init\n");
+
 
     timers_init();
     shutdown_gpio_init();
@@ -731,9 +732,10 @@ int main(void)
     device_manager_init(erase_bonds);
     
     spi_init();
-		spis_init();
+	spis_init();
     appData.state = APP_STATE_POLLING;		
 
+    SEGGER_RTT_WriteString(0, "starting dev info init\n");
     init_device_info();
     
     gap_params_init();
@@ -751,13 +753,12 @@ int main(void)
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
     profile_ids_update(&m_ps, device_info.number_of_tests);
-		SEGGER_RTT_WriteString(0, "main loop:\n");
-		char debug_out_string[20];
+	SEGGER_RTT_WriteString(0, "main loop:\n");
+	char debug_out_string[20];
     sprintf(debug_out_string,"* DEBUG TEST STRING*");
-	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-		//char debug_out_string[20];
+	ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     sprintf(debug_out_string,"*DEBUG TEST STRING 2");
-	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
+	ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     while(true)
     {
         APP_Tasks();

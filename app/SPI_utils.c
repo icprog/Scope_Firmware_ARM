@@ -78,6 +78,7 @@ pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
+pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
 pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
@@ -89,7 +90,6 @@ extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
 extern profile_data_t profile_data;
 extern ble_dbs_t						m_ds;
-extern uint8_t					raw_sub_buff[BYTES_RAW_SUB_DATA];
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
