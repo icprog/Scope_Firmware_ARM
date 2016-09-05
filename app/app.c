@@ -194,11 +194,16 @@ void APP_Tasks(void)
         }
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
-            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", profile_data.metadata.test_num);
-            if(appData.ble_status == 1)
-            {
-                profile_ids_update(&m_ps, profile_data.metadata.test_num);
-                appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", device_info.number_of_tests);//.metadata.test_num);
+           if(device_info.number_of_tests == profile_data.metadata.test_num)
+					 {
+								device_info.number_of_tests++;  // increment when receiving new test from PIC (polled by phone on connection)
+					      profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
+								appData.state = APP_STATE_POLLING;
+					 }
+					 else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+           {
+                appData.state = APP_STATE_PROFILE_TRANSFER;
             }
             else
             {
@@ -211,9 +216,10 @@ void APP_Tasks(void)
         case APP_STATE_SEND_PROFILE_ID:
         {
             application_timers_stop();
-            nrf_delay_ms(500); 
+            nrf_delay_ms(500);//500); 
             SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
+						//appData.accelerometer_enable = 0;
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -246,6 +252,7 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     appData.accelerometer_enable = 1;
+									  application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -303,6 +310,7 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     appData.accelerometer_enable = 1;
+									  application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -328,7 +336,7 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
-						APP_Initialize();
+						//APP_Initialize();
             break;
         }
         case APP_STATE_ACCELEROMETER:
@@ -533,6 +541,7 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
             send_data_to_PIC(spis_fail_pack);
+						appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
