@@ -594,8 +594,10 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         }
         else
         {           
+					SEGGER_RTT_printf(0, "asking PIC for profile \n");
             appData.accelerometer_enable = 0;
             appData.state = APP_STATE_SEND_PROFILE_ID;
+						//appData.state = APP_STATE_POLLING;
         }
     }
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
