@@ -70,7 +70,7 @@ void profile_ids_char_add(ble_ps_t * p_ps)
     char_uuid.uuid      = PROFILE_IDS_CHAR_UUID;
     BLE_UUID_BLE_ASSIGN(char_uuid, PROFILE_IDS_CHAR_UUID); //TODO might be redundant witht he previous line
 
-    /****** add read write properties ******/
+    /****** add write properties ******/
     ble_gatts_char_md_t char_md;
     memset(&char_md, 0, sizeof(char_md));
     //char_md.char_props.write = 1;
