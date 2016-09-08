@@ -7,7 +7,10 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 #include "SEGGER_RTT.h"
+#include "spi_utils.h"
 
+//extern char serial_num;
+extern pic_arm_pack_t serial_set_pack;
 
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {

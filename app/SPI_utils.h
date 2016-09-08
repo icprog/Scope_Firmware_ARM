@@ -78,6 +78,7 @@ typedef enum
     PA_PROFILE_ID,
     PA_LOCATION_TIME,
     PA_TIMEOUT,
+		PA_SERIAL_SET,  //for setting serial number on PIC
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
