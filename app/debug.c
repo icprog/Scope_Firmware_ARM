@@ -10,8 +10,6 @@
 #include "app.h"
 #include "spi_utils.h"
 
-extern pic_arm_pack_t serial_set_pack;
-
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {
 	//SEGGER_RTT_printf(0, "debug evt");
@@ -114,12 +112,18 @@ void ble_debug_service_init(ble_dbs_t * p_debug_service)
 
 static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
 {
-				//SEGGER_RTT_printf(0, "debug write");
+		//SEGGER_RTT_printf(0, "debug write");
         ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-        if(p_evt_write->handle == p_ds->char_handles.cccd_handle)
+        
+
+        if(p_evt_write->handle == p_ds->char_handles.value_handle && (p_evt_write->len == 5))
         {
-            memcpy(&(device_info.serial_number), p_evt_write->data, 6);
-            SEGGER_RTT_printf(0, "phone wrote SN\n");
+            memcpy(&(device_info.serial_number), p_evt_write->data, 5);
+            appData.state = APP_STATE_NEW_SN;
+        }
+        if(p_evt_write->handle == p_ds->char_handles.cccd_handle && (p_evt_write->len == 2))
+        {
+
             // CCCD written, call application event handler
             if (p_ds->evt_handler != NULL)
             {

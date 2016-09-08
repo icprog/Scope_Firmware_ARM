@@ -122,7 +122,7 @@ void status_timeout_handler(void *p_context)
     ble_status_status_level_update(&m_status, appData.status);
 	if(!sending_data_to_phone)
 	{
-	    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+         profile_ids_update(&m_ps, device_info.number_of_tests - 1);
 	}
 
 

@@ -155,7 +155,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
     
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     static APP_STATES next_state = APP_STATE_POLLING;
-		char debug_out_string[20];
+	char debug_out_string[20];
     
     if(packet->start_byte == PIC_ARM_START_BYTE  &&  packet->stop_byte == PIC_ARM_STOP_BYTE && appData.transfer_in_progress == false)
     {
@@ -193,7 +193,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_DEVICE_STATUS:
             {
-                //SEGGER_RTT_printf(0, "DEV STATUS\n");
+                SEGGER_RTT_printf(0, "DEV STATUS\n");
                 rx_data_ptr = &(appData.ble_status);
                 break;
             }
@@ -263,10 +263,10 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 SEGGER_RTT_printf(0, "PA_RESTART\n");
                 break;
             }
-						case PA_SERIAL_SET:
-						{
-								//
-						}
+            case PA_SERIAL_SET:
+            {
+                    //
+            }
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
@@ -286,9 +286,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
         //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
+        appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring
         {
-            appData.SPIS_timeout_flag = 0;
             SEGGER_RTT_printf(0, "finished transferring\n");
             appData.transfer_in_progress = false;
             appData.state = next_state;
@@ -329,6 +329,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         rx_length = buffer_size_calc(spis_rx_transfer_length);
         if(spis_rx_transfer_length != 0)
         {
+            appData.SPIS_timeout_flag = 1;
             spis_rx_transfer_length -= rx_length;
         }
         //SEGGER_RTT_printf(0, "\nreceived %d bytes: ", rx_length);

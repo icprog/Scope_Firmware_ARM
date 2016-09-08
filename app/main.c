@@ -446,7 +446,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 
         case BLE_GAP_EVT_DISCONNECTED:
             appData.ble_status = 0;
-						appData.ble_disconnect_flag = true;
+			appData.ble_disconnect_flag = true;
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
 
@@ -750,7 +750,7 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+        profile_ids_update(&m_ps, device_info.number_of_tests - 1);
 		SEGGER_RTT_WriteString(0, "main loop:\n");
 		char debug_out_string[20];
 //    sprintf(debug_out_string,"* DEBUG TEST STRING*");
