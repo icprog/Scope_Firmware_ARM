@@ -11,15 +11,11 @@
 #include "profile_service.h"
 
 extern LSM303_DATA accel_data;
-<<<<<<< HEAD
 extern ble_status_t  m_status; //status service
 extern ble_bas_t m_bas; //battery service
 extern ble_slope_t m_slope; //slope service
-=======
-extern ble_status_t  m_status;
 extern ble_ps_t m_ps;
 extern uint8_t sending_data_to_phone;
->>>>>>> 2d0b9d5afec43f213ee51aed813450cdd7de6051
 extern uint16_t spis_rx_transfer_length;
 
 /**@brief Function for the Timer initialization.
@@ -123,15 +119,12 @@ void status_timeout_handler(void *p_context)
 {
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
-<<<<<<< HEAD
     ble_status_status_level_update(&m_status, appData.status);
-=======
-    ble_status_status_level_update(&m_status, appData.ble_status);
-	  if(!sending_data_to_phone)
-	  {
-	      profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-		}
+	if(!sending_data_to_phone)
+	{
+	    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+	}
 
->>>>>>> 2d0b9d5afec43f213ee51aed813450cdd7de6051
+
 }
 

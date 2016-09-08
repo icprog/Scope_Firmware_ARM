@@ -193,7 +193,17 @@ void APP_Tasks(void)
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
             SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", device_info.number_of_tests);//.metadata.test_num);
-           if(device_info.number_of_tests <= profile_data.metadata.test_num)
+			SEGGER_RTT_printf(0, "BLE Status: %d \n", appData.ble_status);
+            if(device_info.number_of_tests <= profile_data.metadata.test_num)
+					 {
+						device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
+					    profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
+						appData.state = APP_STATE_POLLING;
+						appData.accelerometer_enable = 1;
+						SEGGER_RTT_printf(0, "updating number of tests \n");
+					 }
+					 else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+
            {
                  device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
                  profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
@@ -202,13 +212,15 @@ void APP_Tasks(void)
          else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
          {
                 appData.state = APP_STATE_PROFILE_TRANSFER;
+						 SEGGER_RTT_printf(0, "test number: %d \n", profile_data.metadata.test_num);
+						 appData.ble_disconnect_flag = false;
             }
             else
             {
                 
                 send_data_to_PIC(arm_done_pack);
                 appData.state = APP_STATE_POLLING;
-                SEGGER_RTT_printf(0, "phone not connected. ARM is done");
+                SEGGER_RTT_printf(0, "phone not connected. ARM is done \n");
             }
             break;
         }
@@ -233,8 +245,22 @@ void APP_Tasks(void)
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
             appData.status = 3;
-            
-            while(appData.data_counts<sizeof(profile_data_t) &&appData.ble_status == 1)
+
+			if(appData.ble_disconnect_flag == true)
+			{
+				  appData.ble_disconnect_flag = false;
+					appData.state = APP_STATE_POLLING;
+					appData.prev_state = APP_STATE_POLLING;
+					appData.status = 0;
+					sending_data_to_phone = 0;
+					send_data_to_PIC(arm_done_pack);
+					appData.accelerometer_enable = 1;
+					application_timers_start();
+					appData.data_counts = 0;
+					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
+					break;
+			}
+            while(appData.data_counts<sizeof(profile_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
 
                 err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
@@ -267,7 +293,7 @@ void APP_Tasks(void)
                     
                 }
                 counter++;
-            }		
+            }
             if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
             {
                 counter = 0;
@@ -289,13 +315,26 @@ void APP_Tasks(void)
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
             appData.status = 3;
-            
-            while(appData.data_counts<sizeof(subsampled_raw_data_t))
-            {      
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+data_counts, 20, &bytes_sent);  //notify phone with raw data
-				data_counts += bytes_sent;			
-                if(data_counts >= sizeof(subsampled_raw_data_t))
-
+            if(appData.ble_disconnect_flag == true)
+						{
+							  appData.ble_disconnect_flag = false;
+								appData.state = APP_STATE_POLLING;
+								appData.prev_state = APP_STATE_POLLING;
+								appData.status = 0;
+								sending_data_to_phone = 0;
+								send_data_to_PIC(arm_done_pack);
+								appData.accelerometer_enable = 1;
+								application_timers_start();
+								appData.data_counts = 0;
+								SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
+								break;
+						}
+            while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            {      			
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;	
+								
+                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
                 {
 					//nrf_drv_common_irq_disable(p_instance->irq);
 					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
@@ -325,6 +364,7 @@ void APP_Tasks(void)
                 }
                 counter++;
             }		
+
             if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
             {
                 counter = 0;

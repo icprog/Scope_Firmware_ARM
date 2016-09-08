@@ -60,7 +60,7 @@ uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
-uint8_t sending_data_to_phone =0;
+uint8_t sending_data_to_phone = 0;
 volatile bool device_info_received = false;
 
 
@@ -247,6 +247,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 				SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
                 next_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
                 rx_data_ptr = &raw_sub_data;
+								appData.ble_disconnect_flag = false;
                 break;
 			}
             case PA_PROBE_ERROR:
