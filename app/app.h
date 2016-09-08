@@ -115,6 +115,7 @@ typedef struct  data_header
     uint8_t     accel_FS; //full scale of accelerometer
     uint16_t    gyro_FS; 
     uint16_t    force_cal[5]; //in ADC counts
+
     uint16_t    optical_cal;
 
     
@@ -172,6 +173,7 @@ typedef struct
     APP_STATES prev_state;
     profile_id_t profile_id;
     uint16_t ble_status;
+	  bool ble_disconnect_flag;
     uint8_t status;
     uint8_t accelerometer_enable;
     uint16_t data_counts;

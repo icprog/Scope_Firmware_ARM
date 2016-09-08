@@ -5,7 +5,9 @@ main.c
 Avatech, Inc.
 
 
-version #: 1.1  :  fixing data xfere upon reconnect
+version #: 1.2 gets test id before each test
+
+1.1  :  fixing data xfere upon reconnect
 
 #: 1.0 : first code in Chile 2016
 
@@ -438,11 +440,13 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
             SEGGER_RTT_printf(0, "connected!\n");
+					 
             break;
         }
 
         case BLE_GAP_EVT_DISCONNECTED:
             appData.ble_status = 0;
+						appData.ble_disconnect_flag = true;
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
 
