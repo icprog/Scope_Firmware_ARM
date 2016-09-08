@@ -195,14 +195,14 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", device_info.number_of_tests);//.metadata.test_num);
 			SEGGER_RTT_printf(0, "BLE Status: %d \n", appData.ble_status);
             if(device_info.number_of_tests <= profile_data.metadata.test_num)
-					 {
-						device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
-					    profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
-						appData.state = APP_STATE_POLLING;
-						appData.accelerometer_enable = 1;
-						SEGGER_RTT_printf(0, "updating number of tests \n");
-					 }
-					 else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+             {
+                device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
+                profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
+                appData.state = APP_STATE_POLLING;
+                appData.accelerometer_enable = 1;
+                SEGGER_RTT_printf(0, "updating number of tests \n");
+             }
+             else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
 
            {
                  device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)

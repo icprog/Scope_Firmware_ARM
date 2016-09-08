@@ -7,7 +7,7 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 #include "SEGGER_RTT.h"
-
+#include "app.h"
 
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {
@@ -49,7 +49,7 @@ void debug_char_add(ble_dbs_t * p_dbs)
     /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
     memset(&char_md, 0, sizeof(char_md));
-    //char_md.char_props.write = 1;
+    char_md.char_props.write = 1;
     char_md.char_props.read = 1;
     
     /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/
@@ -63,7 +63,7 @@ void debug_char_add(ble_dbs_t * p_dbs)
 		char_md.char_props.read   = 1;
     /*** Configure the attribute metadata ***/
     ble_gatts_attr_md_t attr_md;
-		attr_md.vlen = 1;
+    attr_md.vlen = 1;
     memset(&attr_md, 0, sizeof(attr_md)); 
     attr_md.vloc        = BLE_GATTS_VLOC_STACK;   
     
@@ -113,21 +113,18 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
 {
 				//SEGGER_RTT_printf(0, "debug write");
         ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-
-        if (
-            (p_evt_write->handle == p_ds->char_handles.cccd_handle)
-            &&
-            (p_evt_write->len == 2)
-           )
+        if(p_evt_write->handle == p_ds->char_handles.cccd_handle)
         {
+            memcpy(&(device_info.serial_number), p_evt_write->data, 6);
+            SEGGER_RTT_printf(0, "phone wrote SN\n");
             // CCCD written, call application event handler
             if (p_ds->evt_handler != NULL)
             {
                 ble_dbs_evt_t evt;
-								//evt.evt_type = BLE_dbs_EVT_NOTIFICATION_ENABLED;
+				//evt.evt_type = BLE_dbs_EVT_NOTIFICATION_ENABLED;
                 if (ble_srv_is_notification_enabled(p_evt_write->data))
                 {
-									SEGGER_RTT_printf(0, "debug notification");
+					SEGGER_RTT_printf(0, "debug notification");
                     evt.evt_type = BLE_dbs_EVT_NOTIFICATION_ENABLED;
                 }
                 else

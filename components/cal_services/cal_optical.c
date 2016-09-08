@@ -103,7 +103,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
                 {
                     evt.evt_type = CAL_OPTICAL_EVT_NOTIFICATION_DISABLED;
                 }
-								p_optical->evt_handler(p_optical, &evt);
+				p_optical->evt_handler(p_optical, &evt);
                 //p_optical->result_handler(p_optical, 13);
             }
         }
