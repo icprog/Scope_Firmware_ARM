@@ -6,9 +6,12 @@
 #include "ble_status.h"
 #include "app.h"
 #include "SEGGER_RTT.h"
+#include "profile_service.h"
 
 extern LSM303_DATA accel_data;
 extern ble_status_t  m_status;
+extern ble_ps_t m_ps;
+extern uint8_t sending_data_to_phone;
 extern uint16_t spis_rx_transfer_length;
 
 /**@brief Function for the Timer initialization.
@@ -108,5 +111,10 @@ void status_timeout_handler(void *p_context)
 {
     UNUSED_PARAMETER(p_context);
     ble_status_status_level_update(&m_status, appData.ble_status);
+	  if(!sending_data_to_phone)
+	  {
+	      profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+		}
+
 }
 

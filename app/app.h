@@ -173,6 +173,7 @@ typedef struct
     APP_STATES prev_state;
     profile_id_t profile_id;
     uint16_t ble_status;
+	  bool ble_disconnect_flag;
     uint8_t status;
     uint8_t accelerometer_enable;
     uint16_t data_counts;
