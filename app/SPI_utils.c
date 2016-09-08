@@ -70,6 +70,7 @@ uint16_t spis_rx_transfer_length = 0;
 uint16_t spis_tx_transfer_length = 0;
 void * rx_data_ptr; //where to put the data received from the PIC
 void * tx_data_ptr; //where to pull data from to send to PIC
+char serial_num[6];
 
 /********  pic arm pack varaibles  *******/
 pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
@@ -85,6 +86,7 @@ pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
 pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
+pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number/*serial_num*/, 6};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
@@ -261,6 +263,10 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 SEGGER_RTT_printf(0, "PA_RESTART\n");
                 break;
             }
+						case PA_SERIAL_SET:
+						{
+								//
+						}
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");

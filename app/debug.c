@@ -8,6 +8,9 @@
 #include "app_error.h"
 #include "SEGGER_RTT.h"
 #include "app.h"
+#include "spi_utils.h"
+
+extern pic_arm_pack_t serial_set_pack;
 
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {
