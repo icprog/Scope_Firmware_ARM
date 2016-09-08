@@ -193,18 +193,19 @@ void APP_Tasks(void)
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
             SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", device_info.number_of_tests);//.metadata.test_num);
-           if(device_info.number_of_tests == profile_data.metadata.test_num)
-					 {
-								device_info.number_of_tests++;  // increment when receiving new test from PIC (polled by phone on connection)
-					      profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
-								appData.state = APP_STATE_POLLING;
-					 }
-					 else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+           if(device_info.number_of_tests <= profile_data.metadata.test_num)
            {
+                 device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
+                 profile_ids_update(&m_ps, device_info.number_of_tests - 1);//profile_data.metadata.test_num); // - 1 for app
+                 appData.state = APP_STATE_POLLING;
+         }
+         else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+         {
                 appData.state = APP_STATE_PROFILE_TRANSFER;
             }
             else
             {
+                
                 send_data_to_PIC(arm_done_pack);
                 appData.state = APP_STATE_POLLING;
                 SEGGER_RTT_printf(0, "phone not connected. ARM is done");
@@ -217,7 +218,7 @@ void APP_Tasks(void)
             nrf_delay_ms(500);//500); 
             SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
-						//appData.accelerometer_enable = 0;
+			//appData.accelerometer_enable = 0;
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -233,16 +234,16 @@ void APP_Tasks(void)
             sending_data_to_phone = 1;
             appData.status = 3;
             
-            while(appData.data_counts<sizeof(profile_data_t))
+            while(appData.data_counts<sizeof(profile_data_t) &&appData.ble_status == 1)
             {      
 
                 err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
-								appData.data_counts += bytes_sent;			
+				appData.data_counts += bytes_sent;			
                 if(appData.data_counts >= sizeof(profile_data_t))
 
                 {
-										//nrf_drv_common_irq_disable(p_instance->irq);
-										//nrf_spis_int_disable(p_spis, DISABLE_ALL);
+					//nrf_drv_common_irq_disable(p_instance->irq);
+					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     appData.prev_state = APP_STATE_POLLING;
@@ -250,7 +251,7 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     appData.accelerometer_enable = 1;
-									  application_timers_start();
+					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -451,7 +452,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-					 SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
+            SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
             uint8_t bytes_sent;
             sending_data_to_phone = 1;
             static int raw_data_counts = 0;
@@ -535,7 +536,7 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
             send_data_to_PIC(spis_fail_pack);
-						appData.accelerometer_enable = 1;
+			//appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
