@@ -192,15 +192,15 @@ void APP_Tasks(void)
         }
         case APP_STATE_TRANSFER_PROFILE_IDS:
         {
-            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID %d \n", device_info.number_of_tests);//.metadata.test_num);
+            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID\n");//.metadata.test_num);
 			SEGGER_RTT_printf(0, "BLE Status: %d \n", appData.ble_status);
-            if
+            if(appData.ble_status == 0) //if ble is disconnected
             {
                 send_data_to_PIC(arm_done_pack);
                 appData.state = APP_STATE_POLLING;
                 SEGGER_RTT_printf(0, "phone not connected. ARM is done \n");
             }
-            if(device_info.number_of_tests <= profile_data.metadata.test_num)
+            if(device_info.number_of_tests <= profile_data.metadata.test_num)  //if the test received is a new test, increment the num of tests and notify the phone, then wait for the corresponding id to tranfer
             {
                 device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
                 profile_ids_update(&m_ps, device_info.number_of_tests - 1);
@@ -208,7 +208,7 @@ void APP_Tasks(void)
                 appData.accelerometer_enable = 1;
                 SEGGER_RTT_printf(0, "updating number of tests \n");
              }
-             else if(appData.ble_status == 1) //not most recent. PIc wsa sending a previously requested profile
+             else if(appData.ble_status == 1) //if not  the most recent. PIC is sending a previously requested profile so pass it through to the transfer state
              {
                 appData.state = APP_STATE_PROFILE_TRANSFER;
 				SEGGER_RTT_printf(0, "test number: %d \n", profile_data.metadata.test_num);
@@ -299,7 +299,7 @@ void APP_Tasks(void)
 		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
             
-            //SEGGER_RTT_WriteString(0, "APP_STATE_RAW_SUBSAMPLED \n");
+            SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED \n test num = %d", raw_sub_data.metadata.test_num);
             uint8_t bytes_sent = 0;
             static int data_counts = 0;
             uint8_t counter = 0;
@@ -308,19 +308,19 @@ void APP_Tasks(void)
             sending_data_to_phone = 1;
             appData.status = 3;
             if(appData.ble_disconnect_flag == true)
-						{
-							  appData.ble_disconnect_flag = false;
-								appData.state = APP_STATE_POLLING;
-								appData.prev_state = APP_STATE_POLLING;
-								appData.status = 0;
-								sending_data_to_phone = 0;
-								send_data_to_PIC(arm_done_pack);
-								appData.accelerometer_enable = 1;
-								application_timers_start();
-								appData.data_counts = 0;
-								SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
-								break;
-						}
+            {
+                  appData.ble_disconnect_flag = false;
+                    appData.state = APP_STATE_POLLING;
+                    appData.prev_state = APP_STATE_POLLING;
+                    appData.status = 0;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
+                    appData.accelerometer_enable = 1;
+                    application_timers_start();
+                    appData.data_counts = 0;
+                    SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
+                    break;
+            }
             while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      			
                 err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data

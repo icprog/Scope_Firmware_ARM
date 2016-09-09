@@ -249,7 +249,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 				SEGGER_RTT_printf(0, "PA_RAW_SUB_DATA\n");
                 next_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
                 rx_data_ptr = &raw_sub_data;
-								appData.ble_disconnect_flag = false;
+				appData.ble_disconnect_flag = false;
                 break;
 			}
             case PA_PROBE_ERROR:
