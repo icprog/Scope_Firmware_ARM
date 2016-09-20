@@ -121,6 +121,14 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
             memcpy(&(device_info.serial_number), p_evt_write->data, 5);
             appData.state = APP_STATE_NEW_SN;
         }
+        else if(p_evt_write->handle == p_ds->char_handles.value_handle && (p_evt_write->len == 1))
+        {
+            if(*(p_evt_write->data) == 'x')
+            {
+                SEGGER_RTT_printf(0, "start x modem");
+                appData.state = APP_STATE_X_MODEM;
+            }
+        }
         if(p_evt_write->handle == p_ds->char_handles.cccd_handle && (p_evt_write->len == 2))
         {
 

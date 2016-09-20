@@ -583,6 +583,17 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_X_MODEM:
+        {
+            appData.accelerometer_enable = 0;
+            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            send_data_to_PIC(xmodem_pack);
+            SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
+            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            appData.accelerometer_enable = 1;
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         default:
         {
             break;

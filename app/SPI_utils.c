@@ -87,6 +87,7 @@ pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id
 pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number/*serial_num*/, 6};
+pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
