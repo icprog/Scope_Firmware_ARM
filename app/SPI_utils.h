@@ -37,7 +37,7 @@
 #define SPI_CS_PIN   7 //chips select for the SPI module for the IMU
 #define SPIS_CS_PIN 12 //CSN generated on PIC (active low)
 #define SPIS_RDY_PIN 10 //RDY pin to signal to PIC that data is ready to be sent (active high)
-#define SPI_CS_ACC	 2
+#define SPI_CS_ACC	 2  
 #define SPI_CS_GYRO  15 //TODO: change for our ble pcb
 #define SPI_INSTANCE  0 /**< SPI instance index. */
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */

@@ -143,7 +143,7 @@ typedef struct
 
 uint8_t get_L3GD_ID(void);
 
-
+void sleep_L3GD(void);
 /*******************************************************************************
   Function:
     void L3GD_init(void)
