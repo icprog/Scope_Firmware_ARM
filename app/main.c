@@ -777,7 +777,7 @@ int main(void)
 //	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     while(true)
     {
-        //APP_Tasks();
+        APP_Tasks();
         power_manage();
 	}
 }
