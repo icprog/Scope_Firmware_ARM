@@ -157,6 +157,7 @@ void APP_Initialize(void)
         appData.data_counts = 0;
         appData.status = 0;
 		init_LSM303();
+        init_L3GD();
         SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
 }
@@ -589,6 +590,17 @@ void APP_Tasks(void)
             nrf_delay_ms(500); //wait for PIC to stop requesting accel
             send_data_to_PIC(xmodem_pack);
             SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
+            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            appData.accelerometer_enable = 1;
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_START_TEST:
+        {
+            appData.accelerometer_enable = 0;
+            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            send_data_to_PIC(start_test_pack);
+            SEGGER_RTT_printf(0, "phone wrote start test pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
             appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;

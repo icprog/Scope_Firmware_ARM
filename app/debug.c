@@ -125,8 +125,13 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
         {
             if(*(p_evt_write->data) == 'x')
             {
-                SEGGER_RTT_printf(0, "start x modem");
+                SEGGER_RTT_printf(0, "start x modem\n");
                 appData.state = APP_STATE_X_MODEM;
+            }
+            else if(*(p_evt_write->data) == 't')
+            {
+                SEGGER_RTT_printf(0, "start test\n");
+                appData.state = APP_STATE_START_TEST;
             }
         }
         if(p_evt_write->handle == p_ds->char_handles.cccd_handle && (p_evt_write->len == 2))

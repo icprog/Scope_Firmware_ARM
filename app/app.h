@@ -41,6 +41,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <LSM303drv.h>
+#include <L3GD20drv.h>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -86,6 +88,7 @@ typedef enum
     APP_STATE_RAW_SUB_DATA_RECEIVE,
     APP_STATE_NEW_SN,
     APP_STATE_X_MODEM,
+    APP_STATE_START_TEST,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -167,6 +170,16 @@ typedef struct profile_id
     uint16_t type;
     uint16_t test_num;
 }profile_id_t;
+
+typedef struct imu_data
+{
+    int16_t    ax;
+    int16_t    ay;
+    int16_t    az;
+    int16_t    gx;
+    int16_t    gy;
+    int16_t    gz;
+} imu_data_t;
 
 typedef struct
 {

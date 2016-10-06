@@ -38,7 +38,7 @@
 #define SPIS_CS_PIN 12 //CSN generated on PIC (active low)
 #define SPIS_RDY_PIN 10 //RDY pin to signal to PIC that data is ready to be sent (active high)
 #define SPI_CS_ACC	 2
-#define SPI_CS_GYRO  15 //TODO: change for our ble pcb
+#define SPI_CS_GYRO  3 
 #define SPI_INSTANCE  0 /**< SPI instance index. */
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */
 
@@ -80,6 +80,7 @@ typedef enum
     PA_TIMEOUT,
 	PA_SERIAL_SET,  //for setting serial number on PIC
     PA_XMODEM,
+    PA_START_TEST,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -126,6 +127,7 @@ extern pic_arm_pack_t spis_fail_pack;
 extern pic_arm_pack_t send_device_info_pack;
 extern pic_arm_pack_t serial_set_pack;
 extern pic_arm_pack_t xmodem_pack;
+extern pic_arm_pack_t start_test_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 
