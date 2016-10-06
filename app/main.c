@@ -650,26 +650,57 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+
+void in_pole_sleep(void)
+{
+    uint8_t in_pole_flag = 0;
+    uint32_t err_code;
+    bool erase_bonds;
+
+    spi_init();
+    //init_LSM303();
+    init_L3GD();
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
+    nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+    //sleep_LSM303();
+    sleep_L3GD();
+    spi_un_init();  // might need to re-add 
+    int i;
+    for(i=5;i<=15;i++)
+    {
+        NRF_GPIO->PIN_CNF[i] |= GPIO_PIN_CNF_INPUT_Disconnect<< GPIO_PIN_CNF_INPUT_Pos;
+        nrf_gpio_pin_clear(i);
+    }
+    NRF_POWER->SYSTEMOFF = 1;   
+    sleep_mode_enter();
+    while(true)
+    {
+        power_manage();
+        sleep_mode_enter();
+    }
+}
+
+
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
-//    sleep_L3GD();
-//    sleep_LSM303();
-//            sleep_L3GD();
-//        sleep_LSM303();
-//        application_timers_stop();
-//        power_manage();
-    nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
+    SEGGER_RTT_printf(0, "pin change \n");
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
+    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); 
+    
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
     {
-        NVIC_SystemReset();
+        SEGGER_RTT_printf(0, "***reset****\n");
+        nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //if HALL is high then the bullet is out of the pole so enable the supply
+        sd_nvic_SystemReset();
+        //NVIC_SystemReset();
     }
     //shutdown gyro and accelerometer if pin is not set:
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)== false)
     {
-        sleep_L3GD();
-        sleep_LSM303();
-        application_timers_stop();
-        power_manage();
+        SEGGER_RTT_printf(0, "go to sleep\n");
+        //in_pole_sleep();
+         nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+        sd_nvic_SystemReset();
     }
     
     
@@ -689,7 +720,7 @@ static void shutdown_gpio_init(void)
         APP_ERROR_CHECK(err_code);
     }
     
-    uint32_t out_pin_initial_state = 0; //for the 3v3 enable
+    //uint32_t out_pin_initial_state = 0; //for the 3v3 enable
     
     /********** HALL INPUT PIN  *******/
     nrf_drv_gpiote_in_config_t in_config = GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
@@ -699,16 +730,23 @@ static void shutdown_gpio_init(void)
     APP_ERROR_CHECK(err_code);
 
     nrf_drv_gpiote_in_event_enable(SCOPE_HALL_PIN, true); //enable event handling
-    
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
     {
-        out_pin_initial_state = 1; //if HALL is high then the bullet is out of the pole so enable the supply
+        nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //if HALL is high then the bullet is out of the pole so enable the supply
+        SEGGER_RTT_printf(0, "startup out of pole\n");
     }
+    else
+    {
+        nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+        SEGGER_RTT_printf(0, "startup in pole -- sleep \n");
     
+        in_pole_sleep();
+    }
     /********** 3V3 ENABLE OUTPUT PIN   **********/
-    nrf_drv_gpiote_out_config_t out_config = GPIOTE_CONFIG_OUT_SIMPLE(out_pin_initial_state); //config output with with correct initial state
+   // nrf_drv_gpiote_out_config_t out_config = GPIOTE_CONFIG_OUT_SIMPLE(out_pin_initial_state); //config output with with correct initial state
 
-    err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
+    //err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -737,11 +775,14 @@ int main(void)
 //  sprintf(debug_out_string,"oh shit");
 
  // Initialize.
-    SEGGER_RTT_WriteString(0, "init\n");
+    SEGGER_RTT_WriteString(0, "main init\n");
 
-
-    timers_init();
     shutdown_gpio_init();
+    
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
+    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); 
+    timers_init();
+    
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);

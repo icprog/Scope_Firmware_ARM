@@ -152,7 +152,7 @@ void set_RDY(void);
 void clear_RDY(void);
 bool isRDY(void);
 uint8_t buffer_size_calc(uint16_t spis_transfer_length);
-
+void spi_un_init(void);
 
 #endif	/* SPI_UTILS_H */
 
