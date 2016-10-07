@@ -366,12 +366,13 @@ static void conn_params_init(void)
  */
 static void sleep_mode_enter(void)
 {
-    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-    APP_ERROR_CHECK(err_code);
+//    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+//    APP_ERROR_CHECK(err_code);
 
     // Go to system-off mode (this function will not return; wakeup will cause a reset).
-    err_code = sd_power_system_off();
-    APP_ERROR_CHECK(err_code);
+   // err_code = sd_power_system_off();
+    //APP_ERROR_CHECK(err_code);
+    sd_power_system_off();
 }
 
 
@@ -650,7 +651,7 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
-
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action);
 void in_pole_sleep(void)
 {
     uint8_t in_pole_flag = 0;
@@ -671,12 +672,16 @@ void in_pole_sleep(void)
         NRF_GPIO->PIN_CNF[i] |= GPIO_PIN_CNF_INPUT_Disconnect<< GPIO_PIN_CNF_INPUT_Pos;
         nrf_gpio_pin_clear(i);
     }
+    
+  
+    
     NRF_POWER->SYSTEMOFF = 1;   
-    sleep_mode_enter();
+    //sleep_mode_enter();
     while(true)
     {
-        power_manage();
-        sleep_mode_enter();
+//        power_manage();
+//        sleep_mode_enter();
+
     }
 }
 
@@ -698,9 +703,9 @@ void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)== false)
     {
         SEGGER_RTT_printf(0, "go to sleep\n");
-        //in_pole_sleep();
-         nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
-        sd_nvic_SystemReset();
+       in_pole_sleep();
+         //nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+        //sd_nvic_SystemReset();
     }
     
     
