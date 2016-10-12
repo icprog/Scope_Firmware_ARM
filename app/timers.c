@@ -3,6 +3,7 @@
 #include "app_timer.h"
 #include "timers.h"
 #include "LSM303drv.h"
+#include "L3GD20drv.h"
 #include "ble_status.h"
 #include "ble_bas.h"
 #include "ble_slope.h"
@@ -11,6 +12,8 @@
 #include "profile_service.h"
 
 extern LSM303_DATA accel_data;
+extern L3GD_DATA gyro_data;
+extern imu_data_t imu_data;
 extern ble_status_t  m_status; //status service
 extern ble_bas_t m_bas; //battery service
 extern ble_slope_t m_slope; //slope service
@@ -93,6 +96,13 @@ void acc_timeout_handler(void *p_context)
 {
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
+    imu_data.ax = accel_data.X;
+    imu_data.ay = accel_data.Y;
+    imu_data.az = accel_data.Z;
+    gyro_data = getL3GDdata();
+    imu_data.gx = gyro_data.X;
+    imu_data.gy = gyro_data.Y;
+    imu_data.gz = gyro_data.Z;
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
 }
 void battery_timeout_handler(void *p_context)

@@ -76,7 +76,9 @@ void init_LSM303(void)
 		
 		uint8_t address, SPIData;
 //		nrf_gpio_cfg_output(ACC_CS_PIN);
+
 		nrf_gpio_cfg_input(4,GPIO_PIN_CNF_PULL_Disabled);
+
 
 		address = LSM_CTRL1;
 		SPIData = LSM_DATA_RATE_800HZ | LSM_AZEN | LSM_AYEN | LSM_AXEN;
@@ -116,9 +118,9 @@ LSM303_DATA getLSM303data(void)
     LSM303_DATA data;
     uint8_t address, tx_buf[7], rx_buf[7];
 		
-    nrf_gpio_cfg_output(ACC_CS_PIN);
-    nrf_gpio_pin_set(ACC_CS_PIN);
-    nrf_delay_us(1); //TODO is this necessary?
+//    nrf_gpio_cfg_output(ACC_CS_PIN);
+//    nrf_gpio_pin_set(ACC_CS_PIN);
+//    nrf_delay_us(1); //TODO is this necessary?
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
@@ -130,7 +132,7 @@ LSM303_DATA getLSM303data(void)
 	data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);
 	data.Z = rx_buf[5] + ((((uint16_t)rx_buf[6])<<8)&0xff00);
 	
-	nrf_gpio_pin_clear(ACC_CS_PIN);
+	//nrf_gpio_pin_clear(ACC_CS_PIN);
     
     return data;
 }

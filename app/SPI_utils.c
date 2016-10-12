@@ -49,6 +49,7 @@
 #include "app.h"
 #include "calibration.h"
 #include "LSM303drv.h"
+#include "L3GD20drv.h"
 #include "debug.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
@@ -60,6 +61,8 @@ uint8_t       m_tx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       m_rx_buf_s[SPIS_BUFFER_MAX];
 uint8_t       dummy_buf[32];
 LSM303_DATA accel_data; //acelerometer data to pass to PIC
+L3GD_DATA gyro_data; //gyro data to pass to PIC
+imu_data_t imu_data;
 uint8_t sending_data_to_phone = 0;
 volatile bool device_info_received = false;
 
@@ -80,14 +83,15 @@ pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
 pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
-pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&accel_data, 6}; //will it blend?
+pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&imu_data, sizeof(imu_data_t)};
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
 pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
-pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number/*serial_num*/, 6};
+pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number, 6};
 pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
+pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
@@ -383,7 +387,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 void spi_init(void)
 {
 		nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG(SPI_INSTANCE);
-		spi_config.ss_pin = SPI_CS_PIN;
+		spi_config.ss_pin = NRF_DRV_SPI_PIN_NOT_USED;
 		
 	  /* TODO(rk): turn off CS pin in master SPI driver */
 		spi_config.mode = NRF_DRV_SPI_MODE_3;
@@ -503,7 +507,7 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		uint8_t rx_buf[2], tx_buf[2], CS_pin;
 		uint16_t spi_timeout = 0;
 		if (device == LSM_DEVICE)
-				CS_pin = SPI_CS_ACC;
+			CS_pin = SPI_CS_ACC;
 		else if (device == L3G_DEVICE)
 			CS_pin = SPI_CS_GYRO;
 	

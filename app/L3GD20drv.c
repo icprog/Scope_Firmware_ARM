@@ -76,7 +76,7 @@ void init_L3GD(void)
     address = L3GD_CTRL1;  
     SPIData = L3GD_DATA_RATE_800HZ | L3GD_CUTOFF_100HZ | L3GD_POWER | L3GD_ZEN | L3GD_YEN | L3GD_XEN;
 	
-		SPIWriteReg(address, SPIData, L3G_DEVICE);
+	SPIWriteReg(address, SPIData, L3G_DEVICE);
 
 }
 
