@@ -369,21 +369,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_ACCELEROMETER:
         {
-
-            //accel_data = getLSM303data();
-            //sd_nvic_critical_region_exit(0);
-            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
-            //tx_data_ptr = &accel_data;
-
-            //nrf_delay_us(90); //TODO: remove
-            if(appData.accelerometer_enable)
-            {
-                send_data_to_PIC(accelerometer_pack);
-            }
-                
-            //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
-            //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
+            send_data_to_PIC(accelerometer_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

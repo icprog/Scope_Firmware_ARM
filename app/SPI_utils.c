@@ -51,6 +51,7 @@
 #include "LSM303drv.h"
 #include "L3GD20drv.h"
 #include "debug.h"
+#include "timers.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 
@@ -209,17 +210,14 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
                 break;
             }
-            case PA_ACCELEROMETER:
+            case PA_ACCEL_START:
             {
-                //SEGGER_RTT_printf(0, "PA_ACCELEROMETER\n");
-								
-//								sprintf(debug_out_string,"* DEBUG TEST STRING*");
-//								ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-//								//char debug_out_string[20];
-//								sprintf(debug_out_string,"*DEBUG TEST STRING 2");
-//								ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-							
-														next_state = APP_STATE_ACCELEROMETER;
+                enable_imu();
+                break;
+            }
+            case PA_ACCEL_STOP:
+            {   
+                disable_imu();
                 break;
             }
             case PA_OPTICAL_CAL_RESULT:

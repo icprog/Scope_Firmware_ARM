@@ -29,6 +29,8 @@ void acc_timeout_handler(void *p_context);
 void battery_timeout_handler(void *p_context);
 void slope_timeout_handler(void *p_context);
 void status_timeout_handler(void *p_context);
+void enable_imu(void);
+void disable_imu(void);
 
 
 #endif //TIMERS_H__

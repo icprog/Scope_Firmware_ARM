@@ -103,7 +103,19 @@ void acc_timeout_handler(void *p_context)
     imu_data.gx = gyro_data.X;
     imu_data.gy = gyro_data.Y;
     imu_data.gz = gyro_data.Z;
+    appData.state = APP_STATE_ACCELEROMETER;
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
+}
+void enable_imu(void);
+{
+    uint32_t err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+}
+
+void disable_imu(void)
+{
+    uint32_t err_code = app_timer_stop(m_acc_timer_id);
+    APP_ERROR_CHECK(err_code);
 }
 void battery_timeout_handler(void *p_context)
 {
