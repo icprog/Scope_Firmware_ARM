@@ -84,7 +84,7 @@ pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
 pic_arm_pack_t optical_cal_length_pack = {PA_OPTICAL_CAL_LENGTH, cal_data.optical_parameters, 3};
 pic_arm_pack_t get_profile_pack = {PA_PROFILE, dummy_buf, 4};
 pic_arm_pack_t send_device_info_pack = {PA_DEVICE_INFO, dummy_buf, 0};
-pic_arm_pack_t accelerometer_pack = {PA_ACCELEROMETER, (uint8_t *)&imu_data, sizeof(imu_data_t)};
+pic_arm_pack_t accelerometer_pack = {PA_IMU_DATA, (uint8_t *)&imu_data, sizeof(imu_data_t)};
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
@@ -212,11 +212,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_ACCEL_START:
             {
+                SEGGER_RTT_printf(0, "PA_ACCEL_START\n");
                 enable_imu();
                 break;
             }
             case PA_ACCEL_STOP:
             {   
+                SEGGER_RTT_printf(0, "PA_ACCEL_STOP\n");
                 disable_imu();
                 break;
             }

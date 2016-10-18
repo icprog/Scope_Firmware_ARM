@@ -74,6 +74,7 @@ typedef enum
 	PA_RAW_SUB_DATA, //subsampled raw data
     PA_ACCEL_START,
     PA_ACCEL_STOP, 
+    PA_IMU_DATA,
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
     PA_PROFILE_ID,

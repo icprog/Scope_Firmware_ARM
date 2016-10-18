@@ -10,6 +10,8 @@
 #include "app.h"
 #include "SEGGER_RTT.h"
 #include "profile_service.h"
+#include "nrf_gpio.h"
+#include "SPI_utils.h"
 
 extern LSM303_DATA accel_data;
 extern L3GD_DATA gyro_data;
@@ -66,8 +68,8 @@ void application_timers_start(void)
     APP_ERROR_CHECK(err_code);
     
 
-    err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+    //err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
+    //APP_ERROR_CHECK(err_code);
 }
 
 void application_timers_stop(void)
@@ -106,10 +108,11 @@ void acc_timeout_handler(void *p_context)
     appData.state = APP_STATE_ACCELEROMETER;
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
 }
-void enable_imu(void);
+void enable_imu(void)
 {
     uint32_t err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+    SEGGER_RTT_printf(0, "imu enabled!\n");
 }
 
 void disable_imu(void)
