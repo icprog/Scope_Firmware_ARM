@@ -15,18 +15,9 @@
      
   Processor:       
     nRF51822
-		
-  Toolchaing:
-		MDK-Lite version 5.20
  
   Author(s): 
-    Richard Kirby
- 
-  Created on:
-    June 1, 2016
-  
-  Revision History:
-    Development version      June 1, 2016
+    Richard Kirby, Joe Trovato
  *******************************************************************************/
  
 #include "SPI_utils.h"
@@ -393,11 +384,11 @@ void spi_init(void)
 		spi_config.mode = NRF_DRV_SPI_MODE_3;
 		APP_ERROR_CHECK(nrf_drv_spi_init(&spi, &spi_config, spi_event_handler));
 		
-		nrf_gpio_cfg_output(SPI_CS_ACC);
-		nrf_gpio_cfg_output(SPI_CS_GYRO);
+		nrf_gpio_cfg_output(IMU_SPI_CS_ACC_PIN);
+		nrf_gpio_cfg_output(IMU_SPI_CS_GYRO_PIN);
 	
-        NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
-        NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
+        NRF_GPIO->OUTSET = (1<<IMU_SPI_CS_ACC_PIN);
+        NRF_GPIO->OUTSET = (1<<IMU_SPI_CS_GYRO_PIN);
 		
 //		printf("\n\r\n\rSPI Master Configuration:");
 //		printf("\n\r  SCK pin: %d", spi_config.sck_pin);
@@ -452,9 +443,9 @@ uint8_t SPIReadByte(uint8_t address, SPI_DEVICE device)
 	uint8_t rx_buf[2], tx_buf[2], CS_pin;
 	uint16_t spi_timeout = 0;
 	if (device == LSM_DEVICE)
-		CS_pin = SPI_CS_ACC;
+		CS_pin = IMU_SPI_CS_ACC_PIN;
 	else if (device == L3G_DEVICE)
-		CS_pin = SPI_CS_GYRO;
+		CS_pin = IMU_SPI_CS_GYRO_PIN;
 	
 	spi_xfer_done = false;
 	tx_buf[0] = address | 0x80;	// set read bit
@@ -507,9 +498,9 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		uint8_t rx_buf[2], tx_buf[2], CS_pin;
 		uint16_t spi_timeout = 0;
 		if (device == LSM_DEVICE)
-			CS_pin = SPI_CS_ACC;
+			CS_pin = IMU_SPI_CS_ACC_PIN;
 		else if (device == L3G_DEVICE)
-			CS_pin = SPI_CS_GYRO;
+			CS_pin = IMU_SPI_CS_GYRO_PIN;
 	
 		spi_xfer_done = false;
 		tx_buf[0] = address;
