@@ -5,6 +5,8 @@
 
 
 /*************************   DEFINITION   *************************/
+#define TIMER_PRESCALER                      4 //4 corelates to 1us ticks
+#define CC_DELAY                             50 //50 means every 50us the interrupt will trigger
 
 #define APP_TIMER_PRESCALER                  3    /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE              4    /**< Size of timer operation queues. */

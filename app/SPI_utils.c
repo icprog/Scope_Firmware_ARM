@@ -434,8 +434,6 @@ void spis_init(void)
     /******* initialize extra pin  ********/
     nrf_gpio_cfg_output(SPIS_RDY_PIN); //TODO change to REQ 
     nrf_gpio_cfg_output(SPIS_ARM_RDY_PIN);
-    
-    
     start_ARM_RDY_timer();
     
    // SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
