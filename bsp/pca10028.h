@@ -30,7 +30,7 @@
 #define SPIS_MISO_PIN 11
 #define SPIS_CS_PIN 12 //CSN generated on PIC (active low)
 #define SPIS_RDY_PIN 10 //RDY pin to signal to PIC that data is ready to be sent (active high)
-#define ARM_RDY_PIN  1 //pin to signal that ARM is ready for a transaction. 
+#define SPIS_ARM_RDY_PIN  1 //pin to signal that ARM is ready for a transaction. 
 
 /******* SPI port for IMU  ******/
 #define IMU_SPI_SCK_PIN     6

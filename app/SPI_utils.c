@@ -96,7 +96,6 @@ extern ble_dbs_t						m_ds;
  */
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 {
-    //TODO while(spis_tx_transfer_length) 
     if(spis_tx_transfer_length == 0) /* Header packet */
     {
         uint32_t err_code;
@@ -341,7 +340,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {
-            clear_RDY();
+            clear_RDY(); ///TODO: REQ not RDY
         }
         
         /**********  determine length of the packet to send and new one to receive *********/
@@ -367,7 +366,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)
         {
             SEGGER_RTT_printf(0, "SPIS error: failed to set buffers in interrupt");
-        }  
+        }
     }
 }
 
@@ -432,8 +431,13 @@ void spis_init(void)
         /*printf*/SEGGER_RTT_printf(0,"\nSPI Slave Buffer Set Failed");
     }
     
-    /******* initialize RDY pin  ********/
-    nrf_gpio_cfg_output(SPIS_RDY_PIN);
+    /******* initialize extra pin  ********/
+    nrf_gpio_cfg_output(SPIS_RDY_PIN); //TODO change to REQ 
+    nrf_gpio_cfg_output(SPIS_ARM_RDY_PIN);
+    
+    
+    start_ARM_RDY_timer();
+    
    // SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
 }
 
@@ -522,6 +526,19 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 			
 		}
 	}
+}
+
+/* wait for the semaphore to be free, then give the PIC the OK! */
+void set_ARM_RDY(void)
+{
+    NRF_SPIS_Type * p_spis = spis.p_reg;
+    while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE);
+    nrf_gpio_pin_set(SPIS_ARM_RDY_PIN);
+}
+
+void clear_ARM_RDY(void)
+{
+    nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);
 }
 
 void set_RDY(void)

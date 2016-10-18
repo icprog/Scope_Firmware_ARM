@@ -32,5 +32,7 @@ void status_timeout_handler(void *p_context);
 void enable_imu(void);
 void disable_imu(void);
 
+void start_ARM_RDY_timer(void);
+void TIMER2_IRQHandler(void);
 
 #endif //TIMERS_H__
