@@ -12,6 +12,8 @@
 #include "profile_service.h"
 #include "nrf_gpio.h"
 #include "SPI_utils.h"
+#include "nrf_drv_spis.h"
+
 
 extern LSM303_DATA accel_data;
 extern L3GD_DATA gyro_data;
@@ -161,20 +163,31 @@ void start_ARM_RDY_timer(void)
 	NRF_TIMER2->CC[0] = CC_DELAY;                              //Set value for TIMER2 compare register 0
 		
   // Enable interrupt on Timer 2, both for CC[0] and CC[1] compare match events
-	NRF_TIMER2->INTENSET = (TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos) | (TIMER_INTENSET_COMPARE1_Enabled << TIMER_INTENSET_COMPARE1_Pos);
+	NRF_TIMER2->INTENSET = (TIMER_INTENSET_COMPARE0_Enabled << TIMER_INTENSET_COMPARE0_Pos);
     NVIC_EnableIRQ(TIMER2_IRQn);
 		
     NRF_TIMER2->TASKS_START = 1;               // Start TIMER2
 }
 
+
 /** TIMTER2 peripheral interrupt handler. This interrupt handler is called whenever there it a TIMER2 interrupt
  */
 void TIMER2_IRQHandler(void)
 {
+    static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
+    NRF_SPIS_Type * p_spis = spis.p_reg;
 	if (NRF_TIMER2->EVENTS_COMPARE[0] != 0)
     {
 		NRF_TIMER2->EVENTS_COMPARE[0] = 0;           //Clear compare register 0 event	
-		nrf_gpio_pin_toggle(SPIS_ARM_RDY_PIN);       //toggle pin
+        if(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE)
+        {
+            nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);       
+		}
+        else
+        {
+            nrf_gpio_pin_set(SPIS_ARM_RDY_PIN);
+        }
+        
         NRF_TIMER2->CC[0] += CC_DELAY;
     }
 }
