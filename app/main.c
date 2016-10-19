@@ -750,9 +750,9 @@ int main(void)
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-        profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-		SEGGER_RTT_WriteString(0, "main loop:\n");
-		char debug_out_string[20];
+    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+    SEGGER_RTT_WriteString(0, "main loop:\n");
+    char debug_out_string[20];
 //    sprintf(debug_out_string,"* DEBUG TEST STRING*");
 //	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
 //		//char debug_out_string[20];

@@ -46,7 +46,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include "app_uart.h"
 #include "app_error.h"
 #include "nrf_delay.h"
@@ -76,9 +75,7 @@
 #include "probe_error.h"
 #include "nrf_nvic.h"
 #include "ble_err.h"
-
 #include "nrf_drv_spis.h"
-
 #include "timers.h"
 
 
@@ -219,7 +216,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_SEND_PROFILE_ID:
         {
-            application_timers_stop();
+            disable_imu();
+            SEGGER_RTT_printf(0, "IMU disabled\n");
             nrf_delay_ms(500);//500); 
             SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
@@ -561,6 +559,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_NEW_SN:
         {
+            disable_imu();
+            SEGGER_RTT_printf(0, "IMU disabled\n");
             appData.accelerometer_enable = 0;
             nrf_delay_ms(500); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
@@ -572,6 +572,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_X_MODEM:
         {
+            disable_imu();
+            SEGGER_RTT_printf(0, "IMU disabled\n");
             appData.accelerometer_enable = 0;
             nrf_delay_ms(500); //wait for PIC to stop requesting accel
             send_data_to_PIC(xmodem_pack);
@@ -583,6 +585,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_START_TEST:
         {
+            disable_imu();
+            SEGGER_RTT_printf(0, "IMU disabled\n");
             appData.accelerometer_enable = 0;
             nrf_delay_ms(500); //wait for PIC to stop requesting accel
             send_data_to_PIC(start_test_pack);
@@ -600,94 +604,94 @@ void APP_Tasks(void)
 }
 
 
-/*******************************************************************************
-  Function:
-    void prompt(void)
+///*******************************************************************************
+//  Function:
+//    void prompt(void)
 
-  Remarks:
-    See prototype in app.h.
- */
+//  Remarks:
+//    See prototype in app.h.
+// */
 
-void prompt(void)
-{
-	printf("\n\r\n\rScope nRF>>");
-}
+//void prompt(void)
+//{
+//	printf("\n\r\n\rScope nRF>>");
+//}
 
 
-/*******************************************************************************
-  Function:
-    void monitor(void)
+///*******************************************************************************
+//  Function:
+//    void monitor(void)
 
-  Remarks:
-    See prototype in app.h.
- */
+//  Remarks:
+//    See prototype in app.h.
+// */
 
-void monitor(void)
-{
-		uint8_t cr;
-    if(app_uart_get(&cr) == NRF_SUCCESS)
-		{
-				while(app_uart_put(cr) != NRF_SUCCESS) {};
-					
-				switch (cr)
-				{		
-						case '?':
-						{
-								printf("\n\r\n\r?  Help");
-								printf("\n\rb  Get button state.");
-								printf("\n\rc  Configure LSM303D.");
-								printf("\n\rg  Get IMU Data.");
-								printf("\n\rw  IMU who am I.");
-								prompt();
-								break;
-						}
-						
-						// get button state
-						case 'b':
-						{
-								if(~NRF_GPIO->IN & 1<<17)
-										printf("\n\rButton 1 pressed");
-								if(~NRF_GPIO->IN & 1<<18)
-										printf("\n\rButton 2 pressed");
-								if(~NRF_GPIO->IN & 1<<19)
-										printf("\n\rButton 3 pressed");
-								if(~NRF_GPIO->IN & 1<<20)
-										printf("\n\rButton 4 pressed");
-								SEGGER_RTT_WriteString(0, "Button pressed\n");
-								break;
-						}
-						
-						// configure LSM303w
-						case 'c':
-						{
-								init_LSM303();					
-								printf("\r\nLSM Ctrl post init: %x",SPIReadByte(LSM_CTRL1, LSM_DEVICE));
-								init_L3GD();
-								printf("\r\nL3GD Ctrl post init: %x",SPIReadByte(L3GD_CTRL1, L3G_DEVICE));
-						}
-						
-						case 'g':
-						{
-								LSM303_DATA data;
-								data = getLSM303data();
-								printf("\r\nAccelerometer X axis: %d",data.X);
-								printf("\r\nAccelerometer Y axis: %d",data.Y);
-								printf("\r\nAccelerometer Z axis: %d",data.Z);
-							
-								L3GD_DATA data2;
-								data2 = getL3GDdata();
-								printf("\r\nGyro X axis: %d",data2.X);
-								printf("\r\nGyro Y axis: %d",data2.Y);
-								printf("\r\nGyro Z axis: %d",data2.Z);
-								prompt();
-						}
-						
-						case 'w':
-						{
-								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
-								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
-								prompt();											
-						}
-				}
-		}
-}
+//void monitor(void)
+//{
+//		uint8_t cr;
+//    if(app_uart_get(&cr) == NRF_SUCCESS)
+//		{
+//				while(app_uart_put(cr) != NRF_SUCCESS) {};
+//					
+//				switch (cr)
+//				{		
+//						case '?':
+//						{
+//								printf("\n\r\n\r?  Help");
+//								printf("\n\rb  Get button state.");
+//								printf("\n\rc  Configure LSM303D.");
+//								printf("\n\rg  Get IMU Data.");
+//								printf("\n\rw  IMU who am I.");
+//								prompt();
+//								break;
+//						}
+//						
+//						// get button state
+//						case 'b':
+//						{
+//								if(~NRF_GPIO->IN & 1<<17)
+//										printf("\n\rButton 1 pressed");
+//								if(~NRF_GPIO->IN & 1<<18)
+//										printf("\n\rButton 2 pressed");
+//								if(~NRF_GPIO->IN & 1<<19)
+//										printf("\n\rButton 3 pressed");
+//								if(~NRF_GPIO->IN & 1<<20)
+//										printf("\n\rButton 4 pressed");
+//								SEGGER_RTT_WriteString(0, "Button pressed\n");
+//								break;
+//						}
+//						
+//						// configure LSM303w
+//						case 'c':
+//						{
+//								init_LSM303();					
+//								printf("\r\nLSM Ctrl post init: %x",SPIReadByte(LSM_CTRL1, LSM_DEVICE));
+//								init_L3GD();
+//								printf("\r\nL3GD Ctrl post init: %x",SPIReadByte(L3GD_CTRL1, L3G_DEVICE));
+//						}
+//						
+//						case 'g':
+//						{
+//								LSM303_DATA data;
+//								data = getLSM303data();
+//								printf("\r\nAccelerometer X axis: %d",data.X);
+//								printf("\r\nAccelerometer Y axis: %d",data.Y);
+//								printf("\r\nAccelerometer Z axis: %d",data.Z);
+//							
+//								L3GD_DATA data2;
+//								data2 = getL3GDdata();
+//								printf("\r\nGyro X axis: %d",data2.X);
+//								printf("\r\nGyro Y axis: %d",data2.Y);
+//								printf("\r\nGyro Z axis: %d",data2.Z);
+//								prompt();
+//						}
+//						
+//						case 'w':
+//						{
+//								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
+//								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
+//								prompt();											
+//						}
+//				}
+//		}
+//}

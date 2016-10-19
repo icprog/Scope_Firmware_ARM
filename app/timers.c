@@ -114,7 +114,6 @@ void enable_imu(void)
 {
     uint32_t err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-    SEGGER_RTT_printf(0, "imu enabled!\n");
 }
 
 void disable_imu(void)
@@ -147,10 +146,10 @@ void status_timeout_handler(void *p_context)
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
     ble_status_status_level_update(&m_status, appData.status);
-	if(!sending_data_to_phone)
-	{
-         profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-	}
+//	if(!sending_data_to_phone)
+//	{
+//         profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+//	}
     
 }
     
