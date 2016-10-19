@@ -203,7 +203,7 @@ void APP_Tasks(void)
                 device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
                 profile_ids_update(&m_ps, device_info.number_of_tests - 1);
                 appData.state = APP_STATE_POLLING;
-                SEGGER_RTT_printf(0, "updating number of tests \n");
+                SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
              }
              else if(appData.ble_status == 1) //if not  the most recent. PIC is sending a previously requested profile so pass it through to the transfer state
              {
@@ -213,12 +213,17 @@ void APP_Tasks(void)
             }
             break;
         }
-        case APP_STATE_SEND_PROFILE_ID:
+        case APP_STATE_NEW_ID:
+        {
+            device_info.number_of_tests = appData.new_profile_num + 1
+            profile_ids_update(&m_ps, device_info.number_of_tests - 1); //update the phone with the new id if connected!
+            appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
+        }
+        case APP_STATE_REQUEST_PROFILE:
         {
             disable_imu();
-//          SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100);//500); 
-            SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
+            SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -295,68 +300,68 @@ void APP_Tasks(void)
         {
             
             SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED \n test num = %d", raw_sub_data.metadata.test_num);
-            uint8_t bytes_sent = 0;
-            static int data_counts = 0;
-            uint8_t counter = 0;
-            uint32_t err_code;
-            uint8_t done_flag = 0;
-            sending_data_to_phone = 1;
-            appData.status = 3;
-            if(appData.ble_disconnect_flag == true)
-            {
-                  appData.ble_disconnect_flag = false;
-                    appData.state = APP_STATE_POLLING;
-                    appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
-                    sending_data_to_phone = 0;
-                    send_data_to_PIC(arm_done_pack);
-                    application_timers_start();
-                    appData.data_counts = 0;
-                    SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
-                    break;
-            }
-            while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
-            {      			
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
-				appData.data_counts += bytes_sent;	
-								
-                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
-                {
-					//nrf_drv_common_irq_disable(p_instance->irq);
-					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
-                    done_flag = 1;
-                    appData.state = APP_STATE_POLLING;
-                    appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
-                    sending_data_to_phone = 0;
-                    send_data_to_PIC(arm_done_pack);
-					application_timers_start();
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
-                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
-                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
+//            uint8_t bytes_sent = 0;
+//            static int data_counts = 0;
+//            uint8_t counter = 0;
+//            uint32_t err_code;
+//            uint8_t done_flag = 0;
+//            sending_data_to_phone = 1;
+//            appData.status = 3;
+//            if(appData.ble_disconnect_flag == true)
+//            {
+//                  appData.ble_disconnect_flag = false;
+//                    appData.state = APP_STATE_POLLING;
+//                    appData.prev_state = APP_STATE_POLLING;
+//                    appData.status = 0;
+//                    sending_data_to_phone = 0;
+//                    send_data_to_PIC(arm_done_pack);
+//                    application_timers_start();
+//                    appData.data_counts = 0;
+//                    SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
+//                    break;
+//            }
+//            while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+//            {      			
+//                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+//				appData.data_counts += bytes_sent;	
+//								
+//                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
+//                {
+//					//nrf_drv_common_irq_disable(p_instance->irq);
+//					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
+//                    done_flag = 1;
+//                    appData.state = APP_STATE_POLLING;
+//                    appData.prev_state = APP_STATE_POLLING;
+//                    appData.status = 0;
+//                    sending_data_to_phone = 0;
+//                    send_data_to_PIC(arm_done_pack);
+//					application_timers_start();
+//                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
+//                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
+//                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
 
-                    //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
-										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
+//                    //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
+//										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
 
-                    data_counts = 0;
+//                    data_counts = 0;
 
-                }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
-                {
-                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
-                    break;
-                    
-                }
-                counter++;
-            }		
+//                }
+//                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+//                {
+//                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+//                    break;
+//                    
+//                }
+//                counter++;
+//            }		
 
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
-            {
-                counter = 0;
-                appData.prev_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
-                appData.state = APP_STATE_POLLING;
-                break;
-            }
+//            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+//            {
+//                counter = 0;
+//                appData.prev_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
+//                appData.state = APP_STATE_POLLING;
+//                break;
+//            }
             break;
         }
         case APP_STATE_ACCELEROMETER:
@@ -553,7 +558,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100); //wait for PIC to stop requesting accel
+           // nrf_delay_ms(100); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
             SEGGER_RTT_printf(0, "phone wrote SN\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
@@ -564,7 +569,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100);
+            //nrf_delay_ms(100);
             send_data_to_PIC(xmodem_pack);
             SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
@@ -575,7 +580,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100);
+            //nrf_delay_ms(100);
             send_data_to_PIC(start_test_pack);
             SEGGER_RTT_printf(0, "phone wrote start test pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel

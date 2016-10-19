@@ -83,12 +83,13 @@ typedef enum
     APP_STATE_RAW_DATA_RECEIVE,
     APP_STATE_TRANSFER_PROFILE_IDS,
     APP_STATE_PROBE_ERROR,
-    APP_STATE_SEND_PROFILE_ID,
+    APP_STATE_REQUEST_PROFILE,
     APP_STATE_SPIS_FAIL,
     APP_STATE_RAW_SUB_DATA_RECEIVE,
     APP_STATE_NEW_SN,
     APP_STATE_X_MODEM,
     APP_STATE_START_TEST,
+    APP_STATE_NEW_ID,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -187,6 +188,7 @@ typedef struct
     APP_STATES state;
     APP_STATES prev_state;
     profile_id_t profile_id;
+    uint16_t new_profile_num;
     uint16_t ble_status;
 	  bool ble_disconnect_flag;
     uint8_t status;

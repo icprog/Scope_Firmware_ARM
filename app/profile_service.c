@@ -582,22 +582,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     {
         memcpy(&(appData.profile_id), (p_evt_write->data), sizeof(profile_id_t));
         SEGGER_RTT_printf(0,"profile_to_transfer:  type = %d num = %d \n", appData.profile_id.type, appData.profile_id.test_num);
-        
-        /*
-        *if the phone requests the most recent profile, the one store in memeory,
-        * skip right to sending it, otherwise, ask the PIC for the correct profile data
-        */
-        if(appData.profile_id.test_num == profile_data.metadata.test_num && appData.profile_id.type == 0)
-        {
-            SEGGER_RTT_printf(0, "send the profile that is already in memory\n");
-            appData.state = APP_STATE_PROFILE_TRANSFER;
-			appData.ble_disconnect_flag = false;
-        }
-        else
-        {           
-			SEGGER_RTT_printf(0, "asking PIC for profile \n");
-            appData.state = APP_STATE_SEND_PROFILE_ID;
-        }
+        appData.state = APP_STATE_REQUEST_PROFILE;
     }
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
