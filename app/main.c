@@ -501,7 +501,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_status_on_ble_evt(&m_status, p_ble_evt);
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
-				ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
+		ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
     }
 }
 
@@ -760,8 +760,10 @@ int main(void)
 //	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     while(true)
     {
-        APP_Tasks();
         power_manage();
+        APP_Tasks();
+        
+
 	}
 }
 

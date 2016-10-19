@@ -149,9 +149,9 @@ void APP_Initialize(void)
 {
 		SEGGER_RTT_WriteString(0, "APP Init Start \n");
         appData.state = APP_STATE_INIT;		
-        appData.accelerometer_enable = 1;
         appData.ble_status = 0;
         appData.data_counts = 0;
+        appData.send_imu_flag = false;
         appData.status = 0;
 		init_LSM303();
         init_L3GD();
@@ -171,7 +171,7 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
-	//SEGGER_RTT_WriteString(0, "App tasks start \n");
+	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
     switch (appData.state)
     {
         /* Application's initial state. */
@@ -203,7 +203,6 @@ void APP_Tasks(void)
                 device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
                 profile_ids_update(&m_ps, device_info.number_of_tests - 1);
                 appData.state = APP_STATE_POLLING;
-                appData.accelerometer_enable = 1;
                 SEGGER_RTT_printf(0, "updating number of tests \n");
              }
              else if(appData.ble_status == 1) //if not  the most recent. PIC is sending a previously requested profile so pass it through to the transfer state
@@ -217,11 +216,10 @@ void APP_Tasks(void)
         case APP_STATE_SEND_PROFILE_ID:
         {
             disable_imu();
-            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(500);//500); 
+//          SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);//500); 
             SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
-			//appData.accelerometer_enable = 0;
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -245,7 +243,6 @@ void APP_Tasks(void)
 					appData.status = 0;
 					sending_data_to_phone = 0;
 					send_data_to_PIC(arm_done_pack);
-					appData.accelerometer_enable = 1;
 					application_timers_start();
 					appData.data_counts = 0;
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
@@ -267,7 +264,6 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
 					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
@@ -314,7 +310,6 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
                     application_timers_start();
                     appData.data_counts = 0;
                     SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
@@ -335,7 +330,6 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
 					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
@@ -518,7 +512,6 @@ void APP_Tasks(void)
                     buffer_data_counts = 0;
                     raw_data_counts = 0;
                     sending_data_to_phone = 0;
-                    appData.accelerometer_enable = 1;
                     application_timers_start();
                     send_data_to_PIC(raw_data_ack_pack);
                     nrf_delay_ms(5);
@@ -553,46 +546,39 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
             send_data_to_PIC(spis_fail_pack);
-			//appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_NEW_SN:
         {
             disable_imu();
-            SEGGER_RTT_printf(0, "IMU disabled\n");
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
             SEGGER_RTT_printf(0, "phone wrote SN\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_X_MODEM:
         {
             disable_imu();
-            SEGGER_RTT_printf(0, "IMU disabled\n");
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
             send_data_to_PIC(xmodem_pack);
             SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_START_TEST:
         {
             disable_imu();
-            SEGGER_RTT_printf(0, "IMU disabled\n");
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
             send_data_to_PIC(start_test_pack);
             SEGGER_RTT_printf(0, "phone wrote start test pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -600,6 +586,11 @@ void APP_Tasks(void)
         {
             break;
         }
+    }
+    if(appData.send_imu_flag)
+    {
+        send_data_to_PIC(accelerometer_pack);
+        appData.send_imu_flag = false;
     }
 }
 

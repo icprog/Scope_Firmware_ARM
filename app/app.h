@@ -190,7 +190,7 @@ typedef struct
     uint16_t ble_status;
 	  bool ble_disconnect_flag;
     uint8_t status;
-    uint8_t accelerometer_enable;
+    bool send_imu_flag;
     uint16_t data_counts;
     bool SPIS_timeout_flag;
     bool transfer_in_progress;

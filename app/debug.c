@@ -13,7 +13,7 @@
 void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
 {
 	//SEGGER_RTT_printf(0, "debug evt");
-		if (p_dbs == NULL || p_ble_evt == NULL)
+	if (p_dbs == NULL || p_ble_evt == NULL)
     {
         return;
     }
@@ -21,14 +21,20 @@ void ble_debug_service_on_ble_evt(ble_dbs_t * p_dbs, ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {        
         case BLE_GAP_EVT_CONNECTED:
+        {
             p_dbs->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
+        }
         case BLE_GAP_EVT_DISCONNECTED:
+        {
             p_dbs->conn_handle = BLE_CONN_HANDLE_INVALID;
             break;
-				case BLE_GATTS_EVT_WRITE:
+        }
+		case BLE_GATTS_EVT_WRITE:
+        {
             on_write(p_dbs, p_ble_evt);
             break;
+        }
         default:
             // No implementation needed.
             break;
@@ -132,6 +138,15 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
             {
                 SEGGER_RTT_printf(0, "start test\n");
                 appData.state = APP_STATE_START_TEST;
+            }
+            else if(*(p_evt_write->data) == 's')
+            {
+                SEGGER_RTT_printf(0, "s\n");
+                appData.profile_id.type = 0;
+                appData.profile_id.test_num = 1;
+                appData.state = APP_STATE_SEND_PROFILE_ID;
+                SEGGER_RTT_printf(0, "state = %d", appData.state);
+                
             }
         }
         if(p_evt_write->handle == p_ds->char_handles.cccd_handle && (p_evt_write->len == 2))

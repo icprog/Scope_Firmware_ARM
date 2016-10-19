@@ -592,12 +592,10 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
             SEGGER_RTT_printf(0, "send the profile that is already in memory\n");
             appData.state = APP_STATE_PROFILE_TRANSFER;
 			appData.ble_disconnect_flag = false;
-            appData.accelerometer_enable = 0;
         }
         else
         {           
 			SEGGER_RTT_printf(0, "asking PIC for profile \n");
-            appData.accelerometer_enable = 0;
             appData.state = APP_STATE_SEND_PROFILE_ID;
         }
     }

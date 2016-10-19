@@ -107,7 +107,7 @@ void acc_timeout_handler(void *p_context)
     imu_data.gx = gyro_data.X;
     imu_data.gy = gyro_data.Y;
     imu_data.gz = gyro_data.Z;
-    appData.state = APP_STATE_ACCELEROMETER;
+    appData.send_imu_flag = true;
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
 }
 void enable_imu(void)
