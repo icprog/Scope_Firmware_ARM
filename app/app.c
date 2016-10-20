@@ -203,6 +203,7 @@ void APP_Tasks(void)
             nrf_delay_ms(100);
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
+            //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -226,7 +227,6 @@ void APP_Tasks(void)
 					appData.status = 0;
 					sending_data_to_phone = 0;
 					send_data_to_PIC(arm_done_pack);
-					application_timers_start();
 					appData.data_counts = 0;
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
@@ -247,7 +247,6 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -276,76 +275,67 @@ void APP_Tasks(void)
 				
 		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
-            appData.state = APP_STATE_POLLING;
-            //SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
-//            uint8_t bytes_sent = 0;
-//            static int data_counts = 0;
-//            uint8_t counter = 0;
-//            uint32_t err_code;
-//            uint8_t done_flag = 0;
-//            sending_data_to_phone = 1;
-//            appData.status = 3;
-//            if(appData.ble_disconnect_flag == true)
-//            {
-//                  appData.ble_disconnect_flag = false;
-//                    appData.state = APP_STATE_POLLING;
-//                    appData.prev_state = APP_STATE_POLLING;
-//                    appData.status = 0;
-//                    sending_data_to_phone = 0;
-//                    send_data_to_PIC(arm_done_pack);
-//                    application_timers_start();
-//                    appData.data_counts = 0;
-//                    SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
-//                    break;
-//            }
-//            while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
-//            {      			
-//                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
-//				appData.data_counts += bytes_sent;	
-//								
-//                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
-//                {
-//					//nrf_drv_common_irq_disable(p_instance->irq);
-//					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
-//                    done_flag = 1;
-//                    appData.state = APP_STATE_POLLING;
-//                    appData.prev_state = APP_STATE_POLLING;
-//                    appData.status = 0;
-//                    sending_data_to_phone = 0;
-//                    send_data_to_PIC(arm_done_pack);
-//					application_timers_start();
-//                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
-//                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
-//                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
+            SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+            uint8_t bytes_sent = 0;
+            static int data_counts = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t done_flag = 0;
+            sending_data_to_phone = 1;
+            appData.status = 3;
+            if(appData.ble_disconnect_flag == true)
+            {
+                appData.ble_disconnect_flag = false;
+                appData.state = APP_STATE_POLLING;
+                appData.prev_state = APP_STATE_POLLING;
+                appData.status = 0;
+                sending_data_to_phone = 0;
+                send_data_to_PIC(arm_done_pack);
+                appData.data_counts = 0;
+                SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
+                break;
+            }
+            while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            {      			
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_sub_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;	
+								
+                if(appData.data_counts >= sizeof(subsampled_raw_data_t))
+                {
+					//nrf_drv_common_irq_disable(p_instance->irq);
+					//nrf_spis_int_disable(p_spis, DISABLE_ALL);
+                    done_flag = 1;
+                    appData.state = APP_STATE_POLLING;
+                    appData.prev_state = APP_STATE_POLLING;
+                    appData.status = 0;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
+                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
+                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
 
-//                    //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
-//										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
+                    //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
+										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
 
-//                    data_counts = 0;
+                    data_counts = 0;
 
-//                }
-//                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
-//                {
-//                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
-//                    break;
-//                    
-//                }
-//                counter++;
-//            }		
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+                {
+                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    break;
+                    
+                }
+                counter++;
+            }		
 
-//            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
-//            {
-//                counter = 0;
-//                appData.prev_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
-//                appData.state = APP_STATE_POLLING;
-//                break;
-//            }
-            break;
-        }
-        case APP_STATE_ACCELEROMETER:
-        {
-            send_data_to_PIC(accelerometer_pack);
-            appData.state = APP_STATE_POLLING;
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
+                appData.state = APP_STATE_POLLING;
+                break;
+            }
             break;
         }
         case APP_STATE_VIB_CAL_RDY:
@@ -495,7 +485,6 @@ void APP_Tasks(void)
                     buffer_data_counts = 0;
                     raw_data_counts = 0;
                     sending_data_to_phone = 0;
-                    application_timers_start();
                     send_data_to_PIC(raw_data_ack_pack);
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
@@ -521,7 +510,7 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
             uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
             SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
-						send_data_to_PIC(arm_done_pack);
+			send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

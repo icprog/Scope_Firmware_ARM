@@ -286,7 +286,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
 		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
-        //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
+        SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring
