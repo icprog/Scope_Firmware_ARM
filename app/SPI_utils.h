@@ -78,6 +78,7 @@ typedef enum
 	PA_SERIAL_SET,  //for setting serial number on PIC
     PA_XMODEM,
     PA_START_TEST,
+    PA_NEW_ID,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,

@@ -190,25 +190,35 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
                 rx_data_ptr = &(appData.ble_status);
+                next_state = appData.state;
+                break;
+            }
+            case PA_NEW_ID:
+            {
+                SEGGER_RTT_printf(0, "PA_NEW_ID\n");
+				rx_data_ptr = &(appData.new_profile_num);
+				next_state = APP_STATE_NEW_ID;
                 break;
             }
             case PA_PROFILE:
             {
                 SEGGER_RTT_printf(0, "PA_PROFILE\n");
 				rx_data_ptr = &profile_data;
-				next_state = APP_STATE_TRANSFER_PROFILE_IDS;
+				next_state = APP_STATE_PROFILE_TRANSFER; //TODO
                 break;
             }
             case PA_ACCEL_START:
             {
                 SEGGER_RTT_printf(0, "PA_ACCEL_START\n");
                 enable_imu();
+                next_state = appData.state;
                 break;
             }
             case PA_ACCEL_STOP:
             {   
                 SEGGER_RTT_printf(0, "PA_ACCEL_STOP\n");
                 disable_imu();
+                next_state = appData.state;
                 break;
             }
             case PA_OPTICAL_CAL_RESULT:
@@ -255,15 +265,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_RESTART:
             {
                 SEGGER_RTT_printf(0, "PA_RESTART\n");
+                next_state = appData.state;
                 break;
-            }
-            case PA_SERIAL_SET:
-            {
-                    //
             }
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
+                next_state = appData.state;
                 break;
             }
         }
@@ -277,7 +285,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "parsing data packet\n");
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
-				rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
+		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
         //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         appData.SPIS_timeout_flag = 0;

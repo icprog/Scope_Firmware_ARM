@@ -144,7 +144,7 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
                 SEGGER_RTT_printf(0, "s\n");
                 appData.profile_id.type = 0;
                 appData.profile_id.test_num = 1;
-                appData.state = APP_STATE_SEND_PROFILE_ID;
+                appData.state = APP_STATE_REQUEST_PROFILE;
                 SEGGER_RTT_printf(0, "state = %d", appData.state);
                 
             }

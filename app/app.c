@@ -188,41 +188,19 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-        case APP_STATE_TRANSFER_PROFILE_IDS:
-        {
-            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID\n");//.metadata.test_num);
-			SEGGER_RTT_printf(0, "BLE Status: %d \n", appData.ble_status);
-            if(appData.ble_status == 0) //if ble is disconnected
-            {
-                send_data_to_PIC(arm_done_pack);
-                appData.state = APP_STATE_POLLING;
-                SEGGER_RTT_printf(0, "phone not connected. ARM is done \n");
-            }
-            if(device_info.number_of_tests <= profile_data.metadata.test_num)  //if the test received is a new test, increment the num of tests and notify the phone, then wait for the corresponding id to tranfer
-            {
-                device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
-                profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-                appData.state = APP_STATE_POLLING;
-                SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
-             }
-             else if(appData.ble_status == 1) //if not  the most recent. PIC is sending a previously requested profile so pass it through to the transfer state
-             {
-                appData.state = APP_STATE_PROFILE_TRANSFER;
-				SEGGER_RTT_printf(0, "test number: %d \n", profile_data.metadata.test_num);
-                appData.ble_disconnect_flag = false;
-            }
-            break;
-        }
         case APP_STATE_NEW_ID:
         {
-            device_info.number_of_tests = appData.new_profile_num + 1
+            SEGGER_RTT_printf(0, "APP_STATE_NEW_ID\n");
+            device_info.number_of_tests = appData.new_profile_num + 1; //update device info stored on ARM
             profile_ids_update(&m_ps, device_info.number_of_tests - 1); //update the phone with the new id if connected!
-            appData.state = APP_STATE_POLLING;
             SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
+            appData.state = APP_STATE_POLLING;
+            break;
         }
         case APP_STATE_REQUEST_PROFILE:
         {
             disable_imu();
+            nrf_delay_ms(100);
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             send_data_to_PIC(profile_id_pack);
             appData.state = APP_STATE_POLLING;
@@ -298,8 +276,8 @@ void APP_Tasks(void)
 				
 		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
-            
-            SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED \n test num = %d", raw_sub_data.metadata.test_num);
+            appData.state = APP_STATE_POLLING;
+            //SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
 //            uint8_t bytes_sent = 0;
 //            static int data_counts = 0;
 //            uint8_t counter = 0;
@@ -558,7 +536,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-           // nrf_delay_ms(100); //wait for PIC to stop requesting accel
+            nrf_delay_ms(100); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
             SEGGER_RTT_printf(0, "phone wrote SN\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
@@ -569,7 +547,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-            //nrf_delay_ms(100);
+            nrf_delay_ms(100);
             send_data_to_PIC(xmodem_pack);
             SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
@@ -580,7 +558,7 @@ void APP_Tasks(void)
         {
             disable_imu();
 //            SEGGER_RTT_printf(0, "IMU disabled\n");
-            //nrf_delay_ms(100);
+            nrf_delay_ms(100);
             send_data_to_PIC(start_test_pack);
             SEGGER_RTT_printf(0, "phone wrote start test pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
