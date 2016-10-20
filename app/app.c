@@ -316,13 +316,12 @@ void APP_Tasks(void)
 
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
-
-                    data_counts = 0;
+                    appData.data_counts = 0;
 
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
-                {
-                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+               {
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }
