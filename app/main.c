@@ -449,6 +449,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			appData.ble_disconnect_flag = true;
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
+            sending_data_to_phone = 0;
 
             app_beacon_stop();
         

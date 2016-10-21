@@ -109,17 +109,20 @@ void acc_timeout_handler(void *p_context)
     imu_data.gz = gyro_data.Z;
     appData.send_imu_flag = true;
     //nrf_gpio_pin_toggle(SPIS_RDY_PIN); //JUST A TEST
+    
 }
 void enable_imu(void)
 {
     uint32_t err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+    appData.imu_enabled = true;
 }
 
 void disable_imu(void)
 {
     uint32_t err_code = app_timer_stop(m_acc_timer_id);
     APP_ERROR_CHECK(err_code);
+    appData.imu_enabled = false;
 }
 void battery_timeout_handler(void *p_context)
 {
@@ -138,7 +141,14 @@ void battery_timeout_handler(void *p_context)
 void slope_timeout_handler(void *p_context)
 {
     //SEGGER_RTT_printf(0,"slope\n");
-    ble_slope_level_update(&m_slope, 38);
+    //ble_slope_level_update(&m_slope, 38);
+    static uint8_t ack_count = 0;
+    if(appData.ack == 0)
+    {
+        appData.ack_retry = 1;
+    }
+    
+    
     UNUSED_PARAMETER(p_context);
 }
 void status_timeout_handler(void *p_context)
@@ -180,6 +190,10 @@ void TIMER2_IRQHandler(void)
 		NRF_TIMER2->EVENTS_COMPARE[0] = 0;           //Clear compare register 0 event	
         if(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE)
         {
+            if(appData.ack == 0)
+            {
+                SEGGER_RTT_printf(0, "clearing = %d     ", nrf_spis_semaphore_status_get(p_spis));
+            }
             nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);       
 		}
         else

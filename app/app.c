@@ -153,6 +153,7 @@ void APP_Initialize(void)
         appData.data_counts = 0;
         appData.send_imu_flag = false;
         appData.status = 0;
+        appData.ack = 1;
 		init_LSM303();
         init_L3GD();
         SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
@@ -199,18 +200,43 @@ void APP_Tasks(void)
         }
         case APP_STATE_REQUEST_PROFILE:
         {
-            disable_imu();
-            nrf_delay_ms(100);
+            uint8_t error_code = 0;
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
-            send_data_to_PIC(profile_id_pack);
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_RDY_PIN) & 1UL))
+                {
+                    disable_imu();
+                    SEGGER_RTT_printf(0, "again\n");
+                    SEGGER_RTT_printf(0, "sdtp = %d\n", sending_data_to_phone);
+                    error_code = send_data_to_PIC(profile_id_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
             //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "sent it\n");
             break;
         }
         case APP_STATE_PROFILE_TRANSFER:
         {
-            
-            SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            }
+            /***** if we disconnect get out of here  *******/
+            if(appData.ble_status == 0)
+            {
+                appData.state = APP_STATE_POLLING;
+				appData.prev_state = APP_STATE_POLLING;
+            }
             uint8_t bytes_sent = 0;
             //static int data_counts = 0;
             uint8_t counter = 0;
@@ -221,7 +247,7 @@ void APP_Tasks(void)
 
 			if(appData.ble_disconnect_flag == true)
 			{
-				  appData.ble_disconnect_flag = false;
+				    appData.ble_disconnect_flag = false;
 					appData.state = APP_STATE_POLLING;
 					appData.prev_state = APP_STATE_POLLING;
 					appData.status = 0;
@@ -275,7 +301,10 @@ void APP_Tasks(void)
 				
 		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
-            SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+            }
             uint8_t bytes_sent = 0;
             static int data_counts = 0;
             uint8_t counter = 0;

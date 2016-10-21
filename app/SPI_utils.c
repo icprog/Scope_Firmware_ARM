@@ -67,7 +67,6 @@ void * tx_data_ptr; //where to pull data from to send to PIC
 char serial_num[6];
 
 /********  pic arm pack varaibles  *******/
-pic_arm_pack_t test_code_pack = {TEST_CODE, dummy_buf, 0};
 pic_arm_pack_t force_cal_init_pack = {PA_FORCE_CAL_INIT, dummy_buf, 0};
 pic_arm_pack_t force_cal_weight_pack = {PA_FORCE_CAL_WEIGHT, &(cal_data.current_weight), 1};
 pic_arm_pack_t vib_cal_rdy_pack = {PA_VIB_CAL_RDY, dummy_buf, 0};
@@ -167,11 +166,6 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //SEGGER_RTT_printf(0, "code = %d\n", packet->code);
         switch(packet->code)
         {
-            case TEST_CODE:
-            {
-               next_state = APP_STATE_FORCE_CAL_WEIGHT;
-               break;
-            }
             case PA_FORCE_CAL_DATA:
             {
                 next_state = APP_STATE_FORCE_CAL_DATA;
@@ -189,7 +183,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_DEVICE_STATUS:
             {
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
-                rx_data_ptr = &(appData.ble_status);
+                rx_data_ptr = &(appData.status);
                 next_state = appData.state;
                 break;
             }
@@ -202,6 +196,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_PROFILE:
             {
+                appData.ble_disconnect_flag = false;
                 SEGGER_RTT_printf(0, "PA_PROFILE\n");
 				rx_data_ptr = &profile_data;
 				next_state = APP_STATE_PROFILE_TRANSFER; //TODO
@@ -268,6 +263,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 next_state = appData.state;
                 break;
             }
+            case PA_ACK:
+            {
+                SEGGER_RTT_printf(0, "PA_ACK\n");
+                appData.ack = 1;
+                next_state = appData.state;
+                break;
+            }
             default:
             {
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
@@ -286,7 +288,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         //length = buffer_size_calc(spis_rx_transfer_length);
         memcpy(rx_data_ptr, (void *)rx_buffer, rx_buffer_length);
 		rx_data_ptr = (uint8_t *)rx_data_ptr + rx_buffer_length;
-        SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
+        //SEGGER_RTT_printf(0, "transfer length: %d \n",spis_rx_transfer_length);
         //TODO check the checksum
         appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring

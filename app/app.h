@@ -189,12 +189,15 @@ typedef struct
     profile_id_t profile_id;
     uint16_t new_profile_num;
     uint16_t ble_status;
-	  bool ble_disconnect_flag;
+	bool ble_disconnect_flag;
     uint8_t status;
     bool send_imu_flag;
+    bool imu_enabled;
     uint16_t data_counts;
     bool SPIS_timeout_flag;
     bool transfer_in_progress;
+    volatile uint8_t ack;
+    volatile uint8_t ack_retry;
 } APP_DATA;
 extern APP_DATA appData;
 	

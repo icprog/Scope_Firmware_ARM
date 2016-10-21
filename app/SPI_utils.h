@@ -60,7 +60,7 @@ typedef enum
 
 typedef enum
 {
-    TEST_CODE,
+    PA_ACK,
     PA_RESTART,
     PA_DEVICE_STATUS,
     PA_PROFILE,
