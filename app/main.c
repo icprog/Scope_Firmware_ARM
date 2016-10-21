@@ -747,7 +747,7 @@ int main(void)
     // Start execution.
     application_timers_start();
     SEGGER_RTT_WriteString(0, "starting adv\n");
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST); //TODO: advertize
+    err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);

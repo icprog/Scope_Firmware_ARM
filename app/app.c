@@ -201,6 +201,7 @@ void APP_Tasks(void)
         case APP_STATE_REQUEST_PROFILE:
         {
             uint8_t error_code = 0;
+            sending_data_to_phone = 0; //if we are requesting a profile
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             disable_imu();
             appData.ack = 0;
@@ -350,7 +351,7 @@ void APP_Tasks(void)
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
                {
-                    SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }

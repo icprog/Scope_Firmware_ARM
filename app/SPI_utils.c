@@ -327,7 +327,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
     uint8_t rx_length, tx_length;
     uint8_t error_code = 0;
    
-    if (event.evt_type == NRF_DRV_SPIS_XFER_DONE &&  sending_data_to_phone == 0)
+    if (event.evt_type == NRF_DRV_SPIS_XFER_DONE)
     {
         /********* determine length of packet received  *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);
