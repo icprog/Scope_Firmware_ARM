@@ -76,11 +76,10 @@ void init_LSM303(void)
 		
 		uint8_t address, SPIData;
 //		nrf_gpio_cfg_output(ACC_CS_PIN);
-//		nrf_gpio_cfg_input(4,GPIO_PIN_CNF_PULL_Disabled);
-//		nrf_gpio_cfg_output(5);
-//		nrf_gpio_cfg_output(6);
-		//nrf_gpio_cfg_output(ACC_CS_PIN); //cs is taken care of in "SPIWriteReg()"
-//		nrf_gpio_pin_set(4);
+
+		nrf_gpio_cfg_input(4,GPIO_PIN_CNF_PULL_Disabled);
+
+
 		address = LSM_CTRL1;
 		SPIData = LSM_DATA_RATE_800HZ | LSM_AZEN | LSM_AYEN | LSM_AXEN;
 		
@@ -94,7 +93,18 @@ void init_LSM303(void)
 		//nrf_gpio_pin_clear(ACC_CS_PIN);
 }
 
+void sleep_LSM303(void)
+{
+		
+		uint8_t address, SPIData;
 
+
+		address = LSM_CTRL1;
+		SPIData = 0x00;
+		
+		SPIWriteReg(address, SPIData, LSM_DEVICE);
+
+}
 /*******************************************************************************
   Function:
     LSM303_DATA getLSM303data(void)

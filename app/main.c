@@ -58,6 +58,8 @@ version #: 1.2 gets test id before each test
 #include "probe_error.h"
 #include "profile_service.h"
 #include "debug.h"
+#include "L3GD20drv.h"
+
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -650,11 +652,26 @@ static void power_manage(void)
 
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
+//    sleep_L3GD();
+//    sleep_LSM303();
+//            sleep_L3GD();
+//        sleep_LSM303();
+//        application_timers_stop();
+//        power_manage();
     nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
     {
         NVIC_SystemReset();
     }
+    //shutdown gyro and accelerometer if pin is not set:
+    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)== false)
+    {
+        sleep_L3GD();
+        sleep_LSM303();
+        application_timers_stop();
+        power_manage();
+    }
+    
     
 }
 /**

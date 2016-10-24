@@ -104,6 +104,8 @@ extern ble_dbs_t						m_ds;
  */
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
 {
+    clear_RDY();
+    nrf_gpio_pin_clear(SCOPE_SPIS_READY); //set ready pin
     //TODO while(spis_tx_transfer_length) 
     if(spis_tx_transfer_length == 0) /* Header packet */
     {
@@ -157,7 +159,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
  */
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 {
-    
+    nrf_gpio_pin_clear(SCOPE_SPIS_READY); //clear ready pin
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     static APP_STATES next_state = APP_STATE_POLLING;
 	char debug_out_string[20];
@@ -219,7 +221,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 //								sprintf(debug_out_string,"*DEBUG TEST STRING 2");
 //								ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
 							
-														next_state = APP_STATE_ACCELEROMETER;
+                next_state = APP_STATE_ACCELEROMETER;
                 break;
             }
             case PA_OPTICAL_CAL_RESULT:
@@ -277,6 +279,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 SEGGER_RTT_printf(0, "SPIS ERROR: code not recognized\n");
                 break;
             }
+            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
         }
         if(!appData.transfer_in_progress)
         {
@@ -294,6 +297,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring
         {
+             nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
             SEGGER_RTT_printf(0, "finished transferring\n");
             appData.transfer_in_progress = false;
             appData.state = next_state;
@@ -327,7 +331,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 {
     uint8_t rx_length, tx_length;
     uint8_t error_code = 0;
-   
+    nrf_gpio_pin_clear(SCOPE_SPIS_READY); //clear ready pin
     if (event.evt_type == NRF_DRV_SPIS_XFER_DONE &&  sending_data_to_phone == 0)
     {
         /********* determine length of packet received  *********/

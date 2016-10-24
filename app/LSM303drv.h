@@ -187,7 +187,7 @@ typedef struct LSM303_DATA
 
 uint8_t get_LSM303_ID(void);
 
-
+void sleep_LSM303(void);
 /*******************************************************************************
   Function:
     void init_LSM303(void);
