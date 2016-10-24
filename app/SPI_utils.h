@@ -34,11 +34,6 @@
 #include <stdint.h>
 #include "nrf_drv_spis.h"
 
-#define SPI_CS_PIN   7 //chips select for the SPI module for the IMU
-#define SPIS_CS_PIN 12 //CSN generated on PIC (active low)
-#define SPIS_RDY_PIN 10 //RDY pin to signal to PIC that data is ready to be sent (active high)
-#define SPI_CS_ACC	 2
-#define SPI_CS_GYRO  3 
 #define SPI_INSTANCE  0 /**< SPI instance index. */
 #define SPIS_INSTANCE 1 /**< SPIS instance index. */
 
@@ -65,14 +60,16 @@ typedef enum
 
 typedef enum
 {
-    TEST_CODE,
+    PA_ACK,
     PA_RESTART,
     PA_DEVICE_STATUS,
     PA_PROFILE,
     PA_FORCE_CAL_INIT,
     PA_RAW_DATA, //ARM->PIC = ACK. PIC->ARM = DATA
 	PA_RAW_SUB_DATA, //subsampled raw data
-    PA_ACCELEROMETER,  //both ways, send accel data to PIC when quaried  
+    PA_ACCEL_START,
+    PA_ACCEL_STOP, 
+    PA_IMU_DATA,
     PA_PROBE_ERROR, //PIC->ARM
     PA_ARM_DONE, //ARM ->PIC
     PA_PROFILE_ID,
@@ -81,6 +78,7 @@ typedef enum
 	PA_SERIAL_SET,  //for setting serial number on PIC
     PA_XMODEM,
     PA_START_TEST,
+    PA_NEW_ID,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -150,9 +148,11 @@ void spis_init(void);
 void spis_event_handler(nrf_drv_spis_event_t event);
 uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack);
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length);
-void set_RDY(void);
-void clear_RDY(void);
-bool isRDY(void);
+void set_ARM_RDY(void);
+void clear_ARM_RDY(void);
+void set_ARM_REQ(void);
+void clear_ARM_REQ(void);
+bool get_ARM_REQ(void);
 uint8_t buffer_size_calc(uint16_t spis_transfer_length);
 
 
