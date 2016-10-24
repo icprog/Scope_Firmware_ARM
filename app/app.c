@@ -207,7 +207,7 @@ void APP_Tasks(void)
             appData.ack = 0;
             while(appData.ack != 1)
             {
-                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_RDY_PIN) & 1UL))
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL))
                 {
                     disable_imu();
                     SEGGER_RTT_printf(0, "again\n");

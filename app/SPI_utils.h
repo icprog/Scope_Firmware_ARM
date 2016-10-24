@@ -150,9 +150,9 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack);
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length);
 void set_ARM_RDY(void);
 void clear_ARM_RDY(void);
-void set_RDY(void); //TODO change this RDY to REQ
-void clear_RDY(void);
-bool isRDY(void);
+void set_ARM_REQ(void);
+void clear_ARM_REQ(void);
+bool get_ARM_REQ(void);
 uint8_t buffer_size_calc(uint16_t spis_transfer_length);
 
 

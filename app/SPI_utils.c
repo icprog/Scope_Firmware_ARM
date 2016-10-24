@@ -122,7 +122,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         NRF_SPIS_Type * p_spis = spis.p_reg;
         if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_FREE)
         {
-            set_RDY(); 
+            set_ARM_REQ(); 
         }
         else
         {
@@ -130,7 +130,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
             {
                 SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
             }
-            set_RDY(); 
+            set_ARM_REQ(); 
         }
     }
     else
@@ -349,7 +349,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         /******* determine if rdy needs to remain high after sending current data  ******/
         if(spis_tx_transfer_length == 0)
         {
-            clear_RDY(); ///TODO: REQ not RDY
+            clear_ARM_REQ(); ///TODO: REQ not RDY
         }
         
         /**********  determine length of the packet to send and new one to receive *********/
@@ -441,11 +441,11 @@ void spis_init(void)
     }
     
     /******* initialize extra pin  ********/
-    nrf_gpio_cfg_output(SPIS_RDY_PIN); //TODO change to REQ 
+    nrf_gpio_cfg_output(SPIS_ARM_REQ_PIN); //TODO change to REQ 
     nrf_gpio_cfg_output(SPIS_ARM_RDY_PIN);
     start_ARM_RDY_timer();
     
-   // SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_RDY_PIN);
+   // SEGGER_RTT_printf(0,"\nSPI RDY pin: %d", SPIS_ARM_REQ_PIN);
 }
 
 
@@ -548,19 +548,19 @@ void clear_ARM_RDY(void)
     nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);
 }
 
-void set_RDY(void)
+void set_ARM_REQ(void)
 {
-    nrf_gpio_pin_set(SPIS_RDY_PIN);
+    nrf_gpio_pin_set(SPIS_ARM_REQ_PIN);
     //SEGGER_RTT_printf(0, "\n setting RDY ");
 }
-void clear_RDY(void)
+void clear_ARM_REQ(void)
 {
-    nrf_gpio_pin_clear(SPIS_RDY_PIN);
+    nrf_gpio_pin_clear(SPIS_ARM_REQ_PIN);
     //SEGGER_RTT_printf(0, "\n clearing RDY ");
 }
-bool isRDY(void)
+bool get_ARM_REQ(void)
 {
-    return (bool)(NRF_GPIO->OUT & (1 << SPIS_RDY_PIN));
+    return (bool)(NRF_GPIO->OUT & (1 << SPIS_ARM_REQ_PIN));
 }
 
 uint8_t buffer_size_calc(uint16_t spis_transfer_length)
