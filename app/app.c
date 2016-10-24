@@ -156,8 +156,11 @@ void APP_Initialize(void)
         appData.ack = 1;
 		init_LSM303();
         init_L3GD();
+        nrf_gpio_cfg_output(SCOPE_SPIS_READY);
+        nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
         SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
+    
 }
 
 
@@ -179,12 +182,17 @@ void APP_Tasks(void)
         case APP_STATE_INIT:
         {
             SEGGER_RTT_WriteString(0, "init state \n");
+            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
             //prompt();
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_POLLING:
         {
+
+          nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+
+
             //SEGGER_RTT_WriteString(0, "APP_STATE_POLLING \n");
             //monitor();
             break;
@@ -460,6 +468,8 @@ void APP_Tasks(void)
 //                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
 //            }
 //            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
+            nrf_delay_ms(5);
+            send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

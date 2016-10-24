@@ -23,6 +23,7 @@
 /****** shutdown logic pins   *******/
 #define SCOPE_HALL_PIN              7
 #define SCOPE_3V3_ENABLE_PIN        30
+#define SCOPE_SPIS_READY            1
 
 /****** SPI Slave for PIC comms  *******/
 #define SPIS_SCK_PIN 8

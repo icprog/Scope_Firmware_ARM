@@ -10,11 +10,11 @@
 #include "app.h"
 #include "SEGGER_RTT.h"
 #include "profile_service.h"
-#include "nrf_gpio.h"
-#include "SPI_utils.h"
 #include "nrf_drv_spis.h"
+#include "spi_utils.h"
+#include "pca10028.h"
 
-
+static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 extern LSM303_DATA accel_data;
 extern L3GD_DATA gyro_data;
 extern imu_data_t imu_data;
@@ -98,6 +98,8 @@ void application_timers_stop(void)
 /********** app timer handlers  ***********/
 void acc_timeout_handler(void *p_context)
 {
+     NRF_SPIS_Type * p_spis = spis.p_reg;
+    
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
     imu_data.ax = accel_data.X;
@@ -156,10 +158,6 @@ void status_timeout_handler(void *p_context)
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
     ble_status_status_level_update(&m_status, appData.status);
-//	if(!sending_data_to_phone)
-//	{
-//         profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-//	}
     
 }
     
@@ -177,6 +175,7 @@ void start_ARM_RDY_timer(void)
 		
     NRF_TIMER2->TASKS_START = 1;               // Start TIMER2
 }
+
 
 
 /** TIMTER2 peripheral interrupt handler. This interrupt handler is called whenever there it a TIMER2 interrupt
