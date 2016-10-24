@@ -451,6 +451,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			appData.ble_disconnect_flag = true;
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
+            sending_data_to_phone = 0;
 
             app_beacon_stop();
         
@@ -503,7 +504,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_status_on_ble_evt(&m_status, p_ble_evt);
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
-				ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
+		ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
     }
 }
 
@@ -763,13 +764,13 @@ int main(void)
     // Start execution.
     application_timers_start();
     SEGGER_RTT_WriteString(0, "starting adv\n");
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST); //TODO: advertize
+    err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-        profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-		SEGGER_RTT_WriteString(0, "main loop:\n");
-		char debug_out_string[20];
+    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+    SEGGER_RTT_WriteString(0, "main loop:\n");
+    char debug_out_string[20];
 //    sprintf(debug_out_string,"* DEBUG TEST STRING*");
 //	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
 //		//char debug_out_string[20];
@@ -777,8 +778,10 @@ int main(void)
 //	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
     while(true)
     {
-        APP_Tasks();
         power_manage();
+        APP_Tasks();
+        
+
 	}
 }
 

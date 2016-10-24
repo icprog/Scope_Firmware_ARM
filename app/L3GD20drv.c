@@ -39,6 +39,7 @@
 #include "SPI_utils.h"
 #include <stdint.h>
 #include "nrf51.h"
+#include "pca10028.h"
 
 
 // *****************************************************************************
@@ -115,9 +116,9 @@ L3GD_DATA getL3GDdata(void)
     
     address = L3GD_OUT_X_L | L3GD_READ_BIT | L3GD_CONTINUOUS_BIT; 
 	
-	 NRF_GPIO->OUTCLR = (1<<SPI_CS_GYRO);
+	 NRF_GPIO->OUTCLR = (1<<IMU_SPI_CS_GYRO_PIN);
 	 SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);
-	 NRF_GPIO->OUTSET = (1<<SPI_CS_GYRO);
+	 NRF_GPIO->OUTSET = (1<<IMU_SPI_CS_GYRO_PIN);
 
     data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
     data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);

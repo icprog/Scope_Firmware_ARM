@@ -41,6 +41,7 @@
 #include "LSM303drv.h"
 #include "nrf51.h"
 #include "nrf_delay.h"
+#include "pca10028.h"
 
 
 // *****************************************************************************
@@ -124,9 +125,9 @@ LSM303_DATA getLSM303data(void)
     
     address = LSM_OUT_X_L_A | LSM303_READ_BIT | LSM303_CONTINUOUS_BIT;  
 	
-	NRF_GPIO->OUTCLR = (1<<SPI_CS_ACC);
+	NRF_GPIO->OUTCLR = (1<<IMU_SPI_CS_ACC_PIN);
     SPIReadMultipleBytes(address, tx_buf, rx_buf, 7);//read in 7 bytes 2*3 axes + 1 bytes of header info
-	NRF_GPIO->OUTSET = (1<<SPI_CS_ACC);
+	NRF_GPIO->OUTSET = (1<<IMU_SPI_CS_ACC_PIN);
 	
 	data.X = rx_buf[1] + ((((uint16_t)rx_buf[2])<<8)&0xff00);
 	data.Y = rx_buf[3] + ((((uint16_t)rx_buf[4])<<8)&0xff00);

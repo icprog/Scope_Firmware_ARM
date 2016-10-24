@@ -46,7 +46,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 #include "app_uart.h"
 #include "app_error.h"
 #include "nrf_delay.h"
@@ -76,9 +75,7 @@
 #include "probe_error.h"
 #include "nrf_nvic.h"
 #include "ble_err.h"
-
 #include "nrf_drv_spis.h"
-
 #include "timers.h"
 
 
@@ -152,10 +149,11 @@ void APP_Initialize(void)
 {
 		SEGGER_RTT_WriteString(0, "APP Init Start \n");
         appData.state = APP_STATE_INIT;		
-        appData.accelerometer_enable = 1;
         appData.ble_status = 0;
         appData.data_counts = 0;
+        appData.send_imu_flag = false;
         appData.status = 0;
+        appData.ack = 1;
 		init_LSM303();
         init_L3GD();
         nrf_gpio_cfg_output(SCOPE_SPIS_READY);
@@ -177,7 +175,7 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
-	//SEGGER_RTT_WriteString(0, "App tasks start \n");
+	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
     switch (appData.state)
     {
         /* Application's initial state. */
@@ -199,47 +197,55 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
-        case APP_STATE_TRANSFER_PROFILE_IDS:
+        case APP_STATE_NEW_ID:
         {
-            SEGGER_RTT_printf(0, "APP_STATE_TRANSFER_PROFILE_ID\n");//.metadata.test_num);
-			SEGGER_RTT_printf(0, "BLE Status: %d \n", appData.ble_status);
-            if(appData.ble_status == 0) //if ble is disconnected
-            {
-                send_data_to_PIC(arm_done_pack);
-                appData.state = APP_STATE_POLLING;
-                SEGGER_RTT_printf(0, "phone not connected. ARM is done \n");
-            }
-            if(device_info.number_of_tests <= profile_data.metadata.test_num)  //if the test received is a new test, increment the num of tests and notify the phone, then wait for the corresponding id to tranfer
-            {
-                device_info.number_of_tests = profile_data.metadata.test_num + 1;  // increment when receiving new test from PIC (polled by phone on connection)
-                profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-                appData.state = APP_STATE_POLLING;
-                appData.accelerometer_enable = 1;
-                SEGGER_RTT_printf(0, "updating number of tests \n");
-             }
-             else if(appData.ble_status == 1) //if not  the most recent. PIC is sending a previously requested profile so pass it through to the transfer state
-             {
-                appData.state = APP_STATE_PROFILE_TRANSFER;
-				SEGGER_RTT_printf(0, "test number: %d \n", profile_data.metadata.test_num);
-                appData.ble_disconnect_flag = false;
-            }
+            SEGGER_RTT_printf(0, "APP_STATE_NEW_ID\n");
+            device_info.number_of_tests = appData.new_profile_num + 1; //update device info stored on ARM
+            profile_ids_update(&m_ps, device_info.number_of_tests - 1); //update the phone with the new id if connected!
+            SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
+            appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_SEND_PROFILE_ID:
+        case APP_STATE_REQUEST_PROFILE:
         {
-            //application_timers_stop();
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500);//500); 
-            SEGGER_RTT_printf(0, "APP_STATE_SEND_PROFILE_ID %d \n", appData.profile_id.test_num);
-            send_data_to_PIC(profile_id_pack);
-			//appData.accelerometer_enable = 0;
+            uint8_t error_code = 0;
+            sending_data_to_phone = 0; //if we are requesting a profile
+            SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL))
+                {
+                    disable_imu();
+                    SEGGER_RTT_printf(0, "again\n");
+                    SEGGER_RTT_printf(0, "sdtp = %d\n", sending_data_to_phone);
+                    error_code = send_data_to_PIC(profile_id_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "sent it\n");
             break;
         }
         case APP_STATE_PROFILE_TRANSFER:
         {
-            
-            SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+            }
+            /***** if we disconnect get out of here  *******/
+            if(appData.ble_status == 0)
+            {
+                appData.state = APP_STATE_POLLING;
+				appData.prev_state = APP_STATE_POLLING;
+            }
             uint8_t bytes_sent = 0;
             //static int data_counts = 0;
             uint8_t counter = 0;
@@ -250,14 +256,12 @@ void APP_Tasks(void)
 
 			if(appData.ble_disconnect_flag == true)
 			{
-				  appData.ble_disconnect_flag = false;
+				    appData.ble_disconnect_flag = false;
 					appData.state = APP_STATE_POLLING;
 					appData.prev_state = APP_STATE_POLLING;
 					appData.status = 0;
 					sending_data_to_phone = 0;
 					send_data_to_PIC(arm_done_pack);
-					appData.accelerometer_enable = 1;
-					application_timers_start();
 					appData.data_counts = 0;
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
@@ -278,8 +282,6 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
-					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
@@ -308,8 +310,10 @@ void APP_Tasks(void)
 				
 		case APP_STATE_RAW_SUB_DATA_RECEIVE:
         {
-            
-            SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED \n test num = %d", raw_sub_data.metadata.test_num);
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+            }
             uint8_t bytes_sent = 0;
             static int data_counts = 0;
             uint8_t counter = 0;
@@ -319,17 +323,15 @@ void APP_Tasks(void)
             appData.status = 3;
             if(appData.ble_disconnect_flag == true)
             {
-                  appData.ble_disconnect_flag = false;
-                    appData.state = APP_STATE_POLLING;
-                    appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
-                    sending_data_to_phone = 0;
-                    send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
-                    application_timers_start();
-                    appData.data_counts = 0;
-                    SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
-                    break;
+                appData.ble_disconnect_flag = false;
+                appData.state = APP_STATE_POLLING;
+                appData.prev_state = APP_STATE_POLLING;
+                appData.status = 0;
+                sending_data_to_phone = 0;
+                send_data_to_PIC(arm_done_pack);
+                appData.data_counts = 0;
+                SEGGER_RTT_printf(0, "lost communication during raw transfer\n");
+                break;
             }
             while(appData.data_counts<sizeof(subsampled_raw_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      			
@@ -346,20 +348,17 @@ void APP_Tasks(void)
                     appData.status = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
-                    appData.accelerometer_enable = 1;
-					application_timers_start();
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
 
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
-
-                    data_counts = 0;
+                    appData.data_counts = 0;
 
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
-                {
+               {
                     //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
@@ -374,26 +373,6 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
-            break;
-        }
-        case APP_STATE_ACCELEROMETER:
-        {
-
-            //accel_data = getLSM303data();
-            //sd_nvic_critical_region_exit(0);
-            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA\n");
-            //SEGGER_RTT_printf(0, "PA_ACCELEROMETER_DATA: %d \n",accel_data.Y); //TODO: remove
-            //tx_data_ptr = &accel_data;
-
-            //nrf_delay_us(90); //TODO: remove
-            if(appData.accelerometer_enable)
-            {
-                send_data_to_PIC(accelerometer_pack);
-            }
-                
-            //SEGGER_RTT_printf(0, "sent %d   %d   %d", accel_data.X, accel_data.Y, accel_data.Z);
-            //SEGGER_RTT_printf(0, "    sent %d   %d   %d \n", (int16_t)accelerometer_pack.data[0], (int16_t)accelerometer_pack.data[2], (int16_t)accelerometer_pack.data[4]);
-            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_VIB_CAL_RDY:
@@ -545,8 +524,6 @@ void APP_Tasks(void)
                     buffer_data_counts = 0;
                     raw_data_counts = 0;
                     sending_data_to_phone = 0;
-                    appData.accelerometer_enable = 1;
-                    application_timers_start();
                     send_data_to_PIC(raw_data_ack_pack);
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
@@ -572,7 +549,7 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
             uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
             SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
-						send_data_to_PIC(arm_done_pack);
+			send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -580,40 +557,39 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
             send_data_to_PIC(spis_fail_pack);
-			//appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_NEW_SN:
         {
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            disable_imu();
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
             SEGGER_RTT_printf(0, "phone wrote SN\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_X_MODEM:
         {
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            disable_imu();
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
             send_data_to_PIC(xmodem_pack);
             SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_START_TEST:
         {
-            appData.accelerometer_enable = 0;
-            nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            disable_imu();
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
             send_data_to_PIC(start_test_pack);
             SEGGER_RTT_printf(0, "phone wrote start test pack\n");
             //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.accelerometer_enable = 1;
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -622,97 +598,102 @@ void APP_Tasks(void)
             break;
         }
     }
+    if(appData.send_imu_flag)
+    {
+        send_data_to_PIC(accelerometer_pack);
+        appData.send_imu_flag = false;
+    }
 }
 
 
-/*******************************************************************************
-  Function:
-    void prompt(void)
+///*******************************************************************************
+//  Function:
+//    void prompt(void)
 
-  Remarks:
-    See prototype in app.h.
- */
+//  Remarks:
+//    See prototype in app.h.
+// */
 
-void prompt(void)
-{
-	printf("\n\r\n\rScope nRF>>");
-}
+//void prompt(void)
+//{
+//	printf("\n\r\n\rScope nRF>>");
+//}
 
 
-/*******************************************************************************
-  Function:
-    void monitor(void)
+///*******************************************************************************
+//  Function:
+//    void monitor(void)
 
-  Remarks:
-    See prototype in app.h.
- */
+//  Remarks:
+//    See prototype in app.h.
+// */
 
-void monitor(void)
-{
-		uint8_t cr;
-    if(app_uart_get(&cr) == NRF_SUCCESS)
-		{
-				while(app_uart_put(cr) != NRF_SUCCESS) {};
-					
-				switch (cr)
-				{		
-						case '?':
-						{
-								printf("\n\r\n\r?  Help");
-								printf("\n\rb  Get button state.");
-								printf("\n\rc  Configure LSM303D.");
-								printf("\n\rg  Get IMU Data.");
-								printf("\n\rw  IMU who am I.");
-								prompt();
-								break;
-						}
-						
-						// get button state
-						case 'b':
-						{
-								if(~NRF_GPIO->IN & 1<<17)
-										printf("\n\rButton 1 pressed");
-								if(~NRF_GPIO->IN & 1<<18)
-										printf("\n\rButton 2 pressed");
-								if(~NRF_GPIO->IN & 1<<19)
-										printf("\n\rButton 3 pressed");
-								if(~NRF_GPIO->IN & 1<<20)
-										printf("\n\rButton 4 pressed");
-								SEGGER_RTT_WriteString(0, "Button pressed\n");
-								break;
-						}
-						
-						// configure LSM303w
-						case 'c':
-						{
-								init_LSM303();					
-								printf("\r\nLSM Ctrl post init: %x",SPIReadByte(LSM_CTRL1, LSM_DEVICE));
-								init_L3GD();
-								printf("\r\nL3GD Ctrl post init: %x",SPIReadByte(L3GD_CTRL1, L3G_DEVICE));
-						}
-						
-						case 'g':
-						{
-								LSM303_DATA data;
-								data = getLSM303data();
-								printf("\r\nAccelerometer X axis: %d",data.X);
-								printf("\r\nAccelerometer Y axis: %d",data.Y);
-								printf("\r\nAccelerometer Z axis: %d",data.Z);
-							
-								L3GD_DATA data2;
-								data2 = getL3GDdata();
-								printf("\r\nGyro X axis: %d",data2.X);
-								printf("\r\nGyro Y axis: %d",data2.Y);
-								printf("\r\nGyro Z axis: %d",data2.Z);
-								prompt();
-						}
-						
-						case 'w':
-						{
-								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
-								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
-								prompt();											
-						}
-				}
-		}
-}
+//void monitor(void)
+//{
+//		uint8_t cr;
+//    if(app_uart_get(&cr) == NRF_SUCCESS)
+//		{
+//				while(app_uart_put(cr) != NRF_SUCCESS) {};
+//					
+//				switch (cr)
+//				{		
+//						case '?':
+//						{
+//								printf("\n\r\n\r?  Help");
+//								printf("\n\rb  Get button state.");
+//								printf("\n\rc  Configure LSM303D.");
+//								printf("\n\rg  Get IMU Data.");
+//								printf("\n\rw  IMU who am I.");
+//								prompt();
+//								break;
+//						}
+//						
+//						// get button state
+//						case 'b':
+//						{
+//								if(~NRF_GPIO->IN & 1<<17)
+//										printf("\n\rButton 1 pressed");
+//								if(~NRF_GPIO->IN & 1<<18)
+//										printf("\n\rButton 2 pressed");
+//								if(~NRF_GPIO->IN & 1<<19)
+//										printf("\n\rButton 3 pressed");
+//								if(~NRF_GPIO->IN & 1<<20)
+//										printf("\n\rButton 4 pressed");
+//								SEGGER_RTT_WriteString(0, "Button pressed\n");
+//								break;
+//						}
+//						
+//						// configure LSM303w
+//						case 'c':
+//						{
+//								init_LSM303();					
+//								printf("\r\nLSM Ctrl post init: %x",SPIReadByte(LSM_CTRL1, LSM_DEVICE));
+//								init_L3GD();
+//								printf("\r\nL3GD Ctrl post init: %x",SPIReadByte(L3GD_CTRL1, L3G_DEVICE));
+//						}
+//						
+//						case 'g':
+//						{
+//								LSM303_DATA data;
+//								data = getLSM303data();
+//								printf("\r\nAccelerometer X axis: %d",data.X);
+//								printf("\r\nAccelerometer Y axis: %d",data.Y);
+//								printf("\r\nAccelerometer Z axis: %d",data.Z);
+//							
+//								L3GD_DATA data2;
+//								data2 = getL3GDdata();
+//								printf("\r\nGyro X axis: %d",data2.X);
+//								printf("\r\nGyro Y axis: %d",data2.Y);
+//								printf("\r\nGyro Z axis: %d",data2.Z);
+//								prompt();
+//						}
+//						
+//						case 'w':
+//						{
+//								printf("\r\nLSM Who Am I: %x",get_LSM303_ID());
+//								printf("\r\nL3G Who Am I: %x",get_L3GD_ID());
+//								prompt();											
+//						}
+//				}
+//		}
+//}

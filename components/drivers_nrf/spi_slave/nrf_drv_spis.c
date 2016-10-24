@@ -365,13 +365,13 @@ static void spis_irq_handler(NRF_SPIS_Type * p_spis, spis_cb_t * p_cb)
                 // No implementation required.
                 break;
         }
-        //set_RDY();//set the RDY line after the buffers have been set and the semaphore is released
+        //set_ARM_REQ();//set the RDY line after the buffers have been set and the semaphore is released
     }
 
     // Check for SPI transaction complete event.
     if (nrf_spis_event_check(p_spis, NRF_SPIS_EVENT_END))
     {
-        //clear_RDY(); //clear the RDY while the SPIS semaphore is aquired by the CPU
+        //clear_ARM_REQ(); //clear the RDY while the SPIS semaphore is aquired by the CPU
         nrf_spis_event_clear(p_spis, NRF_SPIS_EVENT_END);
         
         switch (p_cb->spi_state)
