@@ -143,6 +143,7 @@
 /**************** Scope Pin Mappings  *************/
 #define SCOPE_HALL_PIN              7
 #define SCOPE_3V3_ENABLE_PIN        30
+#define SCOPE_SPIS_READY            1
 
 // Low frequency clock source to be used by the SoftDevice
 #ifdef S210
