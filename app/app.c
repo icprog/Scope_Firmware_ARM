@@ -314,8 +314,14 @@ void APP_Tasks(void)
             {
                 SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
             }
+            /***** if we disconnect get out of here  *******/
+            if(appData.ble_status == 0)
+            {
+                appData.state = APP_STATE_POLLING;
+				appData.prev_state = APP_STATE_POLLING;
+            }
+            
             uint8_t bytes_sent = 0;
-            static int data_counts = 0;
             uint8_t counter = 0;
             uint32_t err_code;
             uint8_t done_flag = 0;
@@ -351,14 +357,11 @@ void APP_Tasks(void)
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
-
-                    //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
-										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
                     appData.data_counts = 0;
 
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
-               {
+                {
                     //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
@@ -468,8 +471,8 @@ void APP_Tasks(void)
 //                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
 //            }
 //            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
-            nrf_delay_ms(5);
-            send_data_to_PIC(arm_done_pack);
+            //nrf_delay_ms(5);
+            //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

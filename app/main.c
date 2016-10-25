@@ -437,7 +437,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         case BLE_GAP_EVT_CONNECTED:
         {
             appData.ble_status = 1;
-            err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
+            err_code = bsp_indication_set(BSP_INDICATE_CONNECTED); //TODO: can we remove this?
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
@@ -452,12 +452,11 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
             sending_data_to_phone = 0;
-
             app_beacon_stop();
         
             // when not using the timeslot implementation, it is necessary to initialize the advertizing data again.
             advertising_init();
-            err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+            err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
             APP_ERROR_CHECK(err_code);
             SEGGER_RTT_printf(0, "disconnected!\n");
         

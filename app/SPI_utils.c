@@ -253,6 +253,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 			}
             case PA_PROBE_ERROR:
             {
+                SEGGER_RTT_printf(0, "PA_PROBE_ERROR\n");
                 rx_data_ptr = &(metadata.error_code);
                 next_state = APP_STATE_PROBE_ERROR;
                 break;
