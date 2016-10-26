@@ -154,7 +154,7 @@ void set_ARM_REQ(void);
 void clear_ARM_REQ(void);
 bool get_ARM_REQ(void);
 uint8_t buffer_size_calc(uint16_t spis_transfer_length);
-
+void spi_un_init(void);
 
 #endif	/* SPI_UTILS_H */
 

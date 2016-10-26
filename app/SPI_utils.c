@@ -408,7 +408,10 @@ void spi_init(void)
 //		printf("\n\r  SPI Mode: %d", spi_config.mode);
 }
 
-
+void spi_un_init(void)
+{
+    nrf_drv_spi_uninit(&spi);
+}
 /**
  * @brief SPI Slave Initialization
  *
