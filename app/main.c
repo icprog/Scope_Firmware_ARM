@@ -676,13 +676,14 @@ void in_pole_sleep(void)
   
     
     NRF_POWER->SYSTEMOFF = 1;   
+    sd_nvic_SystemReset();
     //sleep_mode_enter();
-    while(true)
-    {
-//        power_manage();
-//        sleep_mode_enter();
+//    while(true)
+//    {
+////        power_manage();
+////        sleep_mode_enter();
 
-    }
+//    }
 }
 
 
