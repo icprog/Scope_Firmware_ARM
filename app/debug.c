@@ -142,9 +142,7 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
             else if(*(p_evt_write->data) == 's')
             {
                 SEGGER_RTT_printf(0, "s\n");
-                appData.profile_id.type = 0;
-                appData.profile_id.test_num = 1;
-                appData.state = APP_STATE_REQUEST_PROFILE;
+                appData.state = APP_STATE_FWU_START;
                 SEGGER_RTT_printf(0, "state = %d", appData.state);
                 
             }
