@@ -104,6 +104,7 @@ subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
+uint32_t fw_size = 70000;
 
 // *****************************************************************************
 /* Application Data
@@ -601,15 +602,14 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
-            uint32_t fw_size = 70000;
             fwu_start_pack.data = (uint8_t *)(&fw_size);
             send_data_to_PIC(fwu_start_pack);
+            appData.ack = 0;
             while(appData.ack != 1)
             {
                 
             }
             /*** send some kind of notification to the phone ***/
-            
             
             //appData.state = APP_STATE_POLLING;
             appData.state = APP_STATE_FWU_DATA_SEND;
