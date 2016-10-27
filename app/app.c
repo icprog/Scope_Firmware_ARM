@@ -215,7 +215,7 @@ void APP_Tasks(void)
             appData.ack = 0;
             while(appData.ack != 1)
             {
-                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL))
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
                     disable_imu();
                     SEGGER_RTT_printf(0, "again\n");
@@ -596,11 +596,42 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_FWU_START:
+        {
+            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
+            disable_imu();
+            nrf_delay_ms(100);
+            uint32_t fw_size = 70000;
+            fwu_start_pack.data = (uint8_t *)(&fw_size);
+            send_data_to_PIC(fwu_start_pack);
+            while(appData.ack != 1)
+            {
+                
+            }
+            /*** send some kind of notification to the phone ***/
+            
+            
+            //appData.state = APP_STATE_POLLING;
+            appData.state = APP_STATE_FWU_DATA_SEND;
+            break;
+        }
+        case APP_STATE_FWU_DATA_SEND:
+        {
+            SEGGER_RTT_printf(0, "FWU: sending a data packet\n");
+            send_data_to_PIC(fwu_data_pack);
+            while(appData.ack != 1)
+            {
+                
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         default:
         {
             break;
         }
     }
+    /****** keeping imu sending out of state amchine becuase it can happen in multiple states ***/
     if(appData.send_imu_flag)
     {
         send_data_to_PIC(accelerometer_pack);

@@ -83,6 +83,9 @@ typedef enum
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
     PA_DEVICE_INFO,
+    PA_FWU_START,
+    PA_FWU_DATA,
+    PA_FWU_ACK,
      /******************  calibration codes  ****************/
     PA_CAL_START, //dummy code used to mark where cal codes start
             
@@ -126,6 +129,8 @@ extern pic_arm_pack_t send_device_info_pack;
 extern pic_arm_pack_t serial_set_pack;
 extern pic_arm_pack_t xmodem_pack;
 extern pic_arm_pack_t start_test_pack;
+extern pic_arm_pack_t fwu_start_pack;
+extern pic_arm_pack_t fwu_data_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 
