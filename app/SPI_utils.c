@@ -411,6 +411,7 @@ void spi_init(void)
 void spi_un_init(void)
 {
     nrf_drv_spi_uninit(&spi);
+    //nrf_drv_spis_uninit(&spis);
 }
 /**
  * @brief SPI Slave Initialization

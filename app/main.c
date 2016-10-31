@@ -651,43 +651,56 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
-void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action);
-void in_pole_sleep(void)
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action);  // prototype declarration
+
+
+//shut everything down and enter sleep (systemoff):
+void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
 {
     uint8_t in_pole_flag = 0;
     uint32_t err_code;
     bool erase_bonds;
+    int i;
 
-    spi_init();
-    //init_LSM303();
+    //spi_init();
+    init_LSM303();
     init_L3GD();
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
     nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
-    //sleep_LSM303();
+    sleep_LSM303();
     sleep_L3GD();
     spi_un_init();  // might need to re-add 
-    int i;
-    for(i=5;i<=15;i++)
+    application_timers_stop();
+    
+
+    //config all pins except the shutdown ("SCOPE_HALL_PIN") pin as input with pulldown:
+    for(i=0;i<=6;i++)
     {
-        NRF_GPIO->PIN_CNF[i] |= GPIO_PIN_CNF_INPUT_Disconnect<< GPIO_PIN_CNF_INPUT_Pos;
-        nrf_gpio_pin_clear(i);
+        //nrf_gpio_pin_dir_set(i,GPIO_PIN_CNF_DIR_Input);
+        //PIO_PIN_CNF_PULL_Pulldown
+       // NRF_GPIO->PIN_CNF[i] |= GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos;
+        nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
+        //nrf_gpio_pin_clear(i);
+    }
+    for(i=8;i<=30;i++)
+    {
+        //nrf_gpio_pin_dir_set(i,GPIO_PIN_CNF_DIR_Input);
+        nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
+        //NRF_GPIO->PIN_CNF[i] |= GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos;
+        //nrf_gpio_pin_clear(i);
+    }
+
+     sd_power_system_off();  // entter systemoff    <=========== *** current is too high  ***
+
+    while(true)  // should never be reached?
+    {
     }
     
-  
-    
-    NRF_POWER->SYSTEMOFF = 1;   
-    sd_nvic_SystemReset();
-    //sleep_mode_enter();
-//    while(true)
-//    {
-////        power_manage();
-////        sleep_mode_enter();
-
-//    }
-}
+}  // end of "in_pole_sleep()"
 
 
-void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+//Handle changes in hall effect pin ("SCOPE_HALL_PIN", pin 7)
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)  // <==== trigger call fxn to trigger systemoff on pin change
 {
     SEGGER_RTT_printf(0, "pin change \n");
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
@@ -705,8 +718,8 @@ void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
     {
         SEGGER_RTT_printf(0, "go to sleep\n");
        in_pole_sleep();
-         //nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
-        //sd_nvic_SystemReset();
+//         nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+//        sd_nvic_SystemReset();
     }
     
     
@@ -714,8 +727,12 @@ void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 /**
  * @brief Function for configuring: PIN_IN pin for input, PIN_OUT pin for output, 
  * and configures GPIOTE to give an interrupt on pin change.
+ * This is for the input from the magnetic sensors.
+ *
+ * The chip will awake (or remain awake) on a transition to high
+ * and sleep on a transition to low.
  */
-static void shutdown_gpio_init(void)
+static void shutdown_gpio_init(void)    // <====== set up systemoff on pin change
 {
     ret_code_t err_code;
 
@@ -736,6 +753,7 @@ static void shutdown_gpio_init(void)
     APP_ERROR_CHECK(err_code);
 
     nrf_drv_gpiote_in_event_enable(SCOPE_HALL_PIN, true); //enable event handling
+    //NRF_GPIO->PIN_CNF[SCOPE_HALL_PIN] |= GPIO_PIN_CNF_PULL_Pulldown << GPIO_PIN_CNF_PULL_Pos;  // set pulldown -- is this needed?
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
     {
@@ -776,25 +794,24 @@ void init_device_info(void)
 int main(void)
 {
     uint32_t err_code;
-    bool erase_bonds;
-//	char debug_out_string[20];
-//  sprintf(debug_out_string,"oh shit");
-
+    bool erase_bonds;    
+    
  // Initialize.
     SEGGER_RTT_WriteString(0, "main init\n");
 
-    shutdown_gpio_init();
+    shutdown_gpio_init();  // init pins for hall-effect sensor used to enter sleep mode   <====== setup GPIOTE to trigger system-off on pin-change
     
-    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
-    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); 
-    timers_init();
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
+    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
+    
+    timers_init();  //** probably not necessary for dev board
     
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
     
-    spi_init();
-	spis_init();
+    //spi_init();   //** removed for dev board
+	//spis_init();  //** removed for dev board
     appData.state = APP_STATE_POLLING;		
 
     SEGGER_RTT_WriteString(0, "starting dev info init\n");
@@ -805,27 +822,22 @@ int main(void)
     services_init();
     conn_params_init();
 
-    APP_Initialize();
+    //APP_Initialize();      //** removed for dev board
 
     // Start execution.
-    application_timers_start();
+    application_timers_start();   //** not necessary for dev board ?
     SEGGER_RTT_WriteString(0, "starting adv\n");
     err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
+    //profile_ids_update(&m_ps, device_info.number_of_tests - 1);    //** removed for dev board
     SEGGER_RTT_WriteString(0, "main loop:\n");
-    char debug_out_string[20];
-//    sprintf(debug_out_string,"* DEBUG TEST STRING*");
-//	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-//		//char debug_out_string[20];
-//    sprintf(debug_out_string,"*DEBUG TEST STRING 2");
-//	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
+
     while(true)
     {
         power_manage();
-        APP_Tasks();
+        //APP_Tasks();    // ** removed for dev board
         
 
 	}
