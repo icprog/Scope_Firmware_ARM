@@ -83,7 +83,7 @@ pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_
 pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
 pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 pic_arm_pack_t fwu_start_pack={PA_FWU_START, dummy_buf, sizeof(uint32_t)};
-pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, dummy_buf, 32};
+pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
