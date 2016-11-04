@@ -13,6 +13,7 @@
 */
 void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
 {
+    uint8_t ignore_length = 0;
     static uint8_t data_len = 0;
     static uint8_t data_ind = 0;
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
@@ -21,13 +22,16 @@ void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
         
         if(data_len == 0)/***** new line of data  ****/
         {
-            data_len = (p_evt_write->data)[0] + 5; //data length should be first byte of a new line, then 5 bytes of packet structure
+            ignore_length = 1;
+            data_len = (p_evt_write->data)[0]; //data length should be first byte of a new line, then 5 bytes of packet structure
+            //SEGGER_RTT_printf(0, "expecting %d bytes of data", data_len);
         }
+        //SEGGER_RTT_printf(0, "data ind = %d\n", data_ind);
+        memcpy(appData.fwu_data_buf + data_ind , (p_evt_write->data) + ignore_length, p_evt_write->len - ignore_length); 
         data_ind += p_evt_write->len;
-        memcpy(appData.fwu_data_buf + data_ind, (p_evt_write->data), p_evt_write->len);
         if(data_ind == data_len) /***** finished reading line ****/
         {
-            fwu_data_pack.data_size = data_ind;
+            fwu_data_pack.data_size = data_ind-1; //minus one for the initial data length
             appData.state = APP_STATE_FWU_DATA_SEND;
             data_len = 0;
             data_ind = 0;
@@ -35,7 +39,7 @@ void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
         }
         else if(data_ind > data_len)
         {
-            SEGGER_RTT_printf(0, "problem with fwu data packet. got %d expecting %d\n", p_evt_write->len, data_len - data_ind);
+            SEGGER_RTT_printf(0, "problem with fwu data packet. got %d expecting %d\n", p_evt_write->len, data_len - data_ind - p_evt_write->len);
         }
         
         
@@ -146,7 +150,8 @@ void fwu_data_char_add(ble_fwu_t * p_fwu)
     /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
     memset(&char_md, 0, sizeof(char_md));
-    char_md.char_props.write = 1;
+    //char_md.char_props.write = 1;
+    char_md.char_props.write_wo_resp = 1;
     //char_md.char_props.read = 1;
     
     /******   Configuring Client Characteristic Configuration Descriptor metadata and add to char_md structure   ****/

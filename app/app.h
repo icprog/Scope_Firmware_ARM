@@ -202,7 +202,7 @@ typedef struct
     bool transfer_in_progress;
     volatile uint8_t ack;
     volatile uint8_t ack_retry;
-    uint8_t fwu_data_buf[32];
+    uint8_t fwu_data_buf[256];
 } APP_DATA;
 extern APP_DATA appData;
 	
