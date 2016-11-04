@@ -178,6 +178,7 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
+    static uint8_t packet_counter;
 	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
     switch (appData.state)
     {
@@ -601,6 +602,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_PIC_FWU_START:
         {
+            packet_counter = 0;
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
@@ -612,7 +614,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_FWU_DATA_SEND:
         {
-            //SEGGER_RTT_printf(0, "FWU: sending a data packet\n");
+            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
             send_data_to_PIC(fwu_data_pack);
             appData.state = APP_STATE_POLLING;
             break;
