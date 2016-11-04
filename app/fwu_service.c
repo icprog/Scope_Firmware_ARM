@@ -5,16 +5,54 @@
 #include "ble_srv_common.h"
 #include "app_error.h"
 #include "SEGGER_RTT.h"
+#include "app.h"
+#include "spi_utils.h"
 
-
+/*
+* the on write is used to pull hex data from a file on to the phone to the PIC.
+*/
 void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
 {
+    static uint8_t data_len = 0;
+    static uint8_t data_ind = 0;
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+    if(p_evt_write->handle == p_fwu->data_char_handles.value_handle)
+    {
+        
+        if(data_len == 0)/***** new line of data  ****/
+        {
+            data_len = (p_evt_write->data)[0] + 5; //data length should be first byte of a new line, then 5 bytes of packet structure
+        }
+        data_ind += p_evt_write->len;
+        memcpy(appData.fwu_data_buf + data_ind, (p_evt_write->data), p_evt_write->len);
+        if(data_ind == data_len) /***** finished reading line ****/
+        {
+            fwu_data_pack.data_size = data_ind;
+            appData.state = APP_STATE_FWU_DATA_SEND;
+            data_len = 0;
+            data_ind = 0;
+
+        }
+        else if(data_ind > data_len)
+        {
+            SEGGER_RTT_printf(0, "problem with fwu data packet. got %d expecting %d\n", p_evt_write->len, data_len - data_ind);
+        }
+        
+        
+    }
     if(p_evt_write->handle == p_fwu->cmd_char_handles.value_handle)
     {
-        //memcpy(&(appData.profile_id), (p_evt_write->data), sizeof(profile_id_t));
-        //SEGGER_RTT_printf(0,"profile_to_transfer:  type = %d num = %d \n", appData.profile_id.type, appData.profile_id.test_num);
-        //appData.state = APP_STATE_REQUEST_PROFILE;
+            fwu_code_t fwu_code = *(p_evt_write->data);
+            if(fwu_code == START_ARM_FWU)
+            {
+                SEGGER_RTT_printf(0, "start ARM _FWU\n");
+                //appData.state = APP_STATE_X_MODEM;
+            }
+            else if(fwu_code == START_PIC_FWU)
+            {
+                SEGGER_RTT_printf(0, "start PIC FWU\n");
+                appData.state = APP_STATE_PIC_FWU_START;
+            }
     }
 
 }
@@ -152,10 +190,12 @@ void ble_fwu_service_init(ble_fwu_t * p_fwu_service)
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
     ble_uuid_t service_uuid;
-    ble_uuid128_t base_uuid = FWU_SERVICE_BASE_UUID;
-    service_uuid.uuid = FWU_SERVICE_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
-    APP_ERROR_CHECK(err_code);
+//    ble_uuid128_t base_uuid = FWU_SERVICE_BASE_UUID;
+//    service_uuid.uuid = FWU_SERVICE_UUID;
+//    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+//    APP_ERROR_CHECK(err_code);
+    
+    BLE_UUID_BLE_ASSIGN(service_uuid, FWU_SERVICE_UUID);
     
     p_fwu_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_fwu_service->service_handle);

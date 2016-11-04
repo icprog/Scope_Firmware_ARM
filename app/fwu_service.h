@@ -9,8 +9,17 @@
 #define FWU_SERVICE_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
 #define FWU_SERVICE_UUID 0x1123
 #define FWU_CMD_CHAR_UUID 0x5812
-#define FWU_DATA_CHAR_UUID 0x5812
+#define FWU_DATA_CHAR_UUID 0x5813
 
+typedef enum
+{
+    PLACE_HOLDER,
+    START_ARM_FWU,
+    START_PIC_FWU,
+    FWU_ACK,
+    FWU_NACK,
+    DONE_PIC_FWU,
+} fwu_code_t;
 
 /**@brief Firmware Update Service event type. */
 typedef enum

@@ -77,6 +77,7 @@
 #include "ble_err.h"
 #include "nrf_drv_spis.h"
 #include "timers.h"
+#include "fwu_service.h"
 
 
 // *****************************************************************************
@@ -94,6 +95,7 @@ extern ble_pes_t 	 		    m_pes; //probing error service
 extern cal_optical_t			m_optical;
 extern cal_hall_effect_t	    m_hall_effect;
 extern ble_ps_t                 m_ps;
+extern ble_fwu_t                m_fwu;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
 extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
@@ -597,32 +599,29 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_FWU_START:
+        case APP_STATE_PIC_FWU_START:
         {
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
             fwu_start_pack.data = (uint8_t *)(&fw_size);
             send_data_to_PIC(fwu_start_pack);
-            appData.ack = 0;
-            while(appData.ack != 1)
-            {
-                
-            }
-            /*** send some kind of notification to the phone ***/
-            
-            //appData.state = APP_STATE_POLLING;
-            appData.state = APP_STATE_FWU_DATA_SEND;
+            appData.ack = 0;      
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_FWU_DATA_SEND:
         {
-            SEGGER_RTT_printf(0, "FWU: sending a data packet\n");
+            //SEGGER_RTT_printf(0, "FWU: sending a data packet\n");
             send_data_to_PIC(fwu_data_pack);
-            while(appData.ack != 1)
-            {
-                
-            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ACK:
+        {
+            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            fwu_code_t fwu_code = FWU_ACK;
+            ble_fwu_update(&m_fwu, fwu_code);
             appData.state = APP_STATE_POLLING;
             break;
         }

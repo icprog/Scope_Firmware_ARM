@@ -83,7 +83,7 @@ pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_
 pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
 pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 pic_arm_pack_t fwu_start_pack={PA_FWU_START, dummy_buf, sizeof(uint32_t)};
-pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, dummy_buf, 0};
+pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, appData.fwu_data_buf, 0}; //will need to update length dynamically
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
@@ -275,9 +275,9 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_FWU_ACK:
             {
-                SEGGER_RTT_printf(0, "PA_FWU_ACK\n");
+                //SEGGER_RTT_printf(0, "PA_FWU_ACK\n");
                 appData.ack = 1;
-                next_state = appData.state;
+                next_state = APP_STATE_FWU_ACK;
                 break;
             }
             default:

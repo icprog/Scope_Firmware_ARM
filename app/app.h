@@ -90,8 +90,9 @@ typedef enum
     APP_STATE_X_MODEM,
     APP_STATE_START_TEST,
     APP_STATE_NEW_ID,
-    APP_STATE_FWU_START,
+    APP_STATE_PIC_FWU_START,
     APP_STATE_FWU_DATA_SEND,
+    APP_STATE_FWU_ACK,
 } APP_STATES;
 
 /****** DEVICE INFO STRUCT *****/
@@ -201,6 +202,7 @@ typedef struct
     bool transfer_in_progress;
     volatile uint8_t ack;
     volatile uint8_t ack_retry;
+    uint8_t fwu_data_buf[32];
 } APP_DATA;
 extern APP_DATA appData;
 	
