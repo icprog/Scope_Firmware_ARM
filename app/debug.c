@@ -101,11 +101,12 @@ void ble_debug_service_init(ble_dbs_t * p_debug_service)
     uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
-    ble_uuid_t service_uuid;
-    ble_uuid128_t base_uuid = DEBUG_BASE_UUID;
-    service_uuid.uuid = DEBUG_SERVICE_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
-    APP_ERROR_CHECK(err_code);
+      ble_uuid_t service_uuid;
+//    ble_uuid128_t base_uuid = DEBUG_BASE_UUID;
+//      service_uuid.uuid = DEBUG_SERVICE_UUID;
+//    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+//    APP_ERROR_CHECK(err_code);
+     BLE_UUID_BLE_ASSIGN(service_uuid, DEBUG_SERVICE_UUID);
     
     p_debug_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_debug_service->service_handle);
@@ -142,7 +143,7 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
             else if(*(p_evt_write->data) == 's')
             {
                 SEGGER_RTT_printf(0, "s\n");
-                appData.state = APP_STATE_FWU_START;
+                appData.state = APP_STATE_PIC_FWU_START;
                 SEGGER_RTT_printf(0, "state = %d", appData.state);
                 
             }
