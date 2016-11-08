@@ -43,7 +43,7 @@
 #include <L3GD20drv.h>
 
 #define CALIBRATION 0
-#define FW_VERSION "0.0.01"
+#define FW_VERSION "0.01.00"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -97,16 +97,23 @@ typedef enum
     APP_STATE_FWU_DONE,
 } APP_STATES;
 
+
+
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
     char serial_number[6];
     char device_name[32];
+    char PIC_firmware_version[7]; //X.YY.ZZ
+    char ARM_firmware_version[7]; //X.YY.ZZ
     uint16_t number_of_tests;
     uint8_t battery_capacity;
+    uint8_t current_flash_bank;
 }device_info_t;
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
 extern device_info_t device_info;
     
+
+
 /***** meta data struct *****/
 typedef struct  data_header
 {
