@@ -627,6 +627,15 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_FWU_DONE:
+        {
+            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            fwu_code_t fwu_code = DONE_PIC_FWU;
+            ble_fwu_update(&m_fwu, fwu_code);
+            nrf_delay_ms(5);
+            NVIC_SystemReset();
+            break;
+        }
         default:
         {
             break;
