@@ -50,10 +50,10 @@
 
 
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
-#define SERIAL_NUMBER						 "SN 0001"
+//#define SERIAL_NUMBER						 "SN 0001"
 #define MODEL_NUMBER						 "Scope V 1.0"
 #define HARDWARE_REVISION					 "HW rev 1.0"
-#define FIRMWARE_VERSION				     "FW v 1.0"
+//#define FIRMWARE_VERSION				     "FW v 1.0"
 #define SYSTEM_ID							 "SYS ID 0001"     //system id needs to be BLE spec compliant?
 
 /** @defgroup DIS_VENDOR_ID_SRC_VALUES Vendor ID Source values  
