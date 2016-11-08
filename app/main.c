@@ -60,7 +60,6 @@ version #: 1.2 gets test id before each test
 #include "debug.h"
 #include "L3GD20drv.h"
 
-
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
 #define IS_SRVC_CHANGED_CHARACT_PRESENT      0                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/

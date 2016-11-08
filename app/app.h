@@ -37,12 +37,13 @@
 #ifndef _APP_H
 #define _APP_H
 
-#define CALIBRATION 0
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <LSM303drv.h>
 #include <L3GD20drv.h>
+
+#define CALIBRATION 0
+#define FW_VERSION "0.0.01"
 
 // *****************************************************************************
 // *****************************************************************************
