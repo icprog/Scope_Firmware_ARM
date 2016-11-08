@@ -23,15 +23,15 @@ void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
         if(data_len == 0)/***** new line of data  ****/
         {
             ignore_length = 1;
-            data_len = (p_evt_write->data)[0]; //data length should be first byte of a new line, then 5 bytes of packet structure
+            data_len = (p_evt_write->data)[0] - 1 ; 
             //SEGGER_RTT_printf(0, "expecting %d bytes of data", data_len);
         }
         //SEGGER_RTT_printf(0, "data ind = %d\n", data_ind);
         memcpy(appData.fwu_data_buf + data_ind , (p_evt_write->data) + ignore_length, p_evt_write->len - ignore_length); 
-        data_ind += p_evt_write->len;
+        data_ind += p_evt_write->len - ignore_length;
         if(data_ind == data_len) /***** finished reading line ****/
         {
-            fwu_data_pack.data_size = data_ind-1; //minus one for the initial data length
+            fwu_data_pack.data_size = data_ind;
             appData.state = APP_STATE_FWU_DATA_SEND;
             data_len = 0;
             data_ind = 0;
