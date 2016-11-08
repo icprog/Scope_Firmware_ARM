@@ -627,12 +627,20 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_FWU_ERROR:
+        {
+            //SEGGER_RTT_printf(0, "NACKING FWU\n");
+            fwu_code_t fwu_code = FWU_NACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_FWU_DONE:
         {
             //SEGGER_RTT_printf(0, "ACKING FWU\n");
             fwu_code_t fwu_code = DONE_PIC_FWU;
             ble_fwu_update(&m_fwu, fwu_code);
-            nrf_delay_ms(5);
+            nrf_delay_ms(100);
             NVIC_SystemReset();
             break;
         }
