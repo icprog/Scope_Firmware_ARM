@@ -781,15 +781,13 @@ int main(void)
  // Initialize.
     SEGGER_RTT_WriteString(0, "main init\n");
 
-    if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0)
+    if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0) // if inn pole, restart into sleep mode (via shutdown_gpio fxn)
     {
         shutdown_gpio_init();  // init pins for hall-effect sensor used to enter sleep mode   <====== setup GPIOTE to trigger system-off on pin-change
     }
     else
     {
  
-        
-        
         timers_init();  
         
         ble_stack_init();
