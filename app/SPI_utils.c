@@ -126,6 +126,10 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         {
             set_ARM_REQ(); 
         }
+        else if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_CPU)
+        {
+            return 1;
+        }
         else
         {
             while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE)

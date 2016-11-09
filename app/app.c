@@ -637,7 +637,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_FWU_DONE:
         {
-            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
             fwu_code_t fwu_code = DONE_PIC_FWU;
             ble_fwu_update(&m_fwu, fwu_code);
             nrf_delay_ms(100);

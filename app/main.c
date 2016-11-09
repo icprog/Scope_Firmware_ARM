@@ -460,7 +460,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         
             // when not using the timeslot implementation, it is necessary to initialize the advertizing data again.
             advertising_init();
-            err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
+            err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
             APP_ERROR_CHECK(err_code);
             SEGGER_RTT_printf(0, "disconnected!\n");
         
@@ -768,7 +768,7 @@ int main(void)
     // Start execution.
     application_timers_start();
     SEGGER_RTT_WriteString(0, "starting adv\n");
-    err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
+    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
 
     SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);

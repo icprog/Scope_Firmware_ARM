@@ -590,7 +590,6 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         SEGGER_RTT_printf(0,"location received \n");
         memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
-        //send_data_to_PIC()
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
