@@ -370,12 +370,13 @@ static void conn_params_init(void)
  */
 static void sleep_mode_enter(void)
 {
-    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-    APP_ERROR_CHECK(err_code);
+//    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+//    APP_ERROR_CHECK(err_code);
 
     // Go to system-off mode (this function will not return; wakeup will cause a reset).
-    err_code = sd_power_system_off();
-    APP_ERROR_CHECK(err_code);
+   // err_code = sd_power_system_off();
+    //APP_ERROR_CHECK(err_code);
+    sd_power_system_off();
 }
 
 
@@ -655,35 +656,73 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
-void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action);  // prototype declarration
+
+
+//shut everything down and enter sleep (systemoff):
+void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
 {
-//    sleep_L3GD();
-//    sleep_LSM303();
-//            sleep_L3GD();
-//        sleep_LSM303();
-//        application_timers_stop();
-//        power_manage();
-    nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
-    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
+    uint8_t in_pole_flag = 0;
+    uint32_t err_code;
+    bool erase_bonds;
+    int i;
+
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
+    nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
+    
+
+    //config all pins except the shutdown ("SCOPE_HALL_PIN") pin as input with pulldown:
+    for(i=0;i<=6;i++)
     {
-        NVIC_SystemReset();
+
+        nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
+
     }
-    //shutdown gyro and accelerometer if pin is not set:
-    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)== false)
+    for(i=8;i<=29;i++)
     {
-        sleep_L3GD();
-        sleep_LSM303();
-        application_timers_stop();
-        power_manage();
+
+        nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
+
+    }
+    nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_HIGH);
+        NRF_CLOCK->TASKS_HFCLKSTOP = 1;
+        NRF_TIMER0->TASKS_STOP = 1;
+
+    NRF_POWER->TASKS_LOWPWR = 1;
+    while(true)  
+    {
+
+        if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  // out of pole, reset back into normal mode
+        {
+            NVIC_SystemReset(); // must be changed to sd_ for sd operation
+            //sd_nvic_SystemReset();
+        }
+        else
+        {
+
+            __WFE();
+
+        }
     }
     
+}  // end of "in_pole_sleep()"
+
+
+//Handle changes in hall effect pin ("SCOPE_HALL_PIN", pin 7)
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)  // <==== trigger call fxn to trigger systemoff on pin change
+{
+
     
 }
 /**
  * @brief Function for configuring: PIN_IN pin for input, PIN_OUT pin for output, 
  * and configures GPIOTE to give an interrupt on pin change.
+ * This is for the input from the magnetic sensors.
+ *
+ * The chip will awake (or remain awake) on a transition to high
+ * and sleep on a transition to low.
  */
-static void shutdown_gpio_init(void)
+static void shutdown_gpio_init(void)    // <====== set up systemoff on pin change
 {
     ret_code_t err_code;
 
@@ -694,26 +733,29 @@ static void shutdown_gpio_init(void)
         APP_ERROR_CHECK(err_code);
     }
     
-    uint32_t out_pin_initial_state = 0; //for the 3v3 enable
-    
-    /********** HALL INPUT PIN  *******/
-    nrf_drv_gpiote_in_config_t in_config = GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
-    in_config.pull = NRF_GPIO_PIN_PULLDOWN;
 
-    err_code = nrf_drv_gpiote_in_init(SCOPE_HALL_PIN, &in_config, in_pin_handler); //set pin and event handler
-    APP_ERROR_CHECK(err_code);
-
-    nrf_drv_gpiote_in_event_enable(SCOPE_HALL_PIN, true); //enable event handling
+    /* Set up pin change (low to high) interrupt to wakeup from sleep: */ 
+    nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_HIGH);
+    NRF_GPIOTE->INTENSET = GPIOTE_INTENSET_PORT_Msk;
+    NVIC_ClearPendingIRQ(GPIOTE_IRQn);
+    NVIC_SetPriority(GPIOTE_IRQn, 3);
+    NVIC_EnableIRQ(GPIOTE_IRQn);
     
+    
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
     if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
     {
-        out_pin_initial_state = 1; //if HALL is high then the bullet is out of the pole so enable the supply
+        nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //if HALL is high then the bullet is out of the pole so enable the supply
+        SEGGER_RTT_printf(0, "startup out of pole\n");
     }
+    else  // in pole, go to sleep
+    {
+        nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);  // turn off main board
+        SEGGER_RTT_printf(0, "startup in pole -- sleep \n");
     
-    /********** 3V3 ENABLE OUTPUT PIN   **********/
-    nrf_drv_gpiote_out_config_t out_config = GPIOTE_CONFIG_OUT_SIMPLE(out_pin_initial_state); //config output with with correct initial state
+        in_pole_sleep();  //sleep fxn
+    }
 
-    err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -737,55 +779,74 @@ void init_device_info(void)
 int main(void)
 {
     uint32_t err_code;
-    bool erase_bonds;
-//	char debug_out_string[20];
-//  sprintf(debug_out_string,"oh shit");
-
+    bool erase_bonds;  
+    //NRF_POWER->RESET = 0;
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
+    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
+    nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
  // Initialize.
-    SEGGER_RTT_WriteString(0, "init\n");
+    SEGGER_RTT_WriteString(0, "main init\n");
 
-
-    timers_init();
-    shutdown_gpio_init();
-    ble_stack_init();
-    beacon_adv_init();
-    device_manager_init(erase_bonds);
-    
-    spi_init();
-	spis_init();
-    appData.state = APP_STATE_POLLING;		
-
-    SEGGER_RTT_WriteString(0, "starting dev info init\n");
-    init_device_info();
-    
-    gap_params_init();
-    advertising_init();
-    services_init();
-    conn_params_init();
-
-    APP_Initialize();
-
-    // Start execution.
-    application_timers_start();
-    SEGGER_RTT_WriteString(0, "starting adv\n");
-    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-    APP_ERROR_CHECK(err_code);
-
-    SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-    profile_ids_update(&m_ps, device_info.number_of_tests - 1);
-    SEGGER_RTT_WriteString(0, "main loop:\n");
-    char debug_out_string[20];
-//    sprintf(debug_out_string,"* DEBUG TEST STRING*");
-//	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-//		//char debug_out_string[20];
-//    sprintf(debug_out_string,"*DEBUG TEST STRING 2");
-//	  ble_debug_update(&m_ds,debug_out_string, 20);  //send debug to phone
-    while(true)
+    if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0) // if inn pole, restart into sleep mode (via shutdown_gpio fxn)
     {
-        power_manage();
-        APP_Tasks();
+        shutdown_gpio_init();  // init pins for hall-effect sensor used to enter sleep mode   <====== setup GPIOTE to trigger system-off on pin-change
+    }
+    else
+    {
+ 
+        timers_init();  
         
+        ble_stack_init();
+        SEGGER_RTT_WriteString(0, "after ble stack init\n");
+        beacon_adv_init();
+        device_manager_init(erase_bonds);
+        /* Init for SPI comm with PIC and IMU*/
+        spi_init();   
+        spis_init();  
+        appData.state = APP_STATE_POLLING;		
 
-	}
+        SEGGER_RTT_WriteString(0, "starting dev info init\n");
+        init_device_info();
+        
+        gap_params_init();
+        advertising_init();
+        services_init();
+        conn_params_init();
+
+        APP_Initialize();      //  Init IMU and other stuff
+
+        // Start execution.
+        application_timers_start();  
+        SEGGER_RTT_WriteString(0, "starting adv\n");
+        err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
+        APP_ERROR_CHECK(err_code);
+
+
+        SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
+        profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
+        SEGGER_RTT_WriteString(0, "main loop:\n");
+        nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
+        while(true)
+        {
+            if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  //out of pole, run normal loop
+            {
+            power_manage();
+            APP_Tasks();    
+            }
+            else  // in pole, restart into sleep-mode
+            {
+                SEGGER_RTT_WriteString(0, "*** MAGNETIC FIELD ***\n");
+                //shutdown_gpio_init();
+                nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
+                nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
+                
+                /*  IMU POWERDOWN */
+                sleep_LSM303();
+                sleep_L3GD();
+                sd_nvic_SystemReset();
+            }
+
+        }
+    }   
 }
 

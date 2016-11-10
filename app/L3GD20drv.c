@@ -93,11 +93,13 @@ void sleep_L3GD(void)
     uint8_t address, SPIData;
     
     address = L3GD_CTRL1;  
-    //SPIData = L3GD_DATA_RATE_800HZ | L3GD_CUTOFF_100HZ | L3GD_POWER | L3GD_ZEN | L3GD_YEN | L3GD_XEN;
-//	SPIData &= 0b11111000;
-//    SPIData |= 0b00001000;
-    SPIData = 0x8;// 0b00001000;
-		SPIWriteReg(address, SPIData, L3G_DEVICE);
+    SPIData = L3GD_DATA_RATE_800HZ | L3GD_CUTOFF_100HZ | L3GD_POWER | L3GD_ZEN | L3GD_YEN | L3GD_XEN;
+	//SPIData = SPIData & 0b11111000;
+    //SPIData = SPIData | 0b00001000;
+    //SPIData = 0x08;// 0b00001000;
+    SPIData &= 0xF0;
+    //SPIData |= 0x08;
+    SPIWriteReg(address, SPIData, L3G_DEVICE);
 
 }
 

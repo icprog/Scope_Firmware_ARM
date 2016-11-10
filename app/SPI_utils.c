@@ -426,7 +426,11 @@ void spi_init(void)
 //		printf("\n\r  SPI Mode: %d", spi_config.mode);
 }
 
-
+void spi_un_init(void)
+{
+    nrf_drv_spi_uninit(&spi);
+    //nrf_drv_spis_uninit(&spis);
+}
 /**
  * @brief SPI Slave Initialization
  *
@@ -529,7 +533,7 @@ void SPIWriteReg(uint8_t address, uint8_t regVal, SPI_DEVICE device)
 		uint8_t rx_buf[2], tx_buf[2], CS_pin;
 		uint16_t spi_timeout = 0;
 		if (device == LSM_DEVICE)
-			CS_pin = IMU_SPI_CS_ACC_PIN;
+			CS_pin = IMU_SPI_CS_ACC_PIN;   
 		else if (device == L3G_DEVICE)
 			CS_pin = IMU_SPI_CS_GYRO_PIN;
 	
