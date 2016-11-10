@@ -372,10 +372,11 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
     ble_uuid_t service_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
-    service_uuid.uuid = PROFILE_SERVICE_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
-    APP_ERROR_CHECK(err_code);
+//    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
+//    service_uuid.uuid = PROFILE_SERVICE_UUID;
+//    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+//    APP_ERROR_CHECK(err_code);
+    BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     p_profile_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_profile_service->service_handle);
@@ -589,7 +590,6 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
         SEGGER_RTT_printf(0,"location received \n");
         memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
-        //send_data_to_PIC()
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)

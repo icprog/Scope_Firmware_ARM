@@ -47,6 +47,7 @@ version #: 1.2 gets test id before each test
 #include "spi_utils.h"
 #include "app.h"
 #include "calibration.h"
+#include "L3GD20drv.h"
 
 //services
 #include "probe_error.h"
@@ -58,7 +59,8 @@ version #: 1.2 gets test id before each test
 #include "probe_error.h"
 #include "profile_service.h"
 #include "debug.h"
-#include "L3GD20drv.h"
+#include "fwu_service.h"
+
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -120,7 +122,8 @@ cal_optical_t								 m_optical;
 cal_force_t			    					 m_force;
 cal_hall_effect_t						     m_hall_effect;
 static cal_vib_t							 m_vib;    //vibration motor cal struct
-ble_dbs_t						m_ds;
+ble_dbs_t						             m_ds;
+ble_fwu_t                                    m_fwu; //firmware update service
 
 static dm_application_instance_t             m_app_handle;                              /**< Application identifier allocated by device manager. */
 
@@ -132,8 +135,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 	{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    //{BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
-		
+    {FWU_SERVICE_UUID,                    BLE_UUID_TYPE_BLE},		
 };
 
 uint8_t SLOPE_GLOBAL = 0;
@@ -296,8 +298,11 @@ static void services_init(void)
     //initialize profile service
     ble_profile_service_init(&m_ps);
 			
-		//init debug service:
-		ble_debug_service_init(&m_ds);
+    //init debug service:
+    ble_debug_service_init(&m_ds);
+    
+    //init firmware update service
+    ble_fwu_service_init(&m_fwu);
     }
 		
 
@@ -456,7 +461,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         
             // when not using the timeslot implementation, it is necessary to initialize the advertizing data again.
             advertising_init();
-            err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
+            err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
             APP_ERROR_CHECK(err_code);
             SEGGER_RTT_printf(0, "disconnected!\n");
         
@@ -504,6 +509,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 		ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
+        ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
     }
 }
 
@@ -815,6 +821,7 @@ int main(void)
         err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
         APP_ERROR_CHECK(err_code);
 
+
         SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
         profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
         SEGGER_RTT_WriteString(0, "main loop:\n");
@@ -836,7 +843,6 @@ int main(void)
                 /*  IMU POWERDOWN */
                 sleep_LSM303();
                 sleep_L3GD();
-
                 sd_nvic_SystemReset();
             }
 

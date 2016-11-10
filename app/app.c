@@ -77,6 +77,7 @@
 #include "ble_err.h"
 #include "nrf_drv_spis.h"
 #include "timers.h"
+#include "fwu_service.h"
 
 
 // *****************************************************************************
@@ -94,6 +95,7 @@ extern ble_pes_t 	 		    m_pes; //probing error service
 extern cal_optical_t			m_optical;
 extern cal_hall_effect_t	    m_hall_effect;
 extern ble_ps_t                 m_ps;
+extern ble_fwu_t                m_fwu;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
 extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
@@ -104,6 +106,7 @@ subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
+uint32_t fw_size = 70000;
 
 // *****************************************************************************
 /* Application Data
@@ -175,6 +178,7 @@ void APP_Initialize(void)
 void APP_Tasks(void)
 {   
 	uint16_t kk;
+    static uint8_t packet_counter;
 	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
     switch (appData.state)
     {
@@ -215,7 +219,7 @@ void APP_Tasks(void)
             appData.ack = 0;
             while(appData.ack != 1)
             {
-                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL))
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
                     disable_imu();
                     SEGGER_RTT_printf(0, "again\n");
@@ -596,11 +600,74 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_PIC_FWU_START:
+        {
+            packet_counter = 0;
+            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
+            disable_imu();
+            nrf_delay_ms(100);
+            fwu_start_pack.data = (uint8_t *)(&fw_size);
+            send_data_to_PIC(fwu_start_pack);
+            appData.ack = 0;      
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DATA_SEND:
+        {
+            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
+            send_data_to_PIC(fwu_data_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ACK:
+        {
+            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            fwu_code_t fwu_code = FWU_ACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ERROR:
+        {
+            //SEGGER_RTT_printf(0, "NACKING FWU\n");
+            fwu_code_t fwu_code = FWU_NACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DONE:
+        {
+            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
+            fwu_code_t fwu_code = DONE_PIC_FWU;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            
+            /****  instead of reset right away just tell the phone and wait for the restart command ***/
+            //nrf_delay_ms(100);
+            //NVIC_SystemReset();
+            break;
+        }
+        case APP_STATE_RESTART:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING\n");
+            NVIC_SystemReset(); 
+            //should also pull 3V3 Enable low so that PIC restarts.
+            //may hav eto look into timing if this produced issues.
+            break;
+        }
+        case APP_STATE_START_ARM_FWU:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            //TODO: restart into bootloader
+            break; //never gets here
+        }
+            
         default:
         {
             break;
         }
     }
+    /****** keeping imu sending out of state amchine becuase it can happen in multiple states ***/
     if(appData.send_imu_flag)
     {
         send_data_to_PIC(accelerometer_pack);

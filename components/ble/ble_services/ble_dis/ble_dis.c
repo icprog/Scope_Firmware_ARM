@@ -154,12 +154,18 @@ uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init)
 
     ble_dis_init_t * dis_init = (ble_dis_init_t *)p_dis_init;  //undo const declaration
 
+    //build fw string
+    char fw_string[20];
+    strcpy(fw_string, (char *)(device_info.PIC_firmware_version));
+    strcat(fw_string, ",");
+    strcat(fw_string, FW_VERSION);
+    
     //add relevent data to 
     ble_srv_ascii_to_utf8(&dis_init->manufact_name_str, (char *)MANUFACTURER_NAME);
     ble_srv_ascii_to_utf8(&dis_init->serial_num_str, (char *)device_info.serial_number);
     ble_srv_ascii_to_utf8(&dis_init->model_num_str, (char *)MODEL_NUMBER);
     ble_srv_ascii_to_utf8(&dis_init->hw_rev_str, (char *)HARDWARE_REVISION);
-    ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)FW_VERSION);
+    ble_srv_ascii_to_utf8(&dis_init->fw_rev_str, (char *)fw_string);
     ble_srv_ascii_to_utf8(&dis_init->sys_id_str, (char *)SYSTEM_ID);
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init->dis_attr_md.read_perm);
