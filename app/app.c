@@ -640,10 +640,28 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
             fwu_code_t fwu_code = DONE_PIC_FWU;
             ble_fwu_update(&m_fwu, fwu_code);
-            nrf_delay_ms(100);
-            NVIC_SystemReset();
+            appData.state = APP_STATE_POLLING;
+            
+            /****  instead of reset right away just tell the phone and wait for the restart command ***/
+            //nrf_delay_ms(100);
+            //NVIC_SystemReset();
             break;
         }
+        case APP_STATE_RESTART:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING\n");
+            NVIC_SystemReset(); 
+            //should also pull 3V3 Enable low so that PIC restarts.
+            //may hav eto look into timing if this produced issues.
+            break;
+        }
+        case APP_STATE_START_ARM_FWU:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            //TODO: restart into bootloader
+            break; //never gets here
+        }
+            
         default:
         {
             break;

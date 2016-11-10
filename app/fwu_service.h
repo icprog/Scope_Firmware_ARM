@@ -19,6 +19,7 @@ typedef enum
     FWU_ACK,
     FWU_NACK,
     DONE_PIC_FWU,
+    RESTART,
 } fwu_code_t;
 
 /**@brief Firmware Update Service event type. */
