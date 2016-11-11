@@ -658,6 +658,9 @@ void APP_Tasks(void)
         case APP_STATE_START_ARM_FWU:
         {
             SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            //sd_power_gpregret_set(0xB1);
+            sd_power_gpregret_set(0x01);
+            sd_nvic_SystemReset();
             //TODO: restart into bootloader
             break; //never gets here
         }

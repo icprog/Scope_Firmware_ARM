@@ -826,6 +826,16 @@ int main(void)
         profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
         SEGGER_RTT_WriteString(0, "main loop:\n");
         nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
+        
+        
+   //testing DFU  *****************
+
+        //sd_power_gpregret_set(0xB1);
+        //sd_nvic_SystemReset();
+
+   //End DFU test ******************
+        
+        
         while(true)
         {
             if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  //out of pole, run normal loop

@@ -50,7 +50,7 @@ void on_write_fwu_service(ble_fwu_t * p_fwu, ble_evt_t * p_ble_evt)
             if(fwu_code == START_ARM_FWU)
             {
                 SEGGER_RTT_printf(0, "start ARM _FWU\n");
-                //appData.state = APP_STATE_START_ARM_FWU;
+                appData.state = APP_STATE_START_ARM_FWU;
             }
             else if(fwu_code == START_PIC_FWU)
             {
