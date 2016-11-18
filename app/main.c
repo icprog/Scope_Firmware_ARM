@@ -82,7 +82,7 @@ static ble_beacon_init_t beacon_init;
 
 /****** parameters for application timers  ******/
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
+#define APP_ADV_TIMEOUT_IN_SECONDS           0xFFFFFFFF//180                                         /**< The advertising timeout in units of seconds. */
 
 /*********  BLE connection params  ******/
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
@@ -783,6 +783,7 @@ int main(void)
     //NRF_POWER->RESET = 0;
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
     nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
+    nrf_delay_ms(100);
     nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
  // Initialize.
     SEGGER_RTT_WriteString(0, "main init\n");

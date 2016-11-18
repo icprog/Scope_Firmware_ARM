@@ -650,7 +650,11 @@ void APP_Tasks(void)
         case APP_STATE_RESTART:
         {
             SEGGER_RTT_printf(0, "RESTARTING\n");
-            NVIC_SystemReset(); 
+            nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
+            nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
+            nrf_delay_ms(100);
+            sd_nvic_SystemReset();
+            //NVIC_SystemReset(); 
             //should also pull 3V3 Enable low so that PIC restarts.
             //may hav eto look into timing if this produced issues.
             break;
@@ -658,6 +662,9 @@ void APP_Tasks(void)
         case APP_STATE_START_ARM_FWU:
         {
             SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
+            nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
+            nrf_delay_ms(100);
             //sd_power_gpregret_set(0xB1);
             sd_power_gpregret_set(0x01);
             sd_nvic_SystemReset();
