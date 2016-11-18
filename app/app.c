@@ -250,6 +250,8 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
 				appData.prev_state = APP_STATE_POLLING;
             }
+                
+            
             uint8_t bytes_sent = 0;
             //static int data_counts = 0;
             uint8_t counter = 0;
@@ -257,6 +259,8 @@ void APP_Tasks(void)
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
             appData.status = 3;
+            uint16_t final_depth;
+            static uint16_t total_bytes;
 
 			if(appData.ble_disconnect_flag == true)
 			{
@@ -270,12 +274,21 @@ void APP_Tasks(void)
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
 			}
-            while(appData.data_counts<sizeof(profile_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            
+            if(appData.data_counts == 0)
+            {
+                /***** notify phone of how much data needs to be sent  *****/
+                final_depth = profile_data.metadata.profile_depth;
+                update_profile_length(&m_ps, final_depth);
+                total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
+                SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
+            }
+            while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
 
                 err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
 				appData.data_counts += bytes_sent;			
-                if(appData.data_counts >= sizeof(profile_data_t))
+                if(appData.data_counts >= total_bytes)
 
                 {
 					//nrf_drv_common_irq_disable(p_instance->irq);
@@ -287,7 +300,7 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
-                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
+                    SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
