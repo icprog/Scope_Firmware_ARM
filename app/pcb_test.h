@@ -11,7 +11,6 @@
 typedef uint8_t (*test_function)(void);
 
 void run_pcb_tests(uint8_t * pcb_test_results);
-
 uint8_t GYRO_deviceID_test(void);
 uint8_t ACCEL_deviceID_test(void);
 

@@ -133,6 +133,8 @@ extern pic_arm_pack_t xmodem_pack;
 extern pic_arm_pack_t start_test_pack;
 extern pic_arm_pack_t fwu_start_pack;
 extern pic_arm_pack_t fwu_data_pack;
+extern pic_arm_pack_t pcb_test_data_pack;
+extern pic_arm_pack_t accelerometer_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 

@@ -100,7 +100,6 @@ extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
 extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
-extern pic_arm_pack_t           accelerometer_pack;
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
@@ -188,6 +187,7 @@ void APP_Tasks(void)
             SEGGER_RTT_WriteString(0, "init state \n");
             nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
             //prompt();
+            send_data_to_PIC(arm_done_pack); //send arm done just in case PIC is waiting for PCB test
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -250,6 +250,8 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
 				appData.prev_state = APP_STATE_POLLING;
             }
+                
+            
             uint8_t bytes_sent = 0;
             //static int data_counts = 0;
             uint8_t counter = 0;
@@ -257,6 +259,8 @@ void APP_Tasks(void)
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
             appData.status = 3;
+            uint16_t final_depth;
+            static uint16_t total_bytes;
 
 			if(appData.ble_disconnect_flag == true)
 			{
@@ -270,12 +274,21 @@ void APP_Tasks(void)
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
 			}
-            while(appData.data_counts<sizeof(profile_data_t) && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            
+            if(appData.data_counts == 0)
+            {
+                /***** notify phone of how much data needs to be sent  *****/
+                final_depth = profile_data.metadata.profile_depth;
+                update_profile_length(&m_ps, final_depth);
+                total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
+                SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
+            }
+            while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
 
                 err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
 				appData.data_counts += bytes_sent;			
-                if(appData.data_counts >= sizeof(profile_data_t))
+                if(appData.data_counts >= total_bytes)
 
                 {
 					//nrf_drv_common_irq_disable(p_instance->irq);
@@ -287,7 +300,7 @@ void APP_Tasks(void)
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
-                    SEGGER_RTT_printf(0, "final count = %d\n", sizeof(profile_data_t));
+                    SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
@@ -423,13 +436,13 @@ void APP_Tasks(void)
             if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
             {
                 //communicate that the test failed!
-								cal_result_update(&m_hall_effect, 0);
+				cal_result_update(&m_hall_effect, 0);
                 appData.state = APP_STATE_POLLING;
             }
             if(cal_data.hall_status == 0) //test complete
             {
                 //communicate that the test passed
-								cal_result_update(&m_hall_effect, 1);
+                cal_result_update(&m_hall_effect, 1);
                 appData.state = APP_STATE_POLLING;
             }
             break;
@@ -456,8 +469,8 @@ void APP_Tasks(void)
         case APP_STATE_PCB_TEST:
         {
             run_pcb_tests(pcb_test_results);
-            pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
             send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            SEGGER_RTT_printf(0, "test results  = %d %d\n", pcb_test_results[0], pcb_test_results[1]);
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -677,7 +690,7 @@ void APP_Tasks(void)
             break;
         }
     }
-    /****** keeping imu sending out of state amchine becuase it can happen in multiple states ***/
+    /****** keeping imu sending out of state machine becuase it can happen in multiple states ***/
     if(appData.send_imu_flag)
     {
         send_data_to_PIC(accelerometer_pack);

@@ -43,6 +43,7 @@
 #include "L3GD20drv.h"
 #include "debug.h"
 #include "timers.h"
+#include "pcb_test.h"
 
 static const nrf_drv_spi_t spi = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE);  /**< SPI instance. */
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
@@ -56,7 +57,7 @@ L3GD_DATA gyro_data; //gyro data to pass to PIC
 imu_data_t imu_data;
 uint8_t sending_data_to_phone = 0;
 volatile bool device_info_received = false;
-
+extern uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
 
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool raw_data_transfer_in_progress = false;
@@ -84,6 +85,7 @@ pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
 pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 pic_arm_pack_t fwu_start_pack={PA_FWU_START, dummy_buf, sizeof(uint32_t)};
 pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, appData.fwu_data_buf, 0}; //will need to update length dynamically
+pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
