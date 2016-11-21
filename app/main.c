@@ -251,6 +251,9 @@ static void services_init(void)
     err_code = ble_bas_init(&m_bas, &bas_init);
     APP_ERROR_CHECK(err_code);
     
+    //init firmware update service
+    ble_fwu_service_init(&m_fwu);
+    
     if(CALIBRATION)
     {
         // Initialize Optical Cal. service
@@ -280,29 +283,27 @@ static void services_init(void)
     else
     {
 	
-    // Initialize Slope Service.
-    ble_slope_init_t slope_init;
-    memset(&slope_init, 0, sizeof(slope_init));
-    err_code = ble_slope_init(&m_slope, &slope_init);
-    APP_ERROR_CHECK(err_code);
+        // Initialize Slope Service.
+        ble_slope_init_t slope_init;
+        memset(&slope_init, 0, sizeof(slope_init));
+        err_code = ble_slope_init(&m_slope, &slope_init);
+        APP_ERROR_CHECK(err_code);
+            
+        // Initialize Device Status Service.
+        ble_status_init_t status_init;
+        memset(&status_init, 0, sizeof(status_init));
+        err_code = ble_status_init(&m_status, &status_init);
+        APP_ERROR_CHECK(err_code);
         
-    // Initialize Device Status Service.
-    ble_status_init_t status_init;
-    memset(&status_init, 0, sizeof(status_init));
-    err_code = ble_status_init(&m_status, &status_init);
-    APP_ERROR_CHECK(err_code);
-	
-	//initialize probe error service
-    ble_probe_error_service_init(&m_pes);
+        //initialize probe error service
+        ble_probe_error_service_init(&m_pes);
+        
+        //initialize profile service
+        ble_profile_service_init(&m_ps);
+                
+        //init debug service:
+        ble_debug_service_init(&m_ds);
     
-    //initialize profile service
-    ble_profile_service_init(&m_ps);
-			
-    //init debug service:
-    ble_debug_service_init(&m_ds);
-    
-    //init firmware update service
-    ble_fwu_service_init(&m_fwu);
     }
 		
 
