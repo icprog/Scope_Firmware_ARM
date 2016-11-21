@@ -68,6 +68,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 		SEGGER_RTT_printf(0, "optical write fxn\n");
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
+    /**** catch the test variables whenn written ****/
 	if ((p_evt_write->handle == p_optical->cal_test_vars_handles.value_handle) &&
         (p_evt_write->len <= 3))// &&(p_optical->optical_write_handler != NULL))
     {
@@ -78,8 +79,17 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 			cal_data.optical_parameters[1] = p_evt_write->data[1]; //max speed
 			cal_data.optical_parameters[2] = p_evt_write->data[2]; // tolerance
 			send_data_to_PIC(optical_cal_length_pack);
-			
     }
+    
+    /*****  start squal test   *****/
+    if (p_evt_write->handle == p_optical->cal_squal_handles.value_handle)
+    {
+			SEGGER_RTT_printf(0, "Start the squal test! \n");
+			send_data_to_PIC(squal_cal_start_pack);
+    }
+    
+    
+    
     if (p_optical->is_notification_supported)
     {
         //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;

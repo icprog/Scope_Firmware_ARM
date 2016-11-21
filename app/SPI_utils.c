@@ -86,6 +86,7 @@ pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 pic_arm_pack_t fwu_start_pack={PA_FWU_START, dummy_buf, sizeof(uint32_t)};
 pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, appData.fwu_data_buf, 0}; //will need to update length dynamically
 pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
+pic_arm_pack_t squal_cal_start_pack = {PA_SQUAL_CAL, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
