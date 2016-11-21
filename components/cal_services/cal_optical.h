@@ -151,6 +151,12 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result);
 uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t cal_result);
 uint32_t optical_cal_test_vars_update(cal_optical_t * p_optical, uint8_t cal_result);
+uint32_t squal_data_update(cal_optical_t * p_optical, 
+                           uint8_t * squal_data, 
+                           uint8_t size, 
+                           uint8_t * bytes_sent);
+
+
 #endif // CAL_OPTICAL_H__
 
 /** @} */

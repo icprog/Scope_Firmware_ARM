@@ -466,6 +466,77 @@ void APP_Tasks(void)
             cal_result_update(&m_hall_effect, cal_data.hall_result);
             break;
         }
+        case APP_STATE_SQUAL_CAL_RESULT:
+        {
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_WriteString(0, "APP_STATE_SQUAL_CAL_RESULT \n");
+            }
+            /***** if we disconnect get out of here  *******/
+            if(appData.ble_status == 0)
+            {
+                appData.state = APP_STATE_POLLING;
+				appData.prev_state = APP_STATE_POLLING;
+            }
+                
+            
+            uint8_t bytes_sent = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t done_flag = 0;
+            sending_data_to_phone = 1;
+            appData.status = 3;
+            uint16_t final_depth;
+            static uint16_t total_bytes = sizeof(cal_data.squal_and_pic);
+
+			if(appData.ble_disconnect_flag == true)
+			{
+				    appData.ble_disconnect_flag = false;
+					appData.state = APP_STATE_POLLING;
+					appData.prev_state = APP_STATE_POLLING;
+					appData.status = 0;
+					sending_data_to_phone = 0;
+					send_data_to_PIC(arm_done_pack);
+					appData.data_counts = 0;
+					SEGGER_RTT_printf(0, "lost communication during squal data transfer\n");
+					break;
+			}
+            
+            while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            {      
+
+                err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;			
+                if(appData.data_counts >= total_bytes)
+                {
+                    done_flag = 1;
+                    appData.state = APP_STATE_POLLING;
+                    appData.prev_state = APP_STATE_POLLING;
+                    appData.status = 0;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
+                    SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
+                    appData.data_counts = 0;
+
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+                {
+                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    break;
+                    
+                }
+                counter++;
+            }
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_SQUAL_CAL_RESULT;
+                appData.state = APP_STATE_POLLING;
+                break;
+            }
+            break;
+        }
         case APP_STATE_PCB_TEST:
         {
             run_pcb_tests(pcb_test_results);

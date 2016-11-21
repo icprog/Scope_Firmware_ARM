@@ -245,12 +245,6 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
     
-    //battery service init:
-    ble_bas_init_t bas_init;
-    memset(&bas_init, 0, sizeof(bas_init));
-    err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
-    
     //init firmware update service
     ble_fwu_service_init(&m_fwu);
     
@@ -282,7 +276,12 @@ static void services_init(void)
     }
     else
     {
-	
+        //battery service init:
+        ble_bas_init_t bas_init;
+        memset(&bas_init, 0, sizeof(bas_init));
+        err_code = ble_bas_init(&m_bas, &bas_init);
+        APP_ERROR_CHECK(err_code);
+        
         // Initialize Slope Service.
         ble_slope_init_t slope_init;
         memset(&slope_init, 0, sizeof(slope_init));
