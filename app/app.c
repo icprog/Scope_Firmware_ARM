@@ -191,6 +191,7 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        
         case APP_STATE_POLLING:
         {
 
@@ -201,6 +202,21 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
+        case APP_STATE_PCB_TEST:
+        {
+            run_pcb_tests(pcb_test_results);
+            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            SEGGER_RTT_printf(0, "test results  = %d %d\n", pcb_test_results[0], pcb_test_results[1]);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEVICE_INFO:
+        {
+            device_info_received = true;
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        #if(!CALIBRATION)
         case APP_STATE_NEW_ID:
         {
             SEGGER_RTT_printf(0, "APP_STATE_NEW_ID\n");
@@ -395,6 +411,191 @@ void APP_Tasks(void)
             }
             break;
         }
+        case APP_STATE_RAW_DATA_RECEIVE:
+        {
+            SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
+            uint8_t bytes_sent;
+            sending_data_to_phone = 1;
+            static int raw_data_counts = 0;
+            static int buffer_data_counts = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t ble_packet_length;
+            bool buffer_done_flag = false;
+            bool raw_data_done_flag = false;
+            
+            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
+            while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
+            {      
+                if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
+                {
+                    ble_packet_length = BYTES_RAW_TEST_DATA - raw_data_counts;
+                    bytes_sent = BYTES_RAW_TEST_DATA - raw_data_counts;
+                }
+                else
+                {
+                    ble_packet_length = 20;
+                    bytes_sent = 20;
+                }
+                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
+                
+								buffer_data_counts += bytes_sent;
+                raw_data_counts += bytes_sent;
+                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
+                {
+                    buffer_done_flag = true;
+                    appData.prev_state = APP_STATE_POLLING;
+                    nrf_delay_ms(2);
+                    send_data_to_PIC(raw_data_ack_pack);
+                    appData.state = APP_STATE_POLLING;
+                    buffer_data_counts = 0;
+                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
+                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+                }
+                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
+                {
+                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
+                    raw_data_done_flag = true;
+                    buffer_done_flag = true;
+                    appData.state = APP_STATE_POLLING;
+                    buffer_data_counts = 0;
+                    raw_data_counts = 0;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(raw_data_ack_pack);
+                    nrf_delay_ms(5);
+                    send_data_to_PIC(arm_done_pack);
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
+                {
+                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    break;
+                }
+                counter++;
+            }
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
+                appData.state = APP_STATE_POLLING;
+                break; //TODO (JT): might be redudant with next break
+            }
+            break;
+        }
+        case APP_STATE_PROBE_ERROR:
+        {
+            SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
+            uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
+            SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
+			send_data_to_PIC(arm_done_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_SPIS_FAIL:
+        {
+            SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
+            send_data_to_PIC(spis_fail_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_NEW_SN:
+        {
+            disable_imu();
+//          SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100); //wait for PIC to stop requesting accel
+            send_data_to_PIC(serial_set_pack);
+            SEGGER_RTT_printf(0, "phone wrote SN\n");
+            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_X_MODEM:
+        {
+            disable_imu();
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
+            send_data_to_PIC(xmodem_pack);
+            SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
+            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_START_TEST:
+        {
+            disable_imu();
+//            SEGGER_RTT_printf(0, "IMU disabled\n");
+            nrf_delay_ms(100);
+            send_data_to_PIC(start_test_pack);
+            SEGGER_RTT_printf(0, "phone wrote start test pack\n");
+            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_PIC_FWU_START:
+        {
+            packet_counter = 0;
+            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
+            disable_imu();
+            nrf_delay_ms(100);
+            fwu_start_pack.data = (uint8_t *)(&fw_size);
+            send_data_to_PIC(fwu_start_pack);
+            appData.ack = 0;      
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DATA_SEND:
+        {
+            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
+            send_data_to_PIC(fwu_data_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ACK:
+        {
+            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            fwu_code_t fwu_code = FWU_ACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ERROR:
+        {
+            //SEGGER_RTT_printf(0, "NACKING FWU\n");
+            fwu_code_t fwu_code = FWU_NACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DONE:
+        {
+            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
+            fwu_code_t fwu_code = DONE_PIC_FWU;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            
+            /****  instead of reset right away just tell the phone and wait for the restart command ***/
+            //nrf_delay_ms(100);
+            //NVIC_SystemReset();
+            break;
+        }
+        case APP_STATE_RESTART:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING\n");
+            NVIC_SystemReset(); 
+            //should also pull 3V3 Enable low so that PIC restarts.
+            //may hav eto look into timing if this produced issues.
+            break;
+        }
+        case APP_STATE_START_ARM_FWU:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            //sd_power_gpregret_set(0xB1);
+            sd_power_gpregret_set(0x01);
+            sd_nvic_SystemReset();
+            //TODO: restart into bootloader
+            break; //never gets here
+        }
+        #else
         case APP_STATE_VIB_CAL_RDY:
         {
             SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -537,218 +738,7 @@ void APP_Tasks(void)
             }
             break;
         }
-        case APP_STATE_PCB_TEST:
-        {
-            run_pcb_tests(pcb_test_results);
-            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
-            SEGGER_RTT_printf(0, "test results  = %d %d\n", pcb_test_results[0], pcb_test_results[1]);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_DEVICE_INFO:
-        {
-            device_info_received = true;
-//            SEGGER_RTT_printf(0, "\nserial number = ");
-//            for(int i = 0; i <= 5; i++)
-//            {
-//                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
-//            }
-//            SEGGER_RTT_printf(0, "\ndevice name = ");
-//            for(int i=0; i <strlen(device_info.device_name); i++)
-//            {
-//                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
-//            }
-//            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
-            //nrf_delay_ms(5);
-            //send_data_to_PIC(arm_done_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_RAW_DATA_RECEIVE:
-        {
-            SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
-            uint8_t bytes_sent;
-            sending_data_to_phone = 1;
-            static int raw_data_counts = 0;
-            static int buffer_data_counts = 0;
-            uint8_t counter = 0;
-            uint32_t err_code;
-            uint8_t ble_packet_length;
-            bool buffer_done_flag = false;
-            bool raw_data_done_flag = false;
-            
-            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
-            while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
-            {      
-                if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
-                {
-                    ble_packet_length = BYTES_RAW_TEST_DATA - raw_data_counts;
-                    bytes_sent = BYTES_RAW_TEST_DATA - raw_data_counts;
-                }
-                else
-                {
-                    ble_packet_length = 20;
-                    bytes_sent = 20;
-                }
-                err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
-                
-								buffer_data_counts += bytes_sent;
-                raw_data_counts += bytes_sent;
-                if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
-                {
-                    buffer_done_flag = true;
-                    appData.prev_state = APP_STATE_POLLING;
-                    nrf_delay_ms(2);
-                    send_data_to_PIC(raw_data_ack_pack);
-                    appData.state = APP_STATE_POLLING;
-                    buffer_data_counts = 0;
-                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
-                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
-                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
-                }
-                if(raw_data_counts >= BYTES_RAW_TEST_DATA)
-                {
-                    SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
-                    raw_data_done_flag = true;
-                    buffer_done_flag = true;
-                    appData.state = APP_STATE_POLLING;
-                    buffer_data_counts = 0;
-                    raw_data_counts = 0;
-                    sending_data_to_phone = 0;
-                    send_data_to_PIC(raw_data_ack_pack);
-                    nrf_delay_ms(5);
-                    send_data_to_PIC(arm_done_pack);
-                }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
-                {
-                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
-                    break;
-                }
-                counter++;
-            }
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
-            {
-                counter = 0;
-                appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
-                appData.state = APP_STATE_POLLING;
-                break; //TODO (JT): might be redudant with next break
-            }
-            break;
-        }
-        case APP_STATE_PROBE_ERROR:
-        {
-            SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
-            uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
-            SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
-			send_data_to_PIC(arm_done_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_SPIS_FAIL:
-        {
-            SEGGER_RTT_printf(0, "APP_STATE_SPIS_FAIL\n");
-            send_data_to_PIC(spis_fail_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_NEW_SN:
-        {
-            disable_imu();
-//            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100); //wait for PIC to stop requesting accel
-            send_data_to_PIC(serial_set_pack);
-            SEGGER_RTT_printf(0, "phone wrote SN\n");
-            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_X_MODEM:
-        {
-            disable_imu();
-//            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100);
-            send_data_to_PIC(xmodem_pack);
-            SEGGER_RTT_printf(0, "phone wrote x modem pack\n");
-            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_START_TEST:
-        {
-            disable_imu();
-//            SEGGER_RTT_printf(0, "IMU disabled\n");
-            nrf_delay_ms(100);
-            send_data_to_PIC(start_test_pack);
-            SEGGER_RTT_printf(0, "phone wrote start test pack\n");
-            //nrf_delay_ms(500); //wait for PIC to stop requesting accel
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_PIC_FWU_START:
-        {
-            packet_counter = 0;
-            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
-            disable_imu();
-            nrf_delay_ms(100);
-            fwu_start_pack.data = (uint8_t *)(&fw_size);
-            send_data_to_PIC(fwu_start_pack);
-            appData.ack = 0;      
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_DATA_SEND:
-        {
-            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
-            send_data_to_PIC(fwu_data_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_ACK:
-        {
-            //SEGGER_RTT_printf(0, "ACKING FWU\n");
-            fwu_code_t fwu_code = FWU_ACK;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_ERROR:
-        {
-            //SEGGER_RTT_printf(0, "NACKING FWU\n");
-            fwu_code_t fwu_code = FWU_NACK;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_DONE:
-        {
-            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
-            fwu_code_t fwu_code = DONE_PIC_FWU;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            
-            /****  instead of reset right away just tell the phone and wait for the restart command ***/
-            //nrf_delay_ms(100);
-            //NVIC_SystemReset();
-            break;
-        }
-        case APP_STATE_RESTART:
-        {
-            SEGGER_RTT_printf(0, "RESTARTING\n");
-            NVIC_SystemReset(); 
-            //should also pull 3V3 Enable low so that PIC restarts.
-            //may hav eto look into timing if this produced issues.
-            break;
-        }
-        case APP_STATE_START_ARM_FWU:
-        {
-            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
-            //sd_power_gpregret_set(0xB1);
-            sd_power_gpregret_set(0x01);
-            sd_nvic_SystemReset();
-            //TODO: restart into bootloader
-            break; //never gets here
-        }
-            
+        #endif
         default:
         {
             break;
