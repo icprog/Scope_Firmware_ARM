@@ -23,6 +23,7 @@
 #include "SEGGER_RTT.h"
 #include "SPI_utils.h"
 #include "calibration.h"
+#include "app.h"
 
 #define INVALID_BATTERY_LEVEL 255
 
@@ -85,7 +86,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
     if (p_evt_write->handle == p_optical->cal_squal_handles.value_handle)
     {
 			SEGGER_RTT_printf(0, "Start the squal test! \n");
-			send_data_to_PIC(squal_cal_start_pack);
+            appData.state = APP_STATE_START_SQUAL_CAL;
     }
     
     
