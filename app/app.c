@@ -672,6 +672,7 @@ void APP_Tasks(void)
             disable_imu();
             nrf_delay_ms(100);
 			send_data_to_PIC(squal_cal_start_pack);
+            break;
         }
         case APP_STATE_SQUAL_CAL_RESULT:
         {
