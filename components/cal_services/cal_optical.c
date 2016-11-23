@@ -64,9 +64,6 @@ static void on_disconnect(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 //		ble_gatts_char_handles_t      cal_test_vars_handles;          /**< Handles related to the Battery Level characteristic. */
 static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 {
-	
-	
-		SEGGER_RTT_printf(0, "optical write fxn\n");
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
     /**** catch the test variables whenn written ****/
@@ -221,9 +218,9 @@ void squal_cal_char_add(cal_optical_t * p_optical)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 1;
-    attr_char_value.init_len    = 1;
-    uint8_t value               = 0x00;
+    attr_char_value.max_len     = 20;
+    attr_char_value.init_len    = 20;
+    uint8_t value               = 0x0000000000000000000000000000000000000000;
     attr_char_value.p_value     = &value;
     
     /**** add it too the softdevice  *****/

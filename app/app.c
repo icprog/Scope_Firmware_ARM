@@ -713,7 +713,7 @@ void APP_Tasks(void)
             while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
 
-                err_code = profile_data_update(&m_ps, (uint8_t *)(&profile_data)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+                err_code = squal_data_update(&m_optical, (uint8_t *)&(cal_data.squal_and_pic)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
 				appData.data_counts += bytes_sent;			
                 if(appData.data_counts >= total_bytes)
                 {
