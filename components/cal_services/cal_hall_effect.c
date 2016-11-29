@@ -674,8 +674,7 @@ static void on_write(cal_hall_effect_t * p_hall_effect, ble_evt_t * p_ble_evt)
     {
         //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
-       SEGGER_RTT_printf(0, "hall_effect notification \n");
-				if (  
+			if (  
             (p_evt_write->handle == p_hall_effect->hall_effect_result_handles.cccd_handle)
             &&
             (p_evt_write->len == 2)

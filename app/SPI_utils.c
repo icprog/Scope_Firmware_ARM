@@ -236,6 +236,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 rx_data_ptr = cal_data.squal_and_pic;
                 next_state = APP_STATE_SQUAL_CAL_RESULT;
+                appData.ble_disconnect_flag = false;
                 break;
             }
             case PA_PCB_TEST:

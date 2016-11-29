@@ -25,7 +25,7 @@
 		MDK-Lite version 5.20
  
   Author(s): 
-    Richard Kirby
+    Richard Kirby, Joe Trovato
  
   Created on:
     June 1, 2016
