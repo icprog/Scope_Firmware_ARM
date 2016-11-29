@@ -47,10 +47,11 @@
 #define BLE_UUID_CAL_OPTICAL_SERVICE  0xa67e  // optical cal service UUID
 
 
-#define  BLE_UUID_OPTICAL_CAL_OPTICAL_CAL_CHAR 0x02a7
+#define BLE_UUID_OPTICAL_CAL_OPTICAL_CAL_CHAR 0x02a7
 #define BLE_UUID_OPTICAL_CAL_TEST_VARS_CHAR 0x26f3
 #define BLE_UUID_OPTICAL_CAL_OPTICAL_DATA_CHAR 0x8d21
 #define BLE_UUID_OPTICAL_CAL_RESULT_CHAR 0xb5b8   //optical cal result characteristic UUID
+#define BLE_UUID_OPTICAL_CAL_SQUAL_CHAR 0x93b9 
 
 /**@brief Battery Service event type. */
 typedef enum
@@ -76,10 +77,10 @@ typedef void (*cal_optical_evt_handler_t) (cal_optical_t * p_optical, cal_optica
 typedef struct
 {
     cal_optical_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
-		cal_optical_evt_handler_t			result_handler;
-		cal_optical_evt_handler_t			data_handler;
-		cal_optical_evt_handler_t			cal_handler;
-		cal_optical_evt_handler_t			test_vars_handler;
+    cal_optical_evt_handler_t			result_handler;
+    cal_optical_evt_handler_t			data_handler;
+    cal_optical_evt_handler_t			cal_handler;
+    cal_optical_evt_handler_t	  test_vars_handler;
     bool                          support_notification;           /**< TRUE if notification of Battery Level measurement is supported. */
     ble_srv_report_ref_t *        p_report_ref;                   /**< If not NULL, a Report Reference descriptor with the specified value will be added to the Battery Level characteristic */
     uint8_t                       initial_batt_level;             /**< Initial battery level */
@@ -100,6 +101,7 @@ struct cal_optical_s
     ble_gatts_char_handles_t      cal_optical_cal_handles;          /**< Handles related to the Battery Level characteristic. */
     ble_gatts_char_handles_t      cal_optical_data_handles;          /**< Handles related to the Battery Level characteristic. */
     ble_gatts_char_handles_t      cal_test_vars_handles;          /**< Handles related to the Battery Level characteristic. */
+    ble_gatts_char_handles_t      cal_squal_handles;          /**< Handles related to the Battery Level characteristic. */
     uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
     uint8_t                       cal_result_last;             /**< Last Battery Level measurement passed to the Battery Service. */
     uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */
@@ -149,6 +151,12 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result);
 uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t cal_result);
 uint32_t optical_cal_test_vars_update(cal_optical_t * p_optical, uint8_t cal_result);
+uint32_t squal_data_update(cal_optical_t * p_optical, 
+                           uint8_t * squal_data, 
+                           uint8_t size, 
+                           uint8_t * bytes_sent);
+
+
 #endif // CAL_OPTICAL_H__
 
 /** @} */
