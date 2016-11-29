@@ -237,9 +237,7 @@ void APP_Tasks(void)
             {
                 if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
-                    disable_imu();
                     SEGGER_RTT_printf(0, "again\n");
-                    SEGGER_RTT_printf(0, "sdtp = %d\n", sending_data_to_phone);
                     error_code = send_data_to_PIC(profile_id_pack);
                     if(error_code != 0)
                     {
@@ -249,7 +247,6 @@ void APP_Tasks(void)
                     appData.ack_retry = 0;
                 }
             }
-            //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
@@ -669,9 +666,25 @@ void APP_Tasks(void)
         }
         case APP_STATE_START_SQUAL_CAL:
         {
+            uint8_t error_code = 0;
+            SEGGER_RTT_printf(0, "APP_STATE_START_SQUAL_CAL \n");
             disable_imu();
-            nrf_delay_ms(100);
-			send_data_to_PIC(squal_cal_start_pack);
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(squal_cal_start_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_SQUAL_CAL_RESULT:
