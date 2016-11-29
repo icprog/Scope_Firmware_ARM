@@ -34,6 +34,7 @@ typedef struct{
 	uint8_t hall_result;
 	uint8_t hall_status;
     uint8_t vib_status;
+    uint8_t squal_and_pic[901];
 }cal_data_t;
 
 extern cal_data_t cal_data;

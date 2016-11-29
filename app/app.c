@@ -191,6 +191,7 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        
         case APP_STATE_POLLING:
         {
 
@@ -201,6 +202,21 @@ void APP_Tasks(void)
             //monitor();
             break;
         }
+        case APP_STATE_PCB_TEST:
+        {
+            run_pcb_tests(pcb_test_results);
+            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
+            SEGGER_RTT_printf(0, "test results  = %d %d\n", pcb_test_results[0], pcb_test_results[1]);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEVICE_INFO:
+        {
+            device_info_received = true;
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        #if(!CALIBRATION)
         case APP_STATE_NEW_ID:
         {
             SEGGER_RTT_printf(0, "APP_STATE_NEW_ID\n");
@@ -221,9 +237,7 @@ void APP_Tasks(void)
             {
                 if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
-                    disable_imu();
                     SEGGER_RTT_printf(0, "again\n");
-                    SEGGER_RTT_printf(0, "sdtp = %d\n", sending_data_to_phone);
                     error_code = send_data_to_PIC(profile_id_pack);
                     if(error_code != 0)
                     {
@@ -233,7 +247,6 @@ void APP_Tasks(void)
                     appData.ack_retry = 0;
                 }
             }
-            //send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
@@ -395,104 +408,6 @@ void APP_Tasks(void)
             }
             break;
         }
-        case APP_STATE_VIB_CAL_RDY:
-        {
-            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
-            send_data_to_PIC(vib_cal_rdy_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FORCE_CAL_WEIGHT:
-        {
-            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
-            send_data_to_PIC(force_cal_weight_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_LENGTH:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
-            send_data_to_PIC(optical_cal_length_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FORCE_CAL_DATA:
-        {
-						uint16_t test[7];
-            SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
-            SEGGER_RTT_printf(0, "received force calibration data: ");
-            for(int i = 0; i < 7; i++)
-            {
-                SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
-								test[i] = i;
-            }
-
-					cal_points_update(&m_force, cal_data.force_data);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_HALL_EFFECT_TEST:
-        {
-            if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
-            {
-                //communicate that the test failed!
-				cal_result_update(&m_hall_effect, 0);
-                appData.state = APP_STATE_POLLING;
-            }
-            if(cal_data.hall_status == 0) //test complete
-            {
-                //communicate that the test passed
-                cal_result_update(&m_hall_effect, 1);
-                appData.state = APP_STATE_POLLING;
-            }
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_DATA:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
-            optical_cal_update(&m_optical, cal_data.optical_data);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_OPTICAL_CAL_RESULT:
-        {
-            SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
-            optical_cal_result_update(&m_optical, cal_data.optical_result);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_HALL_EFFECT_RESULT:
-        {
-            cal_result_update(&m_hall_effect, cal_data.hall_result);
-            break;
-        }
-        case APP_STATE_PCB_TEST:
-        {
-            run_pcb_tests(pcb_test_results);
-            send_data_to_PIC(pcb_test_data_pack); //send pcb test data back to PIC
-            SEGGER_RTT_printf(0, "test results  = %d %d\n", pcb_test_results[0], pcb_test_results[1]);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_DEVICE_INFO:
-        {
-            device_info_received = true;
-//            SEGGER_RTT_printf(0, "\nserial number = ");
-//            for(int i = 0; i <= 5; i++)
-//            {
-//                SEGGER_RTT_printf(0, "%c", device_info.serial_number[i]);
-//            }
-//            SEGGER_RTT_printf(0, "\ndevice name = ");
-//            for(int i=0; i <strlen(device_info.device_name); i++)
-//            {
-//                SEGGER_RTT_printf(0, "%c", device_info.device_name[i]);
-//            }
-//            SEGGER_RTT_printf(0, "\nnumber of tests = %d\n\n", device_info.number_of_tests);
-            //nrf_delay_ms(5);
-            //send_data_to_PIC(arm_done_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
             SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
@@ -583,7 +498,7 @@ void APP_Tasks(void)
         case APP_STATE_NEW_SN:
         {
             disable_imu();
-//            SEGGER_RTT_printf(0, "IMU disabled\n");
+//          SEGGER_RTT_printf(0, "IMU disabled\n");
             nrf_delay_ms(100); //wait for PIC to stop requesting accel
             send_data_to_PIC(serial_set_pack);
             SEGGER_RTT_printf(0, "phone wrote SN\n");
@@ -677,7 +592,173 @@ void APP_Tasks(void)
             //TODO: restart into bootloader
             break; //never gets here
         }
+        #else
+        case APP_STATE_VIB_CAL_RDY:
+        {
+            SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+            send_data_to_PIC(vib_cal_rdy_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_WEIGHT:
+        {
+            SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            send_data_to_PIC(force_cal_weight_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_LENGTH:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+            send_data_to_PIC(optical_cal_length_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FORCE_CAL_DATA:
+        {
+						uint16_t test[7];
+            SEGGER_RTT_printf(0, "FORCE_CAL_DATA\n");
+            SEGGER_RTT_printf(0, "received force calibration data: ");
+            for(int i = 0; i < 7; i++)
+            {
+                SEGGER_RTT_printf(0, "  %d", cal_data.force_data[i]);
+								test[i] = i;
+            }
+
+					cal_points_update(&m_force, cal_data.force_data);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_HALL_EFFECT_TEST:
+        {
+            if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN)) //if HALL is set then the bullet is out of the pole
+            {
+                //communicate that the test failed!
+				cal_result_update(&m_hall_effect, 0);
+                appData.state = APP_STATE_POLLING;
+            }
+            if(cal_data.hall_status == 0) //test complete
+            {
+                //communicate that the test passed
+                cal_result_update(&m_hall_effect, 1);
+                appData.state = APP_STATE_POLLING;
+            }
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_DATA:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
+            optical_cal_update(&m_optical, cal_data.optical_data);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_OPTICAL_CAL_RESULT:
+        {
+            SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
+            optical_cal_result_update(&m_optical, cal_data.optical_result);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_HALL_EFFECT_RESULT:
+        {
+            cal_result_update(&m_hall_effect, cal_data.hall_result);
+            break;
+        }
+        case APP_STATE_START_SQUAL_CAL:
+        {
+            uint8_t error_code = 0;
+            SEGGER_RTT_printf(0, "APP_STATE_START_SQUAL_CAL \n");
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(squal_cal_start_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_SQUAL_CAL_RESULT:
+        {
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_WriteString(0, "APP_STATE_SQUAL_CAL_RESULT \n");
+            }
+            /***** if we disconnect get out of here  *******/
+            if(appData.ble_status == 0)
+            {
+                appData.state = APP_STATE_POLLING;
+				appData.prev_state = APP_STATE_POLLING;
+            }
+                
             
+            uint8_t bytes_sent = 0;
+            uint8_t counter = 0;
+            uint32_t err_code;
+            uint8_t done_flag = 0;
+            sending_data_to_phone = 1;
+            appData.status = 3;
+            uint16_t final_depth;
+            static uint16_t total_bytes = sizeof(cal_data.squal_and_pic);
+
+			if(appData.ble_disconnect_flag == true)
+			{
+				    appData.ble_disconnect_flag = false;
+					appData.state = APP_STATE_POLLING;
+					appData.prev_state = APP_STATE_POLLING;
+					appData.status = 0;
+					sending_data_to_phone = 0;
+					send_data_to_PIC(arm_done_pack);
+					appData.data_counts = 0;
+					SEGGER_RTT_printf(0, "lost communication during squal data transfer\n");
+					break;
+			}
+            
+            while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
+            {      
+
+                err_code = squal_data_update(&m_optical, (uint8_t *)&(cal_data.squal_and_pic)+appData.data_counts, 20, &bytes_sent);  //notify phone with raw data
+				appData.data_counts += bytes_sent;			
+                if(appData.data_counts >= total_bytes)
+                {
+                    done_flag = 1;
+                    appData.state = APP_STATE_POLLING;
+                    appData.prev_state = APP_STATE_POLLING;
+                    appData.status = 0;
+                    sending_data_to_phone = 0;
+                    send_data_to_PIC(arm_done_pack);
+                    SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
+                    SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
+                    appData.data_counts = 0;
+
+                }
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+                {
+                    //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
+                    break;
+                    
+                }
+                counter++;
+            }
+            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            {
+                counter = 0;
+                appData.prev_state = APP_STATE_SQUAL_CAL_RESULT;
+                appData.state = APP_STATE_POLLING;
+                break;
+            }
+            break;
+        }
+        #endif
         default:
         {
             break;
