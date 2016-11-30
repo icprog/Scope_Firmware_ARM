@@ -645,6 +645,29 @@ void APP_Tasks(void)
             }
             break;
         }
+        case APP_STATE_START_OPTICAL_CAL:
+        {
+            uint8_t error_code = 0;
+            SEGGER_RTT_printf(0, "APP_STATE_START_OPTICAL_CAL \n");
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(optical_cal_length_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_OPTICAL_CAL_DATA:
         {
             SEGGER_RTT_printf(0, "OPTICAL_CAL_DATA\n");
