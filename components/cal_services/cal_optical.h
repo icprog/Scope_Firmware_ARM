@@ -149,8 +149,13 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt);
  */
 uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result);
 uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result);
-uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t *cal_data);
+uint32_t optical_cal_data_update(cal_optical_t * p_optical,
+                           uint8_t * optical_data, 
+                           uint8_t size, 
+                           uint8_t * bytes_sent);
+                           
 uint32_t optical_cal_test_vars_update(cal_optical_t * p_optical, uint8_t cal_result);
+
 uint32_t squal_data_update(cal_optical_t * p_optical, 
                            uint8_t * squal_data, 
                            uint8_t size, 

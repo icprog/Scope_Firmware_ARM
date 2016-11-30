@@ -183,10 +183,10 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_OPTICAL_CAL_DATA:
             {
-                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
-                //set up a place to store data and change state
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
                 next_state = APP_STATE_OPTICAL_CAL_DATA;
-                rx_data_ptr = &(cal_data.optical_data);
+                rx_data_ptr = cal_data.optical_data;
+                appData.ble_disconnect_flag = false;
                 break;
             }
             case PA_DEVICE_STATUS:

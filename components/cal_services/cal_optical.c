@@ -811,37 +811,41 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result)
 }
 
 
-uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t  *cal_data)
+uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t * optical_data, uint8_t size, uint8_t * bytes_sent)
 {
-    if (p_optical == NULL)
+    static int count=0;
+	if (p_optical == NULL)
     {
-        return NRF_ERROR_NULL;
+        //return NRF_ERROR_NULL;
+		SEGGER_RTT_printf(0, "error: null optical data input \n");
+		return NRF_ERROR_INVALID_STATE;
     }
     
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
 
+    // Initialize value struct.
     memset(&gatts_value, 0, sizeof(gatts_value));
 
-    gatts_value.len     = 20;
+    gatts_value.len     = size*sizeof(uint8_t);
     gatts_value.offset  = 0;
-    gatts_value.p_value = cal_data;
+    gatts_value.p_value = optical_data;
 
-    // Update dataopticale.
+    // Update data.
     err_code = sd_ble_gatts_value_set(p_optical->conn_handle,
                                       p_optical->cal_optical_data_handles.value_handle,
                                       &gatts_value);
     if (err_code == NRF_SUCCESS)
     {
-
+        //SEGGER_RTT_printf(0, "data update success \n");
     }
     else
     {
-        return err_code;
+        SEGGER_RTT_printf(0, "error %d in optical data update\n", err_code);
     }
 
     // Send value if connected and notifying.
-    if ((p_optical->conn_handle != BLE_CONN_HANDLE_INVALID) && p_optical->is_notification_supported)
+    if ((p_optical->conn_handle != BLE_CONN_HANDLE_INVALID) )//&& p_ps->is_notification_supported)
     {
         ble_gatts_hvx_params_t hvx_params;
 
@@ -854,12 +858,22 @@ uint32_t optical_cal_data_update(cal_optical_t * p_optical, uint8_t  *cal_data)
         hvx_params.p_data = gatts_value.p_value;
 
         err_code = sd_ble_gatts_hvx(p_optical->conn_handle, &hvx_params);
+        if (err_code == NRF_SUCCESS)
+        {
+            count+=gatts_value.len;
+            *bytes_sent = gatts_value.len;
+            //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
+        }
+        else
+        {
+            *bytes_sent = 0;
+            SEGGER_RTT_printf(0, "error %d in optical cal  data update\n", err_code);
+        }
     }
     else
     {
         err_code = NRF_ERROR_INVALID_STATE;
     }
-
     return err_code;
 }
 
