@@ -96,6 +96,7 @@ typedef enum
     
     PA_OPTICAL_CAL_LENGTH, //ARM -> PIC
     PA_OPTICAL_CAL_DATA, //PIC -> ARM
+    PA_OPTICAL_CAL_CONST,
     PA_SQUAL_CAL,
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
