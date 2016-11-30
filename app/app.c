@@ -216,6 +216,70 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_PIC_FWU_START:
+        {
+            packet_counter = 0;
+            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
+            disable_imu();
+            nrf_delay_ms(100);
+            fwu_start_pack.data = (uint8_t *)(&fw_size);
+            send_data_to_PIC(fwu_start_pack);
+            appData.ack = 0;      
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DATA_SEND:
+        {
+            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
+            send_data_to_PIC(fwu_data_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ACK:
+        {
+            //SEGGER_RTT_printf(0, "ACKING FWU\n");
+            fwu_code_t fwu_code = FWU_ACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_ERROR:
+        {
+            //SEGGER_RTT_printf(0, "NACKING FWU\n");
+            fwu_code_t fwu_code = FWU_NACK;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_FWU_DONE:
+        {
+            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
+            fwu_code_t fwu_code = DONE_PIC_FWU;
+            ble_fwu_update(&m_fwu, fwu_code);
+            appData.state = APP_STATE_POLLING;
+            
+            /****  instead of reset right away just tell the phone and wait for the restart command ***/
+            //nrf_delay_ms(100);
+            //NVIC_SystemReset();
+            break;
+        }
+        case APP_STATE_RESTART:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING\n");
+            NVIC_SystemReset(); 
+            //should also pull 3V3 Enable low so that PIC restarts.
+            //may hav eto look into timing if this produced issues.
+            break;
+        }
+        case APP_STATE_START_ARM_FWU:
+        {
+            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
+            //sd_power_gpregret_set(0xB1);
+            sd_power_gpregret_set(0x01);
+            sd_nvic_SystemReset();
+            //TODO: restart into bootloader
+            break; //never gets here
+        }
         #if(!CALIBRATION)
         case APP_STATE_NEW_ID:
         {
@@ -528,70 +592,6 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
-        case APP_STATE_PIC_FWU_START:
-        {
-            packet_counter = 0;
-            SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
-            disable_imu();
-            nrf_delay_ms(100);
-            fwu_start_pack.data = (uint8_t *)(&fw_size);
-            send_data_to_PIC(fwu_start_pack);
-            appData.ack = 0;      
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_DATA_SEND:
-        {
-            SEGGER_RTT_printf(0, "FWU: sending a data packet#%d\n", packet_counter++);
-            send_data_to_PIC(fwu_data_pack);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_ACK:
-        {
-            //SEGGER_RTT_printf(0, "ACKING FWU\n");
-            fwu_code_t fwu_code = FWU_ACK;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_ERROR:
-        {
-            //SEGGER_RTT_printf(0, "NACKING FWU\n");
-            fwu_code_t fwu_code = FWU_NACK;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            break;
-        }
-        case APP_STATE_FWU_DONE:
-        {
-            SEGGER_RTT_printf(0, "FWU DONE! LETS RESET!\n");
-            fwu_code_t fwu_code = DONE_PIC_FWU;
-            ble_fwu_update(&m_fwu, fwu_code);
-            appData.state = APP_STATE_POLLING;
-            
-            /****  instead of reset right away just tell the phone and wait for the restart command ***/
-            //nrf_delay_ms(100);
-            //NVIC_SystemReset();
-            break;
-        }
-        case APP_STATE_RESTART:
-        {
-            SEGGER_RTT_printf(0, "RESTARTING\n");
-            NVIC_SystemReset(); 
-            //should also pull 3V3 Enable low so that PIC restarts.
-            //may hav eto look into timing if this produced issues.
-            break;
-        }
-        case APP_STATE_START_ARM_FWU:
-        {
-            SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
-            //sd_power_gpregret_set(0xB1);
-            sd_power_gpregret_set(0x01);
-            sd_nvic_SystemReset();
-            //TODO: restart into bootloader
-            break; //never gets here
-        }
         #else
         case APP_STATE_VIB_CAL_RDY:
         {
@@ -746,6 +746,8 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "OPTICAL_CAL_RESULT\n");
             optical_cal_result_update(&m_optical, cal_data.optical_result);
+            optical_cal_const_update(&m_optical, cal_data.optical_const);
+            send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }

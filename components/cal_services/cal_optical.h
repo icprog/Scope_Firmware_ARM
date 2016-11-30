@@ -98,7 +98,7 @@ struct cal_optical_s
     cal_optical_evt_handler_t			test_vars_handler;
     uint16_t                      service_handle;                 /**< Handle of Battery Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t      cal_result_handles;          /**< Handles related to the Battery Level characteristic. */
-    ble_gatts_char_handles_t      cal_optical_cal_handles;          /**< Handles related to the Battery Level characteristic. */
+    ble_gatts_char_handles_t      cal_optical_const_handles;          /**< Handles related to the Battery Level characteristic. */
     ble_gatts_char_handles_t      cal_optical_data_handles;          /**< Handles related to the Battery Level characteristic. */
     ble_gatts_char_handles_t      cal_test_vars_handles;          /**< Handles related to the Battery Level characteristic. */
     ble_gatts_char_handles_t      cal_squal_handles;          /**< Handles related to the Battery Level characteristic. */
@@ -148,7 +148,7 @@ void cal_optical_on_ble_evt(cal_optical_t * p_optical, ble_evt_t * p_ble_evt);
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
 uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result);
-uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result);
+uint32_t optical_cal_const_update(cal_optical_t * p_optical, uint16_t cal_const);
 uint32_t optical_cal_data_update(cal_optical_t * p_optical,
                            uint8_t * optical_data, 
                            uint8_t size, 

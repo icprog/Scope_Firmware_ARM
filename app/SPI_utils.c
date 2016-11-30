@@ -227,9 +227,16 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_OPTICAL_CAL_RESULT:
             {
-                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
-                next_state = APP_STATE_OPTICAL_CAL_RESULT;
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
                 rx_data_ptr = &(cal_data.optical_result);
+                next_state = APP_STATE_OPTICAL_CAL_RESULT;
+                break;
+            }
+            case PA_OPTICAL_CAL_CONST:
+            {
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_CONST\n");
+                rx_data_ptr = &(cal_data.optical_const);
+                next_state = appData.state;
                 break;
             }
             case PA_SQUAL_CAL:

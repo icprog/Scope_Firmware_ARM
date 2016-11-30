@@ -117,7 +117,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
             }
         }
 				if (
-            (p_evt_write->handle == p_optical->cal_optical_cal_handles.cccd_handle)
+            (p_evt_write->handle == p_optical->cal_optical_const_handles.cccd_handle)
             &&
             (p_evt_write->len == 2)
            )
@@ -349,7 +349,7 @@ static uint32_t cal_result_char_add(cal_optical_t * p_optical, const cal_optical
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-static uint32_t cal_optical_cal_char_add(cal_optical_t * p_optical, const cal_optical_init_t * p_optical_init)
+static uint32_t cal_optical_const_char_add(cal_optical_t * p_optical, const cal_optical_init_t * p_optical_init)
 {
     uint32_t            err_code;
     ble_gatts_char_md_t char_md;
@@ -408,7 +408,7 @@ static uint32_t cal_optical_cal_char_add(cal_optical_t * p_optical, const cal_op
 
     err_code = sd_ble_gatts_characteristic_add(p_optical->service_handle, &char_md,
                                                &attr_char_value,
-                                               &p_optical->cal_optical_cal_handles);
+                                               &p_optical->cal_optical_const_handles);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
@@ -677,7 +677,7 @@ uint32_t cal_optical_init(cal_optical_t * p_optical, const cal_optical_init_t * 
     {
         return err_code;
     }
-    err_code = cal_optical_cal_char_add(p_optical, p_optical_init);
+    err_code = cal_optical_const_char_add(p_optical, p_optical_init);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;
@@ -751,9 +751,9 @@ uint32_t optical_cal_result_update(cal_optical_t * p_optical, uint8_t cal_result
 
     return err_code;
 }
-uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result)
+uint32_t optical_cal_const_update(cal_optical_t * p_optical, uint16_t cal_const)
 {
-    SEGGER_RTT_printf(0, "optical_cal_update (data)\n");
+    SEGGER_RTT_printf(0, "optical_cal_const_update\n");
     if (p_optical == NULL)
     {
         return NRF_ERROR_NULL;
@@ -766,13 +766,13 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result)
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 
-        gatts_value.len     = 20;// sizeof(uint16_t); //was float
+        gatts_value.len     = sizeof(uint16_t);// sizeof(uint16_t); //was float
         gatts_value.offset  = 0;
-        gatts_value.p_value = (uint8_t *)&cal_result; 
+        gatts_value.p_value = (uint8_t *)&cal_const; 
 
         // Update data optical.
         err_code = sd_ble_gatts_value_set(p_optical->conn_handle,
-                                          p_optical->cal_optical_cal_handles.value_handle,
+                                          p_optical->cal_optical_const_handles.value_handle,
                                           &gatts_value);
         if (err_code == NRF_SUCCESS)
         {
@@ -791,7 +791,7 @@ uint32_t optical_cal_update(cal_optical_t * p_optical, uint16_t cal_result)
 
             memset(&hvx_params, 0, sizeof(hvx_params));
 
-            hvx_params.handle = p_optical->cal_optical_cal_handles.value_handle;
+            hvx_params.handle = p_optical->cal_optical_const_handles.value_handle;
             hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
             hvx_params.offset = gatts_value.offset;
             hvx_params.p_len  = &gatts_value.len;
