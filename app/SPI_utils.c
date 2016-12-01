@@ -86,6 +86,7 @@ pic_arm_pack_t start_test_pack = {PA_START_TEST, dummy_buf, 0};
 pic_arm_pack_t fwu_start_pack={PA_FWU_START, dummy_buf, sizeof(uint32_t)};
 pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, appData.fwu_data_buf, 0}; //will need to update length dynamically
 pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
+pic_arm_pack_t squal_cal_start_pack = {PA_SQUAL_CAL, dummy_buf, 0};
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
@@ -182,10 +183,10 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_OPTICAL_CAL_DATA:
             {
-                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
-                //set up a place to store data and change state
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_DATA\n");
                 next_state = APP_STATE_OPTICAL_CAL_DATA;
-                rx_data_ptr = &(cal_data.optical_data);
+                rx_data_ptr = cal_data.optical_data;
+                appData.ble_disconnect_flag = false;
                 break;
             }
             case PA_DEVICE_STATUS:
@@ -226,9 +227,23 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_OPTICAL_CAL_RESULT:
             {
-                //SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
-                next_state = APP_STATE_OPTICAL_CAL_RESULT;
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_RESULT\n");
                 rx_data_ptr = &(cal_data.optical_result);
+                next_state = APP_STATE_OPTICAL_CAL_RESULT;
+                break;
+            }
+            case PA_OPTICAL_CAL_CONST:
+            {
+                SEGGER_RTT_printf(0, "PA_OPTICAL_CAL_CONST\n");
+                rx_data_ptr = &(cal_data.optical_const);
+                next_state = appData.state;
+                break;
+            }
+            case PA_SQUAL_CAL:
+            {
+                rx_data_ptr = cal_data.squal_and_pic;
+                next_state = APP_STATE_SQUAL_CAL_RESULT;
+                appData.ble_disconnect_flag = false;
                 break;
             }
             case PA_PCB_TEST:

@@ -655,7 +655,6 @@ void force_write_handler(cal_force_t * p_force, uint8_t data_in)
  */
 static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
 {
-	SEGGER_RTT_printf(0, "force write fxn\n");
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
 	if ((p_evt_write->handle == p_force->force_weight_handles.value_handle) &&
@@ -670,7 +669,6 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     {
         //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 
-       SEGGER_RTT_printf(0, "force notification \n");
 				if (  
             (p_evt_write->handle == p_force->force_cal_handles.cccd_handle)
             &&

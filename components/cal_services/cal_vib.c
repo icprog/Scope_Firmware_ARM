@@ -174,7 +174,6 @@ void vib_write_handler(cal_vib_t * p_vib, uint8_t data_in)
  */
 static void on_write(cal_vib_t * p_vib, ble_evt_t * p_ble_evt)
 {
-	SEGGER_RTT_printf(0, "vib write fxn\n");
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
 	if ((p_evt_write->handle == p_vib->vib_handles.value_handle) &&

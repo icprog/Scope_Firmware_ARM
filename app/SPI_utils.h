@@ -96,6 +96,8 @@ typedef enum
     
     PA_OPTICAL_CAL_LENGTH, //ARM -> PIC
     PA_OPTICAL_CAL_DATA, //PIC -> ARM
+    PA_OPTICAL_CAL_CONST,
+    PA_SQUAL_CAL,
     
     PA_VIB_CAL_RDY,  //ARM -> PIC
             
@@ -135,6 +137,7 @@ extern pic_arm_pack_t fwu_start_pack;
 extern pic_arm_pack_t fwu_data_pack;
 extern pic_arm_pack_t pcb_test_data_pack;
 extern pic_arm_pack_t accelerometer_pack;
+extern pic_arm_pack_t squal_cal_start_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 

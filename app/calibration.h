@@ -28,12 +28,14 @@ typedef struct{
     uint16_t force_weights[NUMBER_OF_WEIGHTS];
 	uint8_t optical_parameters[3]; // length, max speed, tolerance
     uint8_t optical_result;
-    uint16_t optical_data;
+    uint16_t optical_const;
+    uint8_t optical_data[2000];
     uint8_t optical_length;
     uint8_t hall_test;
 	uint8_t hall_result;
 	uint8_t hall_status;
     uint8_t vib_status;
+    uint8_t squal_and_pic[901];
 }cal_data_t;
 
 extern cal_data_t cal_data;
