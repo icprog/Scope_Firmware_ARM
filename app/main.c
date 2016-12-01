@@ -245,11 +245,7 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
     
-    //battery service init:
-    ble_bas_init_t bas_init;
-    memset(&bas_init, 0, sizeof(bas_init));
-    err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
+    
     
     //init firmware update service
     ble_fwu_service_init(&m_fwu);
@@ -303,6 +299,12 @@ static void services_init(void)
                 
         //init debug service:
         ble_debug_service_init(&m_ds);
+        
+        //battery service init:
+        ble_bas_init_t bas_init;
+        memset(&bas_init, 0, sizeof(bas_init));
+        err_code = ble_bas_init(&m_bas, &bas_init);
+        APP_ERROR_CHECK(err_code);
     
     }
 		
@@ -494,7 +496,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_conn_params_on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-
+    ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
     if(CALIBRATION)
     {
         cal_vib_on_ble_evt(&m_vib,p_ble_evt);
@@ -510,7 +512,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 		ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
-        ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
+        
     }
 }
 

@@ -398,6 +398,8 @@ void APP_Tasks(void)
         case APP_STATE_VIB_CAL_RDY:
         {
             SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
+            disable_imu();  //disable imu data interrupt
+            nrf_delay_ms(100);
             send_data_to_PIC(vib_cal_rdy_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -405,6 +407,8 @@ void APP_Tasks(void)
         case APP_STATE_FORCE_CAL_WEIGHT:
         {
             SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+             disable_imu();  //disable imu data interrupt
+            nrf_delay_ms(100);
             send_data_to_PIC(force_cal_weight_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -412,6 +416,10 @@ void APP_Tasks(void)
         case APP_STATE_OPTICAL_CAL_LENGTH:
         {
             SEGGER_RTT_printf(0, "OPTICAL_CAL_LENGTH\n");
+            
+            disable_imu();  //disable imu data interrupt
+            nrf_delay_ms(100);
+            nrf_delay_ms(100);
             send_data_to_PIC(optical_cal_length_pack);
             appData.state = APP_STATE_POLLING;
             break;

@@ -23,6 +23,7 @@
 #include "SEGGER_RTT.h"
 #include "SPI_utils.h"
 #include "calibration.h"
+#include "app.h"
 
 #define INVALID_BATTERY_LEVEL 255
 
@@ -77,7 +78,7 @@ static void on_write(cal_optical_t * p_optical, ble_evt_t * p_ble_evt)
 			cal_data.optical_parameters[0] = p_evt_write->data[0]; //length
 			cal_data.optical_parameters[1] = p_evt_write->data[1]; //max speed
 			cal_data.optical_parameters[2] = p_evt_write->data[2]; // tolerance
-			send_data_to_PIC(optical_cal_length_pack);
+            appData.state = APP_STATE_OPTICAL_CAL_LENGTH;
 			
     }
     if (p_optical->is_notification_supported)
