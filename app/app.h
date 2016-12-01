@@ -42,7 +42,7 @@
 #include <LSM303drv.h>
 #include <L3GD20drv.h>
 
-#define CALIBRATION 1
+#define CALIBRATION 0
 #define FW_VERSION "0.01.00"
 
 // *****************************************************************************

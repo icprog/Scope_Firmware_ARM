@@ -319,6 +319,7 @@ void APP_Tasks(void)
         {
             if(appData.data_counts == 0)
             {
+                disable_imu();
                 SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
             }
             /***** if we disconnect get out of here  *******/
@@ -346,7 +347,10 @@ void APP_Tasks(void)
 					appData.prev_state = APP_STATE_POLLING;
 					appData.status = 0;
 					sending_data_to_phone = 0;
-					send_data_to_PIC(arm_done_pack);
+					if(send_data_to_PIC(arm_done_pack))
+                    {
+                        SEGGER_RTT_printf(0, "failed to send ARM DONE\n");
+                    }
 					appData.data_counts = 0;
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
@@ -356,6 +360,11 @@ void APP_Tasks(void)
             {
                 /***** notify phone of how much data needs to be sent  *****/
                 final_depth = profile_data.metadata.profile_depth;
+                if(final_depth > 3000)
+                {
+                     SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
+                }
+
                 update_profile_length(&m_ps, final_depth);
                 total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
                 SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
