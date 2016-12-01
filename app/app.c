@@ -162,6 +162,10 @@ void APP_Initialize(void)
         nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
         SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
+        
+        // set CAL mode on PIC if necessary:
+        //set_pic_to_cal_pack
+        
     
 }
 
@@ -602,6 +606,15 @@ void APP_Tasks(void)
             break;
         }
         #else
+        case APP_STATE_SET_PIC_CAL:  // puts PIC in CAL mode
+        {
+            disable_imu();
+            SEGGER_RTT_printf(0, "setting PIC to cal mmode\n");
+            nrf_delay_ms(100);
+            send_data_to_PIC(set_pic_to_cal_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_VIB_CAL_RDY:
         {
             SEGGER_RTT_printf(0, "VIB_CAL_RDY\n");
@@ -661,6 +674,7 @@ void APP_Tasks(void)
             uint8_t error_code = 0;
             SEGGER_RTT_printf(0, "APP_STATE_START_OPTICAL_CAL \n");
             disable_imu();
+            nrf_delay_ms(100);
             send_data_to_PIC(optical_cal_length_pack);
             //TODO: acking this packet is a big problem because it has data. look into that!
 //            appData.ack = 0;
