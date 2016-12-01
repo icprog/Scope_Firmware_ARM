@@ -43,7 +43,10 @@
 #include <L3GD20drv.h>
 
 #define CALIBRATION 1
+
+
 #define FW_VERSION "0.01.00"
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -100,6 +103,7 @@ typedef enum
     APP_STATE_START_SQUAL_CAL,
     APP_STATE_SQUAL_CAL_RESULT,
     APP_STATE_START_OPTICAL_CAL,
+    APP_STATE_SET_PIC_CAL,
     
 } APP_STATES;
 

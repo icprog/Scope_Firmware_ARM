@@ -82,7 +82,7 @@ static ble_beacon_init_t beacon_init;
 
 /****** parameters for application timers  ******/
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
+#define APP_ADV_TIMEOUT_IN_SECONDS           0xFFFFFFFF//180                                         /**< The advertising timeout in units of seconds. */
 
 /*********  BLE connection params  ******/
 #define MIN_CONN_INTERVAL                    MSEC_TO_UNITS(50, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.5 seconds). */
@@ -250,6 +250,7 @@ static void services_init(void)
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
     
+
     //init firmware update service
     ble_fwu_service_init(&m_fwu);
     
@@ -307,6 +308,7 @@ static void services_init(void)
                 
         //init debug service:
         ble_debug_service_init(&m_ds);
+        
     
     }
 		
@@ -498,7 +500,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_conn_params_on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
-
+    ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
     if(CALIBRATION)
     {
         cal_vib_on_ble_evt(&m_vib,p_ble_evt);
@@ -514,7 +516,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
         ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
         ble_profile_service_on_ble_evt(&m_ps, p_ble_evt);
 		ble_debug_service_on_ble_evt(&m_ds, p_ble_evt);
-        ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
+        
     }
 }
 
@@ -788,6 +790,7 @@ int main(void)
     //NRF_POWER->RESET = 0;
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
     nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
+    nrf_delay_ms(100);
     nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
  // Initialize.
     SEGGER_RTT_WriteString(0, "main init\n");
@@ -833,12 +836,7 @@ int main(void)
         nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
         
         
-   //testing DFU  *****************
-
-        //sd_power_gpregret_set(0xB1);
-        //sd_nvic_SystemReset();
-
-   //End DFU test ******************
+        if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
         
         while(true)
