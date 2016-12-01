@@ -309,11 +309,6 @@ static void services_init(void)
         //init debug service:
         ble_debug_service_init(&m_ds);
         
-        //battery service init:
-        ble_bas_init_t bas_init;
-        memset(&bas_init, 0, sizeof(bas_init));
-        err_code = ble_bas_init(&m_bas, &bas_init);
-        APP_ERROR_CHECK(err_code);
     
     }
 		
@@ -841,12 +836,7 @@ int main(void)
         nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
         
         
-   //testing DFU  *****************
-
-        //sd_power_gpregret_set(0xB1);
-        //sd_nvic_SystemReset();
-
-   //End DFU test ******************
+        if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
         
         while(true)

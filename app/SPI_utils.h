@@ -102,7 +102,8 @@ typedef enum
     PA_VIB_CAL_RDY,  //ARM -> PIC
             
     PA_CAL_COMPLETE, //PIC -> ARM
-    PA_OPTICAL_CAL_RESULT, //PIC-> ARM            
+    PA_OPTICAL_CAL_RESULT, //PIC-> ARM           
+    PA_CAL_MODE, // ARM -> PIC //starts cal mode on PIC
     //NOTE: no hall effect codes because the hall effect happen completely on the ARM
     
 } pic_arm_code_t;
@@ -138,6 +139,7 @@ extern pic_arm_pack_t fwu_data_pack;
 extern pic_arm_pack_t pcb_test_data_pack;
 extern pic_arm_pack_t accelerometer_pack;
 extern pic_arm_pack_t squal_cal_start_pack;
+extern pic_arm_pack_t set_pic_to_cal_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 
