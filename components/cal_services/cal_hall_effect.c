@@ -644,7 +644,7 @@ void hall_effect_write_handler(cal_hall_effect_t * p_hall_effect, uint8_t data_i
 {
 	
 	cal_data.hall_status = data_in;
-	if(data_in ==1) appData.state = APP_STATE_HALL_EFFECT_TEST;
+	if(data_in == 1) appData.state = APP_STATE_HALL_EFFECT_TEST;
 
 }
 
@@ -666,7 +666,6 @@ static void on_write(cal_hall_effect_t * p_hall_effect, ble_evt_t * p_ble_evt)
 			
 			hall_effect_write_handler(p_hall_effect, p_evt_write->data[0]);
     }
-
     if (p_hall_effect->is_notification_supported)
     {
         //ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
