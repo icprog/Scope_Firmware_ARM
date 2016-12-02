@@ -13,6 +13,7 @@ void run_pcb_tests(uint8_t  * pcb_test_results)
     {
         GYRO_deviceID_test,
         ACCEL_deviceID_test,
+        ACCEL_value_test,
     };
     
     //run the tests!
@@ -26,8 +27,6 @@ void run_pcb_tests(uint8_t  * pcb_test_results)
         pcb_test_results[i] = test_result;
     }
 }
-
-
 
 uint8_t GYRO_deviceID_test(void)
 {
@@ -61,6 +60,34 @@ uint8_t ACCEL_deviceID_test(void)
     {
         test_result = 1;
         SEGGER_RTT_printf(0, "LSM303D device ID = 0x%2x\n", ID);
+    }
+    /***********  CLEANUP ********/
+    return test_result;
+}
+
+uint8_t ACCEL_value_test(void)
+{
+    /*********** SETUP  ********/
+    uint8_t test_result = 0;
+    int sumX=0, sumY=0, sumZ=0, avgX, avgY, avgZ;
+    
+    for(int i = 0; i < 100; i++)
+    {
+        LSM303_DATA v = getLSM303data();
+        sumX += v.X;
+        sumY += v.Y;
+        sumZ += v.Z;
+        //SEGGER_RTT_printf(0, "x=%d y=%d z=%d\n", v.X, v.Y, v.Z);
+    }
+    avgX = sumX/100;
+    avgY = sumY/100;
+    avgZ = sumZ/100;
+    
+    /*********** TEST ***********/
+    if(avgX<-100 || avgX>100 || avgY<-100 || avgY>100 || avgZ<1200 || avgZ>1500)
+    {
+        test_result = 1;
+        SEGGER_RTT_printf(0, "x=%d y=%d z=%d\n", avgX, avgY, avgZ);
     }
     /***********  CLEANUP ********/
     return test_result;
