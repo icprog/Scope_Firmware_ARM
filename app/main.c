@@ -836,7 +836,7 @@ int main(void)
         nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
         
         
-        //if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
+        if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
         
         while(true)
