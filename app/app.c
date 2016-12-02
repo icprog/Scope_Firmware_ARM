@@ -627,6 +627,7 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
             disable_imu();
             nrf_delay_ms(100);
+            SEGGER_RTT_printf(0, "sending %d\n", cal_data.current_weight);
             send_data_to_PIC(force_cal_weight_pack);
             appData.state = APP_STATE_POLLING;
             break;
