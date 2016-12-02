@@ -627,6 +627,7 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
             disable_imu();
             nrf_delay_ms(100);
+            SEGGER_RTT_printf(0, "sending %d\n", cal_data.current_weight);
             send_data_to_PIC(force_cal_weight_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -779,6 +780,28 @@ void APP_Tasks(void)
         case APP_STATE_HALL_EFFECT_RESULT:
         {
             cal_result_update(&m_hall_effect, cal_data.hall_result);
+            break;
+        }
+        case APP_STATE_START_VIB_CAL:
+        {
+            uint8_t error_code = 0;
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(vib_cal_rdy_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_START_SQUAL_CAL:

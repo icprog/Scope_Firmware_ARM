@@ -841,7 +841,7 @@ int main(void)
         
         while(true)
         {
-            if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  //out of pole, run normal loop
+            if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 || CALIBRATION)  //out of pole or in Calibration, run normal loop
             {
             power_manage();
             APP_Tasks();    

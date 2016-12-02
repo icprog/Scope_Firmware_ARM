@@ -25,7 +25,8 @@
 #include "ble_srv_common.h"
 #include "app_util.h"
 #include "SEGGER_RTT.h"
-#include "spi_utils.h"
+#include "app.h"
+
 
 
 #define cal_vib_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -162,11 +163,6 @@ static void on_disconnect(cal_vib_t * p_vib, ble_evt_t * p_ble_evt)
     p_vib->conn_handle = BLE_CONN_HANDLE_INVALID;
 }
 
-void vib_write_handler(cal_vib_t * p_vib, uint8_t data_in)
-{
-		SEGGER_RTT_printf(0,"input: %d",data_in);
-}
-
 /**@brief Function for handling the Write event.
  *
  * @param[in]   p_vib       vib Service structure.
@@ -177,14 +173,11 @@ static void on_write(cal_vib_t * p_vib, ble_evt_t * p_ble_evt)
 	ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
 	
 	if ((p_evt_write->handle == p_vib->vib_handles.value_handle) &&
-        (p_evt_write->len <= 2))// &&(p_vib->vib_write_handler != NULL))
+        (p_evt_write->len <= 2))
     {
 		SEGGER_RTT_printf(0, "vib data write handler data[0] \n");
 		SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
-        //p_vib->vib_write_handler(p_vib, p_evt_write->data[0]); //null pointer crashes processor...
-			
-		vib_write_handler(p_vib, p_evt_write->data[0]);
-        send_data_to_PIC(vib_cal_rdy_pack);
+		appData.state = APP_STATE_START_VIB_CAL;	
     }
 		
 }

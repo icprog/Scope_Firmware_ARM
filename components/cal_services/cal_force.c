@@ -653,6 +653,7 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     {
 			SEGGER_RTT_printf(0, "force data write handler data[0] \n");
 			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
+            cal_data.current_weight = p_evt_write->data[0];
             appData.state = APP_STATE_FORCE_CAL_WEIGHT;
     }
 
