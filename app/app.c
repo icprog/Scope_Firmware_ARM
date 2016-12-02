@@ -782,6 +782,28 @@ void APP_Tasks(void)
             cal_result_update(&m_hall_effect, cal_data.hall_result);
             break;
         }
+        case APP_STATE_START_VIB_CAL:
+        {
+            uint8_t error_code = 0;
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(vib_cal_rdy_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         case APP_STATE_START_SQUAL_CAL:
         {
             uint8_t error_code = 0;
