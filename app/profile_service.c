@@ -399,6 +399,7 @@ uint32_t update_profile_length(ble_ps_t * p_ps, uint16_t length)
     {
         return NRF_ERROR_NULL;
     }
+    SEGGER_RTT_printf(0, "updating length = %d \n", length);
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
         

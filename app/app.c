@@ -323,6 +323,7 @@ void APP_Tasks(void)
         {
             if(appData.data_counts == 0)
             {
+                disable_imu();
                 SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
             }
             /***** if we disconnect get out of here  *******/
@@ -350,7 +351,10 @@ void APP_Tasks(void)
 					appData.prev_state = APP_STATE_POLLING;
 					appData.status = 0;
 					sending_data_to_phone = 0;
-					send_data_to_PIC(arm_done_pack);
+					if(send_data_to_PIC(arm_done_pack))
+                    {
+                        SEGGER_RTT_printf(0, "failed to send ARM DONE\n");
+                    }
 					appData.data_counts = 0;
 					SEGGER_RTT_printf(0, "lost communication during profile transfer\n");
 					break;
@@ -360,6 +364,11 @@ void APP_Tasks(void)
             {
                 /***** notify phone of how much data needs to be sent  *****/
                 final_depth = profile_data.metadata.profile_depth;
+                if(final_depth > 3000)
+                {
+                     SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
+                }
+
                 update_profile_length(&m_ps, final_depth);
                 total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
                 SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
@@ -616,6 +625,9 @@ void APP_Tasks(void)
         case APP_STATE_FORCE_CAL_WEIGHT:
         {
             SEGGER_RTT_printf(0, "FORCE_CAL_WEIGHT\n");
+            disable_imu();
+            nrf_delay_ms(100);
+            SEGGER_RTT_printf(0, "sending %d\n", cal_data.current_weight);
             send_data_to_PIC(force_cal_weight_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -768,6 +780,28 @@ void APP_Tasks(void)
         case APP_STATE_HALL_EFFECT_RESULT:
         {
             cal_result_update(&m_hall_effect, cal_data.hall_result);
+            break;
+        }
+        case APP_STATE_START_VIB_CAL:
+        {
+            uint8_t error_code = 0;
+            disable_imu();
+            appData.ack = 0;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(vib_cal_rdy_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_START_SQUAL_CAL:

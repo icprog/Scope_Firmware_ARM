@@ -26,7 +26,7 @@
 #include "app_util.h"
 #include "SEGGER_RTT.h"
 #include "calibration.h"
-#include "SPI_utils.h"
+#include "app.h"
 
 
 #define cal_force_SYS_ID_LEN 8  /**< Length of System ID Characteristic Value. */
@@ -38,8 +38,6 @@ static ble_gatts_char_handles_t force_data_handles;
 static ble_gatts_char_handles_t force_cal_handles;
 static ble_gatts_char_handles_t cal_result_handles;
 //static ble_gatts_char_handles_t pnp_id_handles;
-
-extern pic_arm_pack_t force_cal_weight_pack;
 
 
 ///**@brief Function for encoding a PnP ID.
@@ -641,13 +639,6 @@ static void on_disconnect(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     p_force->conn_handle = BLE_CONN_HANDLE_INVALID;
 }
 
-void force_write_handler(cal_force_t * p_force, uint8_t data_in)
-{
-	//add call to SPI Utils stuff here:
-	cal_data.current_weight = data_in;
-	send_data_to_PIC(force_cal_weight_pack);
-}
-
 /**@brief Function for handling the Write event.
  *
  * @param[in]   p_force       force Service structure.
@@ -662,7 +653,8 @@ static void on_write(cal_force_t * p_force, ble_evt_t * p_ble_evt)
     {
 			SEGGER_RTT_printf(0, "force data write handler data[0] \n");
 			SEGGER_RTT_printf(0,"input: %d",p_evt_write->data[0]);
-			force_write_handler(p_force, p_evt_write->data[0]);
+            cal_data.current_weight = p_evt_write->data[0];
+            appData.state = APP_STATE_FORCE_CAL_WEIGHT;
     }
 
     if (p_force->is_notification_supported)
