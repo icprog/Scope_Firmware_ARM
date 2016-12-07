@@ -109,8 +109,8 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
 
-    if (probe_error_code != p_pes->probe_error_code) //notify anytime the value changes
-    {
+//    if (probe_error_code != p_pes->probe_error_code) //notify anytime the value changes
+//    {
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
         gatts_value.len     = sizeof(uint8_t);
@@ -144,13 +144,13 @@ uint32_t ble_probe_error_update(ble_pes_t * p_pes, uint8_t probe_error_code)
 
             
             err_code = sd_ble_gatts_hvx(p_pes->conn_handle, &hvx_params);
-            //SEGGER_RTT_printf(0, "notifying %d", probe_error_code);
+            SEGGER_RTT_printf(0, "notifying %d", probe_error_code);
         }
         else
         {
             err_code = NRF_ERROR_INVALID_STATE;
         }
-    }
+//    }
 
     return err_code;
 }
