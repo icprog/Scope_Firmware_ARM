@@ -561,6 +561,8 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
             uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
             SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
+            disable_imu();
+            nrf_delay_ms(100); //wait for PIC to stop requesting accel
 			send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
@@ -610,8 +612,22 @@ void APP_Tasks(void)
         {
             disable_imu();
             SEGGER_RTT_printf(0, "setting PIC to cal mmode\n");
-            nrf_delay_ms(100);
-            send_data_to_PIC(set_pic_to_cal_pack);
+            appData.ack = 0;
+            uint8_t error_code;
+            while(appData.ack != 1)
+            {
+                if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
+                {
+                    SEGGER_RTT_printf(0, "again\n");
+                    error_code = send_data_to_PIC(set_pic_to_cal_pack);
+                    if(error_code != 0)
+                    {
+                        SEGGER_RTT_printf(0, "shit\n");
+                    }
+                    appData.ack = 0;
+                    appData.ack_retry = 0;
+                }
+            }
             appData.state = APP_STATE_POLLING;
             break;
         }

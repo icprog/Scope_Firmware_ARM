@@ -843,8 +843,8 @@ int main(void)
         {
             if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 || CALIBRATION)  //out of pole or in Calibration, run normal loop
             {
-            power_manage();
-            APP_Tasks();    
+                power_manage();
+                APP_Tasks();    
             }
             else  // in pole, restart into sleep-mode
             {
