@@ -562,8 +562,10 @@ void APP_Tasks(void)
             uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
             SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
             disable_imu();
-            nrf_delay_ms(100); //wait for PIC to stop requesting accel
+            nrf_delay_ms(300); //wait for PIC to stop requesting accel
 			send_data_to_PIC(arm_done_pack);
+            nrf_delay_ms(300); //wait for PIC to stop requesting accel
+            send_data_to_PIC(arm_done_pack);
             appData.state = APP_STATE_POLLING;
             break;
         }
