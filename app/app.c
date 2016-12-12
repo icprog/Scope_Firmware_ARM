@@ -558,12 +558,25 @@ void APP_Tasks(void)
         }
         case APP_STATE_PROBE_ERROR:
         {
-            SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
-            uint32_t err_code = ble_probe_error_update(&m_pes, metadata.error_code);
-            SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
-            disable_imu();
-            nrf_delay_ms(100); //wait for PIC to stop requesting accel
-			send_data_to_PIC(arm_done_pack);
+            uint32_t err_code;
+//            disable_imu();
+            nrf_delay_ms(200);
+            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+//            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+            //SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
+            err_code = ble_probe_error_update(&m_pes, metadata.error_code);
+            //SEGGER_RTT_printf(0, "err_code = %d\n", err_code);
+            //disable_imu();
+//            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+//            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+//            nrf_delay_ms(200); //wait for PIC to stop requesting accel
+//            disable_imu();
+//            nrf_delay_ms(100); //wait for PIC to stop requesting accel
+//			send_data_to_PIC(arm_done_pack);
+//            nrf_delay_ms(100); //wait for PIC to stop requesting accel
+//			send_data_to_PIC(arm_done_pack);
+//            nrf_delay_ms(100); //wait for PIC to stop requesting accel
             appData.state = APP_STATE_POLLING;
             break;
         }

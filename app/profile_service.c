@@ -6,6 +6,7 @@
 #include "app_error.h"
 #include "SEGGER_RTT.h"
 #include "SPI_utils.h"
+#include "timers.h"
 
 void profile_char_add(ble_ps_t * p_ps)
 {
@@ -582,6 +583,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     profile_t * p_profile;
     if(p_evt_write->handle == p_ps->transfer_ids_char_handles.value_handle)
     {
+        disable_imu();
         memcpy(&(appData.profile_id), (p_evt_write->data), sizeof(profile_id_t));
         SEGGER_RTT_printf(0,"profile_to_transfer:  type = %d num = %d \n", appData.profile_id.type, appData.profile_id.test_num);
         appData.state = APP_STATE_REQUEST_PROFILE;
