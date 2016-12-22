@@ -131,13 +131,13 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-	{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
-    {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
-    {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
-	{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
-	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+	//{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
+    //{SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
+    //{SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
+	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
+	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    {FWU_SERVICE_UUID,                    BLE_UUID_TYPE_BLE},		
+    //{FWU_SERVICE_UUID,                    BLE_UUID_TYPE_BLE},		
 };
 
 uint8_t SLOPE_GLOBAL = 0;
@@ -422,7 +422,7 @@ static void advertising_init(void)
     memset(&advdata, 0, sizeof(advdata));
 
     advdata.name_type               = BLE_ADVDATA_FULL_NAME;
-    advdata.include_appearance      = true;
+    advdata.include_appearance      = false;
     advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
     advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
     advdata.uuids_complete.p_uuids  = m_adv_uuids;

@@ -324,7 +324,7 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 disable_imu();
-                SEGGER_RTT_WriteString(0, "APP_STATE_PROFILE_TRANSFER \n");
+                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", profile_data.metadata.test_num, profile_data.metadata.serial_number);
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -370,7 +370,8 @@ void APP_Tasks(void)
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
                 }
 
-                update_profile_length(&m_ps,final_depth);  //TODO: fix this  
+                update_profile_length(&m_ps, final_depth);
+
                 total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
                 SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
 
@@ -395,7 +396,7 @@ void APP_Tasks(void)
                     SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
                     SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
-										//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
+					//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
                     appData.data_counts = 0;
 
                 }
