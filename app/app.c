@@ -364,14 +364,16 @@ void APP_Tasks(void)
             {
                 /***** notify phone of how much data needs to be sent  *****/
                 final_depth = profile_data.metadata.profile_depth;
+                //final_depth = 1700;//TODO: fix this crappy short term solution to the test and serial number scrambling
                 if(final_depth > 3000)
                 {
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
                 }
 
-                update_profile_length(&m_ps, final_depth);
+                update_profile_length(&m_ps,final_depth);  //TODO: fix this  
                 total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
                 SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
+
             }
             while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
@@ -412,6 +414,8 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
+
+
             break;
         }
 				
