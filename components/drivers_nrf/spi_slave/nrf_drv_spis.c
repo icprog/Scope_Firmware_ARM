@@ -22,6 +22,9 @@
 #include "nordic_common.h"
 #include "sdk_common.h"
 #include "nrf_assert.h"
+#include "SEGGER_RTT.h"
+#include "SPI_utils.h"
+
 
 #if !SPIS_COUNT
     #warning No SPIS instances enabled.
@@ -211,7 +214,6 @@ ret_code_t nrf_drv_spis_init(nrf_drv_spis_t const * const  p_instance,
     
     // Enable SPI slave device.        
     nrf_spis_enable(p_spis);
-    
     return NRF_SUCCESS;
 }
 
@@ -293,6 +295,7 @@ ret_code_t nrf_drv_spis_buffers_set(nrf_drv_spis_t const * const  p_instance,
                                     uint8_t * p_rx_buffer,
                                     uint8_t   rx_buffer_length)
 {
+    
     spis_cb_t * p_cb = &m_cb[p_instance->instance_id];
     uint32_t err_code;
 
@@ -341,6 +344,7 @@ static void spis_irq_handler(NRF_SPIS_Type * p_spis, spis_cb_t * p_cb)
     // - SPI semaphore acquired event.
     // - SPI transaction complete event.
     
+    
     // Check for SPI semaphore acquired event.
     if (nrf_spis_event_check(p_spis, NRF_SPIS_EVENT_ACQUIRED))
     {
@@ -361,11 +365,13 @@ static void spis_irq_handler(NRF_SPIS_Type * p_spis, spis_cb_t * p_cb)
                 // No implementation required.
                 break;
         }
+        //set_ARM_REQ();//set the RDY line after the buffers have been set and the semaphore is released
     }
 
     // Check for SPI transaction complete event.
     if (nrf_spis_event_check(p_spis, NRF_SPIS_EVENT_END))
     {
+        //clear_ARM_REQ(); //clear the RDY while the SPIS semaphore is aquired by the CPU
         nrf_spis_event_clear(p_spis, NRF_SPIS_EVENT_END);
         
         switch (p_cb->spi_state)

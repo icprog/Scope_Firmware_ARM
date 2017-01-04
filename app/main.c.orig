@@ -14,7 +14,7 @@
  * @brief Heart Rate Service Sample Application main file.
  *
  * This file contains the source code for a sample application using the Heart Rate service
- * (and also Battery, Slope and Device Information services). This application uses the
+ * (and also Battery and Device Information services). This application uses the
  * @ref srvlib_conn_params module.
  */
 
@@ -24,6 +24,7 @@
 #include "nrf.h"
 #include "app_error.h"
 #include "nrf_gpio.h"
+#include "nrf_drv_gpiote.h"
 #include "ble.h"
 #include "ble_hci.h"
 #include "ble_srv_common.h"
@@ -43,16 +44,24 @@
 #include "device_manager.h"
 #include "pstorage.h"
 #include "app_trace.h"
-<<<<<<< HEAD
 //#include "ble_dev_status.h"
 #include "SEGGER_RTT.h"
-=======
-
-//services
-#include "ble_dev_status.h"
 #include "probe_error.h"
 #include "profile_service.h"
->>>>>>> develop
+#include "LSM303drv.h"
+#include "nrf_delay.h"
+#include "spi_utils.h"
+#include "app.h"
+#include "cal_vib.h"
+
+//#include "SEGGER_RTT_printf.h"
+
+//services
+#include "probe_error.h"
+#include "profile_service.h"
+
+#include "cal_optical.h"
+#include "cal_force.h"
 
 /*Addition to do beacon non connectable advertising at all time*/
 #include "advertiser_beacon.h"
@@ -80,13 +89,8 @@ static ble_beacon_init_t beacon_init;
 
 /*end addition for beacon*/
 
-<<<<<<< HEAD
 
 
-=======
-#define DEVICE_NAME                          "Scope Test Joe"                           /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
->>>>>>> develop
 #define APP_ADV_INTERVAL                     480                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 300 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS           180                                         /**< The advertising timeout in units of seconds. */
 
@@ -142,11 +146,14 @@ static ble_beacon_init_t beacon_init;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 static ble_bas_t                             m_bas;                                     /**< Structure used to identify the battery service. */
-static ble_pes_t 						     m_pes; //probing error service
+static ble_pes_t 						     						 m_pes; //probing error service
 static ble_ps_t                              m_ps; //profile service
 static ble_hrs_t                             m_hrs;                                     /**< Structure used to identify the heart rate service. */
 static ble_slope_t                           m_slope;
 static ble_status_t													 m_status;
+static cal_optical_t												 m_optical;
+static cal_force_t													 m_force;
+static cal_vib_t														 m_vib;    //vibration motor cal struct
 static bool                                  m_rr_interval_enabled = true;              /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
 
 static sensorsim_cfg_t                       m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
@@ -167,7 +174,6 @@ APP_TIMER_DEF(m_battery_timer_id);                                              
 
 APP_TIMER_DEF(m_slope_timer_id);                                                        /**< Slope timer. */
 APP_TIMER_DEF(m_status_timer_id);                                                        /**< Status timer. */
-APP_TIMER_DEF(m_heart_rate_timer_id);                                                   /**< Heart rate measurement timer. */
 APP_TIMER_DEF(m_rr_interval_timer_id);                                                  /**< RR interval timer. */
 APP_TIMER_DEF(m_sensor_contact_timer_id);                                               /**< Sensor contact detected timer. */
 
@@ -175,24 +181,17 @@ static dm_application_instance_t             m_app_handle;                      
 
 static ble_uuid_t m_adv_uuids[] =                                                       /**< Universally unique service identifiers. */
 {
-<<<<<<< HEAD
-		{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
-    {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
+	//{SCOPE_UUID_SLOPE,                    BLE_UUID_TYPE_BLE},
     {SCOPE_UUID_BATTERY,                  BLE_UUID_TYPE_BLE},
-    {SCOPE_UUID_DEVICE_INFO, 							BLE_UUID_TYPE_BLE},
-		{SCOPE_UUID_STATUS, 							    BLE_UUID_TYPE_BLE}
-=======
-	{SCOPE_UUID_DEVICE_STATUS,            BLE_UUID_TYPE_BLE},
-    {BLE_UUID_HEART_RATE_SERVICE,         BLE_UUID_TYPE_BLE},
-    {BLE_UUID_BATTERY_SERVICE,            BLE_UUID_TYPE_BLE},
-    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
-	{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
-    {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE}
->>>>>>> develop
+    {SCOPE_UUID_DEVICE_INFO, 			  BLE_UUID_TYPE_BLE},
+	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
+	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
+    //{PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
+    {BLE_UUID_CAL_OPTICAL_SERVICE,        BLE_UUID_TYPE_BLE},
 		
 };
 
-
+uint8_t SLOPE_GLOBAL = 0;
 
 /**@brief Callback function for asserts in the SoftDevice.
  *
@@ -219,8 +218,8 @@ static void battery_level_update(void)
     uint32_t err_code;
     uint8_t  battery_level;
 
-    battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
-
+    //battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
+		battery_level = SLOPE_GLOBAL;
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
@@ -272,14 +271,19 @@ static void slope_level_update(void)
 {
     uint32_t err_code;
     uint8_t  slope_level;
-
+	//LSM303_DATA test_data_303;
+		
     slope_level = (uint8_t)sensorsim_measure(&m_slope_sim_state, &m_slope_sim_cfg);
-
+	//set slope based on lsm303 data:
+//		test_data_303 = getLSM303data();
+//		slope_level = 0;
+//		slope_level = (uint8_t)test_data_303.X;
+	slope_level = SLOPE_GLOBAL;
     err_code = ble_slope_slope_level_update(&m_slope, slope_level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != BLE_ERROR_NO_TX_PACKETS) &&
-        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING) 
     )
     {
         APP_ERROR_HANDLER(err_code);
@@ -441,6 +445,10 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+//void force_write_handler(cal_force_t * p_force, uint8_t data_in)
+//{
+//		SEGGER_RTT_printf(0,"input: %d",data_in);
+//}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -449,56 +457,56 @@ static void gap_params_init(void)
 static void services_init(void)
 {
     uint32_t       err_code;
-<<<<<<< HEAD
-    //ble_hrs_init_t hrs_init;
-    
-    
-		//ble_dev_status_init_t dev_init;
-	  
-=======
-    ble_hrs_init_t hrs_init;
-    ble_bas_init_t bas_init;
-    ble_dis_init_t dis_init;
-	ble_dev_status_init_t dev_init;
-	ble_dev_status_t dev_status;
->>>>>>> develop
-    uint8_t        body_sensor_location;
 	
 		//battery service init:
 		ble_bas_init_t bas_init;
 		memset(&bas_init, 0, sizeof(bas_init));
 		err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
+        APP_ERROR_CHECK(err_code);
 	
 	
     // Initialize Slope Service.
-		ble_slope_init_t slope_init;
-		memset(&slope_init, 0, sizeof(slope_init));
-    err_code = ble_slope_init(&m_slope, &slope_init);
-    APP_ERROR_CHECK(err_code);
+//		ble_slope_init_t slope_init;
+//		memset(&slope_init, 0, sizeof(slope_init));
+//    err_code = ble_slope_init(&m_slope, &slope_init);
+//    APP_ERROR_CHECK(err_code);
 		
 		// Initialize Device Information Service.
 		ble_dis_init_t dis_init;
-    memset(&dis_init, 0, sizeof(dis_init));
-    err_code = ble_dis_init(&dis_init);
-    APP_ERROR_CHECK(err_code);
+        memset(&dis_init, 0, sizeof(dis_init));
+        err_code = ble_dis_init(&dis_init);
+        APP_ERROR_CHECK(err_code);
 		
-		// Initialize Device Information Service.
-		ble_status_init_t status_init;
-    memset(&status_init, 0, sizeof(status_init));
-    err_code = ble_status_init(&m_status, &status_init);
-    APP_ERROR_CHECK(err_code);
-<<<<<<< HEAD
-		
-=======
-	
-	//initialize probe error service
-	ble_probe_error_service_init(&m_pes);
-    
-    //initialize profile service
-   ble_profile_service_init(&m_ps);
+//		// Initialize Device Status Service.
+//		ble_status_init_t status_init;
+//    memset(&status_init, 0, sizeof(status_init));
+//    err_code = ble_status_init(&m_status, &status_init);
+//    APP_ERROR_CHECK(err_code);
+//	
+//	//initialize probe error service
+//	ble_probe_error_service_init(&m_pes);
+//    
+//    //initialize profile service
+//   ble_profile_service_init(&m_ps);
 
->>>>>>> develop
+    // Initialize Optical Cal.
+    cal_optical_init_t optical_init;
+    memset(&optical_init, 0, sizeof(optical_init));
+    err_code = cal_optical_init(&m_optical, &optical_init);
+    APP_ERROR_CHECK(err_code);
+
+    // Initialize Force Cal.
+    cal_force_init_t force_init;
+    memset(&force_init, 0, sizeof(force_init));
+    err_code = cal_force_init(&m_force, &force_init);
+    APP_ERROR_CHECK(err_code);
+		
+		// Initialize vib Cal.
+    cal_vib_init_t vib_init;
+    memset(&vib_init, 0, sizeof(vib_init));
+    err_code = cal_vib_init(&m_vib, &vib_init);
+    APP_ERROR_CHECK(err_code);
+
 }
 
 
@@ -507,40 +515,40 @@ static void services_init(void)
 // */
 static void sensor_simulator_init(void)
 {
-    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-    m_battery_sim_cfg.start_at_max = true;
+//    m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
+//    m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
+//    m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
+//    m_battery_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
-	
-		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
-    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
-    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
-    m_slope_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
+//	
+//		m_slope_sim_cfg.min          = MIN_slope_LEVEL;
+//    m_slope_sim_cfg.max          = MAX_slope_LEVEL;
+//    m_slope_sim_cfg.incr         = slope_LEVEL_INCREMENT;
+//    m_slope_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
-	
-		m_status_sim_cfg.min          = MIN_status_LEVEL;
-    m_status_sim_cfg.max          = MAX_status_LEVEL;
-    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
-    m_status_sim_cfg.start_at_max = true;
+//    sensorsim_init(&m_slope_sim_state, &m_slope_sim_cfg);
+//	
+//		m_status_sim_cfg.min          = MIN_status_LEVEL;
+//    m_status_sim_cfg.max          = MAX_status_LEVEL;
+//    m_status_sim_cfg.incr         = status_LEVEL_INCREMENT;
+//    m_status_sim_cfg.start_at_max = true;
 
-    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
+//    sensorsim_init(&m_status_sim_state, &m_status_sim_cfg);
 
-    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-    m_heart_rate_sim_cfg.start_at_max = false;
+//    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
+//    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
+//    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
+//    m_heart_rate_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+//    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
-    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-    m_rr_interval_sim_cfg.start_at_max = false;
+//    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
+//    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
+//    m_rr_interval_sim_cfg.start_at_max = false;
 
-    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
+//    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
 }
 
 
@@ -743,22 +751,31 @@ SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
 	SEGGER_RTT_WriteString(0, "ble dispatch \n");
-    dm_ble_evt_handler(p_ble_evt);
+  dm_ble_evt_handler(p_ble_evt);
     //ble_hrs_on_ble_evt(&m_hrs, p_ble_evt);
-    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
 <<<<<<< HEAD
-	  ble_slope_on_ble_evt(&m_slope, p_ble_evt);
-	  ble_status_on_ble_evt(&m_status, p_ble_evt);
-=======
-	
-	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
-	
-	ble_slope_on_ble_evt(&m_stat, p_ble_evt);
->>>>>>> develop
+    ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+	//ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	ble_status_on_ble_evt(&m_status, p_ble_evt);
+	//ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
    // bsp_btn_ble_on_ble_evt(p_ble_evt);
+    cal_optical_on_ble_evt(&m_optical, p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
+=======
+  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+	ble_slope_on_ble_evt(&m_slope, p_ble_evt);
+	ble_status_on_ble_evt(&m_status, p_ble_evt);
+	ble_probe_error_service_on_ble_evt(&m_pes, p_ble_evt);
+  ble_conn_params_on_ble_evt(p_ble_evt);
+   // bsp_btn_ble_on_ble_evt(p_ble_evt);
+	cal_force_on_ble_evt(&m_force,p_ble_evt);
+	cal_optical_on_ble_evt(&m_optical,p_ble_evt);
+  on_ble_evt(p_ble_evt);
+  ble_advertising_on_ble_evt(p_ble_evt);
+	cal_vib_on_ble_evt(&m_vib,p_ble_evt);
+>>>>>>> develop
 }
 
 
@@ -953,8 +970,52 @@ static void power_manage(void)
 {
     uint32_t err_code = sd_app_evt_wait();
     APP_ERROR_CHECK(err_code);
+    
 }
 
+void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+{
+    nrf_drv_gpiote_out_toggle(SCOPE_3V3_ENABLE_PIN);
+}
+/**
+ * @brief Function for configuring: PIN_IN pin for input, PIN_OUT pin for output, 
+ * and configures GPIOTE to give an interrupt on pin change.
+ */
+static void shutdown_gpio_init(void)
+{
+    ret_code_t err_code;
+
+    //init gpiote module if not already initialized
+    if (!nrf_drv_gpiote_is_init())
+    {
+        err_code = nrf_drv_gpiote_init();
+        APP_ERROR_CHECK(err_code);
+    }
+    
+    uint32_t out_pin_initial_state = 0; //for the 3v3 enable
+    
+    /********** HALL INPUT PIN  *******/
+    nrf_drv_gpiote_in_config_t in_config = GPIOTE_CONFIG_IN_SENSE_TOGGLE(true);
+    in_config.pull = NRF_GPIO_PIN_PULLDOWN;
+
+    err_code = nrf_drv_gpiote_in_init(SCOPE_HALL_PIN, &in_config, in_pin_handler); //set pin and event handler
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_gpiote_in_event_enable(SCOPE_HALL_PIN, true); //enable event handling
+    
+    if(nrf_drv_gpiote_in_is_set(SCOPE_HALL_PIN))
+    {
+        out_pin_initial_state = 1; //if HALL is high then the bullet is out of the pole so enable the supply
+    }
+    
+    /********** 3V3 ENABLE OUTPUT PIN   **********/
+    nrf_drv_gpiote_out_config_t out_config = GPIOTE_CONFIG_OUT_SIMPLE(out_pin_initial_state); //config output with with correct initial state
+
+    err_code = nrf_drv_gpiote_out_init(SCOPE_3V3_ENABLE_PIN, &out_config);
+    APP_ERROR_CHECK(err_code);
+
+
+}
 
 /**@brief Function for application main entry.
  */
@@ -962,29 +1023,49 @@ int main(void)
 {
     uint32_t err_code;
     bool erase_bonds;
-
+//    uint8_t slope_level;
+//    LSM303_DATA test_data_303;
+	
     // Initialize.
     timers_init();
+    shutdown_gpio_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
     beacon_adv_init();
     device_manager_init(erase_bonds);
     gap_params_init();
-	services_init();
     advertising_init();
-    sensor_simulator_init();
+    services_init();
+    //sensor_simulator_init();
     conn_params_init();
-
+	
     // Start execution.
     application_timers_start();
     err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(err_code);
-		SEGGER_RTT_WriteString(0, "Hello World!\n");
-    // Enter main loop.
-    for (;;)
-    {
-        power_manage();
-    }
-}
+	SEGGER_RTT_WriteString(0, "Hello World!\n");
+    SEGGER_RTT_printf(0, "HELLO WORLD!\n");
 
+	APP_Initialize();
+
+    while(true)
+    {
+        
+        APP_Tasks();
+        power_manage();
+
+        
+        /********   Dave's test:   ********/
+//		test_data_303 = getLSM303data();
+//		slope_level = 0;
+//		slope_level = (uint8_t)((test_data_303.X & 0xFF00)>>8);
+//	
+//		SLOPE_GLOBAL = slope_level;
+//		SEGGER_RTT_printf(0,"slope: %d",test_data_303.X);
+
+
+
+    }
+
+}
 

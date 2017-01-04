@@ -10,12 +10,12 @@
       <TargetName>nrf51422_xxac_s130</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060061::V5.06 update 1 (build 61)::ARMCC</pCCUsed>
+      <pCCUsed>5060183::V5.06 update 2 (build 183)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>nRF51422_xxAC</Device>
           <Vendor>Nordic Semiconductor</Vendor>
-          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.8.5.0</PackID>
+          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.8.6.1</PackID>
           <PackURL>http://developer.nordicsemi.com/nRF5_SDK/pieces/nRF_DeviceFamilyPack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x8000) CPUTYPE("Cortex-M0") CLOCK(16000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -328,11 +328,13 @@
             <v6LangP>0</v6LangP>
             <vShortEn>0</vShortEn>
             <vShortWch>0</vShortWch>
+            <v6Lto>0</v6Lto>
+            <v6WtE>0</v6WtE>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10028 S130 NRF51 SOFTDEVICE_PRESENT SWI_DISABLE0 NRF_LOG_USES_UART=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\segger_rtt;..\..\..\..\components\drivers_nrf\spi_slave;..\..\..\..\components\drivers_nrf\spi_master;..\..\..\..\components\ble\ble_services\ble_slope;..\..\..\..\components\ble\ble_services\ble_status;..\..\..\..\app;..\..\..\..\SeggerRTT;C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT;..\..\..\..\components\cal_services</IncludePath>
+              <IncludePath>..\..\..\config;..\..\..\..\components\ble\ble_advertising;..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\components\ble\common;..\..\..\..\components\ble\device_manager;..\..\..\..\components\drivers_nrf\common;..\..\..\..\components\drivers_nrf\config;..\..\..\..\components\drivers_nrf\delay;..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\components\drivers_nrf\hal;..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\components\drivers_nrf\uart;..\..\..\..\components\libraries\button;..\..\..\..\components\libraries\experimental_section_vars;..\..\..\..\components\libraries\fifo;..\..\..\..\components\libraries\fstorage;..\..\..\..\components\libraries\fstorage\config;..\..\..\..\components\libraries\sensorsim;..\..\..\..\components\libraries\timer;..\..\..\..\components\libraries\trace;..\..\..\..\components\libraries\uart;..\..\..\..\components\libraries\util;..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\components\softdevice\s130\headers;..\..\..\..\components\softdevice\s130\headers\nrf51;..\..\..\..\components\toolchain;..\..\..\..\bsp;..\..\..\..\components\drivers_nrf\spi_slave;..\..\..\..\components\drivers_nrf\spi_master;..\..\..\..\components\ble\ble_services\ble_slope;..\..\..\..\components\ble\ble_services\ble_status;..\..\..\..\app;..\..\..\..\SeggerRTT;C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT;C:\Keil_v5\ARM\Pack\NordicSemiconductor\Syscalls;..\..\..\..\components\cal_services</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +419,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -469,6 +473,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -508,6 +514,31 @@
               <FileName>profile_service.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\profile_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>pcb_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\pcb_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>fwu_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\fwu_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -556,6 +587,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -608,6 +641,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -680,6 +715,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -732,6 +769,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -784,6 +823,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -836,6 +877,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -888,6 +931,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -940,6 +985,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -992,6 +1039,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1044,6 +1093,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1073,6 +1124,36 @@
               <FileName>ble_status.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\ble\ble_services\ble_status\ble_status.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\timers.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1121,6 +1202,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1173,6 +1256,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1225,6 +1310,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1277,6 +1364,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1329,6 +1418,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1381,6 +1472,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1390,11 +1483,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-            <File>
-              <FileName>nrf_drv_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\config\nrf_drv_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1443,6 +1531,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1495,6 +1585,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1547,6 +1639,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1599,6 +1693,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1651,6 +1747,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1703,6 +1801,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1755,6 +1855,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1807,6 +1909,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1859,6 +1963,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1911,6 +2017,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1963,6 +2071,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -1972,26 +2082,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>nRF_Segger_RTT</GroupName>
-          <Files>
-            <File>
-              <FileName>SEGGER_RTT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT.c</FilePath>
-            </File>
-            <File>
-              <FileName>SEGGER_RTT_printf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT_printf.c</FilePath>
-            </File>
-            <File>
-              <FileName>RTT_Syscalls_KEIL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\Syscalls\RTT_Syscalls_KEIL.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2064,6 +2154,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2077,7 +2169,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Cal_Services</GroupName>
+          <GroupName>RTT</GroupName>
+          <Files>
+            <File>
+              <FileName>SEGGER_RTT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\RTT\SEGGER_RTT.c</FilePath>
+            </File>
+            <File>
+              <FileName>SEGGER_RTT_printf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\RTT\SEGGER_RTT_printf.c</FilePath>
+            </File>
+            <File>
+              <FileName>RTT_Syscalls_KEIL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\Syscalls\RTT_Syscalls_KEIL.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Cal</GroupName>
           <Files>
             <File>
               <FileName>cal_force.c</FileName>
@@ -2088,6 +2200,16 @@
               <FileName>cal_optical.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2107,7 +2229,7 @@
         <TargetCommonOption>
           <Device>nRF51422_xxAC</Device>
           <Vendor>Nordic Semiconductor</Vendor>
-          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.8.5.0</PackID>
+          <PackID>NordicSemiconductor.nRF_DeviceFamilyPack.8.6.1</PackID>
           <PackURL>http://developer.nordicsemi.com/nRF5_SDK/pieces/nRF_DeviceFamilyPack/</PackURL>
           <Cpu>IROM(0x00000000,0x40000) IRAM(0x20000000,0x8000) CPUTYPE("Cortex-M0") CLOCK(16000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2420,6 +2542,8 @@
             <v6LangP>0</v6LangP>
             <vShortEn>0</vShortEn>
             <vShortWch>0</vShortWch>
+            <v6Lto>0</v6Lto>
+            <v6WtE>0</v6WtE>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -2509,6 +2633,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2561,6 +2687,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2600,6 +2728,31 @@
               <FileName>profile_service.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\profile_service.c</FilePath>
+            </File>
+            <File>
+              <FileName>calibration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\calibration.c</FilePath>
+            </File>
+            <File>
+              <FileName>pcb_test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\pcb_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\timers.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>fwu_service.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\fwu_service.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2648,6 +2801,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2700,6 +2855,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2772,6 +2929,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2824,6 +2983,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2876,6 +3037,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2928,6 +3091,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -2980,6 +3145,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3032,6 +3199,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3084,6 +3253,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3136,6 +3307,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3165,6 +3338,36 @@
               <FileName>ble_status.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\ble\ble_services\ble_status\ble_status.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_force.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_force.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_optical.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
+            </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\timers.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3213,6 +3416,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3265,6 +3470,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3317,6 +3524,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3369,6 +3578,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3421,6 +3632,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3473,6 +3686,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3482,11 +3697,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-            <File>
-              <FileName>nrf_drv_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\..\config\nrf_drv_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -3535,6 +3745,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3587,6 +3799,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3639,6 +3853,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3691,6 +3907,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3743,6 +3961,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3795,6 +4015,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3847,6 +4069,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3899,6 +4123,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -3951,6 +4177,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -4003,6 +4231,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -4055,6 +4285,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -4064,26 +4296,6 @@
                   </Cads>
                 </FileArmAds>
               </FileOption>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>nRF_Segger_RTT</GroupName>
-          <Files>
-            <File>
-              <FileName>SEGGER_RTT.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT.c</FilePath>
-            </File>
-            <File>
-              <FileName>SEGGER_RTT_printf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\RTT\SEGGER_RTT_printf.c</FilePath>
-            </File>
-            <File>
-              <FileName>RTT_Syscalls_KEIL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\Pack\NordicSemiconductor\Syscalls\RTT_Syscalls_KEIL.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4156,6 +4368,8 @@
                     <v6LangP>0</v6LangP>
                     <vShortEn>2</vShortEn>
                     <vShortWch>2</vShortWch>
+                    <v6Lto>0</v6Lto>
+                    <v6WtE>0</v6WtE>
                     <VariousControls>
                       <MiscControls></MiscControls>
                       <Define></Define>
@@ -4169,7 +4383,27 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Cal_Services</GroupName>
+          <GroupName>RTT</GroupName>
+          <Files>
+            <File>
+              <FileName>SEGGER_RTT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\RTT\SEGGER_RTT.c</FilePath>
+            </File>
+            <File>
+              <FileName>SEGGER_RTT_printf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\RTT\SEGGER_RTT_printf.c</FilePath>
+            </File>
+            <File>
+              <FileName>RTT_Syscalls_KEIL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>C:\Keil_v5\ARM\PACK\NordicSemiconductor\Syscalls\RTT_Syscalls_KEIL.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Cal</GroupName>
           <Files>
             <File>
               <FileName>cal_force.c</FileName>
@@ -4180,6 +4414,16 @@
               <FileName>cal_optical.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\components\cal_services\cal_optical.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_vib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_vib.c</FilePath>
+            </File>
+            <File>
+              <FileName>cal_hall_effect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\components\cal_services\cal_hall_effect.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -4223,6 +4467,8 @@
                 <v6LangP>0</v6LangP>
                 <vShortEn>2</vShortEn>
                 <vShortWch>2</vShortWch>
+                <v6Lto>0</v6Lto>
+                <v6WtE>0</v6WtE>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>
@@ -4290,6 +4536,8 @@
                 <v6LangP>0</v6LangP>
                 <vShortEn>2</vShortEn>
                 <vShortWch>2</vShortWch>
+                <v6Lto>0</v6Lto>
+                <v6WtE>0</v6WtE>
                 <VariousControls>
                   <MiscControls></MiscControls>
                   <Define></Define>

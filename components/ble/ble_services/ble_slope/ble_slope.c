@@ -20,6 +20,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
+#include "SEGGER_RTT.h"
 
 
 #define INVALID_slope_LEVEL 255
@@ -273,7 +274,7 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
 }
 
 
-uint32_t ble_slope_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level)
+uint32_t ble_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level)
 {
     if (p_slope == NULL)
     {
@@ -285,6 +286,7 @@ uint32_t ble_slope_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level
 
     if (slope_level != p_slope->slope_level_last)
     {
+        
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 

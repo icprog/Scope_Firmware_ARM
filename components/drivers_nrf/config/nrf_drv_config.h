@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2015 Nordic Semiconductor. All Rights Reserved.
  *
  * The information contained herein is property of Nordic Semiconductor ASA.
@@ -12,6 +13,8 @@
 
 #ifndef NRF_DRV_CONFIG_H
 #define NRF_DRV_CONFIG_H
+
+#include "pca10028.h"
 
 /**
  * Provide a non-zero value here in applications that need to use several
@@ -36,12 +39,12 @@
 #endif
 
 /* GPIOTE */
-#define GPIOTE_ENABLED 0
+#define GPIOTE_ENABLED 1
 
 #if (GPIOTE_ENABLED == 1)
 #define GPIOTE_CONFIG_USE_SWI_EGU false
 #define GPIOTE_CONFIG_IRQ_PRIORITY APP_IRQ_PRIORITY_LOW
-#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 1
+#define GPIOTE_CONFIG_NUM_OF_LOW_POWER_EVENTS 4
 #endif
 
 /* TIMER */
@@ -204,15 +207,15 @@
 #define PWM_COUNT   (PWM0_ENABLED + PWM1_ENABLED + PWM2_ENABLED)
 
 /* SPI */
-#define SPI0_ENABLED 0
+#define SPI0_ENABLED 1
 
 #if (SPI0_ENABLED == 1)
 #define SPI0_USE_EASY_DMA 0
 
-#define SPI0_CONFIG_SCK_PIN         2
-#define SPI0_CONFIG_MOSI_PIN        3
-#define SPI0_CONFIG_MISO_PIN        4
-#define SPI0_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
+#define SPI0_CONFIG_SCK_PIN         IMU_SPI_SCK_PIN  //defined in pca10028.h
+#define SPI0_CONFIG_MOSI_PIN        IMU_SPI_MOSI_PIN //defined in pca10028.h
+#define SPI0_CONFIG_MISO_PIN        IMU_SPI_MISO_PIN //defined in pca10028.h
+#define SPI0_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_HIGH
 
 #define SPI0_INSTANCE_INDEX 0
 #endif
@@ -257,12 +260,12 @@
 #define SPIS0_INSTANCE_INDEX 0
 #endif
 
-#define SPIS1_ENABLED 0
+#define SPIS1_ENABLED 1
 
 #if (SPIS1_ENABLED == 1)
-#define SPIS1_CONFIG_SCK_PIN         2
-#define SPIS1_CONFIG_MOSI_PIN        3
-#define SPIS1_CONFIG_MISO_PIN        4
+#define SPIS1_CONFIG_SCK_PIN         SPIS_SCK_PIN //defined in pca10028.h
+#define SPIS1_CONFIG_MOSI_PIN        SPIS_MOSI_PIN //defined in pca10028.h
+#define SPIS1_CONFIG_MISO_PIN        SPIS_MISO_PIN //defined in pca10028.h
 #define SPIS1_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
 
 #define SPIS1_INSTANCE_INDEX SPIS0_ENABLED
@@ -282,16 +285,16 @@
 #define SPIS_COUNT   (SPIS0_ENABLED + SPIS1_ENABLED + SPIS2_ENABLED)
 
 /* UART */
-#define UART0_ENABLED 0
+#define UART0_ENABLED 1
 
 #if (UART0_ENABLED == 1)
 #define UART0_CONFIG_HWFC         NRF_UART_HWFC_DISABLED
 #define UART0_CONFIG_PARITY       NRF_UART_PARITY_EXCLUDED
 #define UART0_CONFIG_BAUDRATE     NRF_UART_BAUDRATE_115200
-#define UART0_CONFIG_PSEL_TXD     0
-#define UART0_CONFIG_PSEL_RXD     0
-#define UART0_CONFIG_PSEL_CTS     0
-#define UART0_CONFIG_PSEL_RTS     0
+#define UART0_CONFIG_PSEL_TXD 9
+#define UART0_CONFIG_PSEL_RXD 11
+#define UART0_CONFIG_PSEL_CTS 10
+#define UART0_CONFIG_PSEL_RTS 8
 #define UART0_CONFIG_IRQ_PRIORITY APP_IRQ_PRIORITY_LOW
 #ifdef NRF52
 #define UART0_CONFIG_USE_EASY_DMA false
@@ -462,3 +465,4 @@
 #include "nrf_drv_config_validation.h"
 
 #endif // NRF_DRV_CONFIG_H
+
