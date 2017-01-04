@@ -137,7 +137,7 @@ static ble_uuid_t m_adv_uuids[] =                                               
 	//{SCOPE_UUID_STATUS, 				  BLE_UUID_TYPE_BLE},
 	//{PROBE_ERROR_SERVICE_UUID,			  BLE_UUID_TYPE_BLE},
     {PROFILE_SERVICE_UUID,                BLE_UUID_TYPE_BLE},
-    //{FWU_SERVICE_UUID,                    BLE_UUID_TYPE_BLE},		
+    //{FWU_SERVICE_UUID,                    BLE_UUID_TYPE_BLE},	
 };
 
 uint8_t SLOPE_GLOBAL = 0;
