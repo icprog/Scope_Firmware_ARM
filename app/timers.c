@@ -69,7 +69,6 @@ void application_timers_start(void)
 	err_code = app_timer_start(m_status_timer_id, status_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
     
-
     //err_code = app_timer_start(m_acc_timer_id, acc_LEVEL_MEAS_INTERVAL, NULL);
     //APP_ERROR_CHECK(err_code);
 }

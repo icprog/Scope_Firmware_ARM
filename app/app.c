@@ -223,6 +223,7 @@ void APP_Tasks(void)
         case APP_STATE_PIC_FWU_START:
         {
             packet_counter = 0;
+            appData.status = 6;
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
@@ -277,6 +278,7 @@ void APP_Tasks(void)
         }
         case APP_STATE_START_ARM_FWU:
         {
+            appData.status = 6;
             SEGGER_RTT_printf(0, "RESTARTING INTO ARM BOOTLOADER\n");
             //sd_power_gpregret_set(0xB1);
             sd_power_gpregret_set(0x01);
@@ -559,7 +561,7 @@ void APP_Tasks(void)
         {
 
             uint32_t err_code;
-//            disable_imu();
+//          disable_imu();
             nrf_delay_ms(200);
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
