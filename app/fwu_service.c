@@ -199,10 +199,10 @@ void ble_fwu_service_init(ble_fwu_t * p_fwu_service)
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
     ble_uuid_t service_uuid;
-//    ble_uuid128_t base_uuid = FWU_SERVICE_BASE_UUID;
-//    service_uuid.uuid = FWU_SERVICE_UUID;
-//    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
-//    APP_ERROR_CHECK(err_code);
+    ble_uuid128_t base_uuid = FWU_SERVICE_BASE_UUID;
+    service_uuid.uuid = FWU_SERVICE_UUID;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    APP_ERROR_CHECK(err_code);
     
     BLE_UUID_BLE_ASSIGN(service_uuid, FWU_SERVICE_UUID);
     

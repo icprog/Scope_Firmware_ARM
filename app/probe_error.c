@@ -32,10 +32,11 @@ void probe_error_char_add(ble_pes_t * p_pes)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
+    ble_uuid128_t base_uuid = PROBE_ERROR_BASE_UUID;
     char_uuid.uuid      = PROBE_ERROR_CHAR_UUID;
-    BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
-//    sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-//    APP_ERROR_CHECK(err_code);
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
+    APP_ERROR_CHECK(err_code);
+    //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
     
     /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
@@ -48,7 +49,7 @@ void probe_error_char_add(ble_pes_t * p_pes)
     memset(&cccd_md, 0, sizeof(cccd_md));
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;    
+    cccd_md.vloc                = BLE_GATTS_VLOC_STACK;
     char_md.p_cccd_md           = &cccd_md;
     char_md.char_props.notify   = 1;
     
@@ -84,11 +85,11 @@ void ble_probe_error_service_init(ble_pes_t * p_probe_error_service)
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
     ble_uuid_t service_uuid;
-//    ble_uuid128_t base_uuid = PROBE_ERROR_BASE_UUID;
-//    service_uuid.uuid = PROBE_ERROR_SERVICE_UUID;
-//    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
-//    APP_ERROR_CHECK(err_code);
-    BLE_UUID_BLE_ASSIGN(service_uuid, PROBE_ERROR_SERVICE_UUID);
+    ble_uuid128_t base_uuid = PROBE_ERROR_BASE_UUID;
+    service_uuid.uuid = PROBE_ERROR_SERVICE_UUID;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    APP_ERROR_CHECK(err_code);
+    //BLE_UUID_BLE_ASSIGN(service_uuid, PROBE_ERROR_SERVICE_UUID);
     
     p_probe_error_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_probe_error_service->service_handle);

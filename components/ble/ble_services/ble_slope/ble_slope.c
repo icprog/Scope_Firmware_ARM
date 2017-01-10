@@ -21,6 +21,7 @@
 #include "ble_srv_common.h"
 #include "app_util.h"
 #include "SEGGER_RTT.h"
+ #include "app_error.h"
 
 
 #define INVALID_slope_LEVEL 255
@@ -128,12 +129,19 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
     ble_gatts_char_md_t char_md;
     ble_gatts_attr_md_t cccd_md;
     ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
     ble_gatts_attr_md_t attr_md;
     uint8_t             initial_slope_level;
     uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
     uint8_t             init_len;
 
+    /****** add char UUID ******/
+    ble_uuid_t          char_uuid;
+    ble_uuid128_t base_uuid = SLOPE_BASE_UUID;
+    char_uuid.uuid      = SLOPE_CHAR_UUID;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
+    APP_ERROR_CHECK(err_code);
+    //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
+    
     // Add slope Level characteristic
     if (p_slope->is_notification_supported)
     {
@@ -156,8 +164,6 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
     char_md.p_cccd_md         = (p_slope->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
 
-    BLE_UUID_BLE_ASSIGN(ble_uuid,  SLOPE_CHAR_UUID); //was slope-level char
-
     memset(&attr_md, 0, sizeof(attr_md));
 
     attr_md.read_perm  = p_slope_init->slope_level_char_attr_md.read_perm;
@@ -171,7 +177,7 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
 
     memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-    attr_char_value.p_uuid    = &ble_uuid;
+    attr_char_value.p_uuid    = &char_uuid;
     attr_char_value.p_attr_md = &attr_md;
     attr_char_value.init_len  = sizeof(uint8_t);
     attr_char_value.init_offs = 0;
@@ -189,7 +195,7 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
     if (p_slope_init->p_report_ref != NULL)
     {
         // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+        BLE_UUID_BLE_ASSIGN(char_uuid, BLE_UUID_REPORT_REF_DESCR);
 
         memset(&attr_md, 0, sizeof(attr_md));
 
@@ -205,7 +211,7 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
         
         memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-        attr_char_value.p_uuid    = &ble_uuid;
+        attr_char_value.p_uuid    = &char_uuid;
         attr_char_value.p_attr_md = &attr_md;
         attr_char_value.init_len  = init_len;
         attr_char_value.init_offs = 0;
@@ -231,10 +237,19 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
 
 uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_init)
 {
-		
-		ble_slope_init_t * slope_init = (ble_slope_init_t *)p_slope_init;  //undo const declaration
 	
-		// Here the sec level for the slope Service can be changed/increased.
+    /****** add service UUID ******/
+    uint32_t err_code;
+    ble_uuid_t          service_uuid;
+    ble_uuid128_t base_uuid = SLOPE_BASE_UUID;
+    service_uuid.uuid      = SCOPE_UUID_SLOPE;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    APP_ERROR_CHECK(err_code);
+    //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
+    
+	ble_slope_init_t * slope_init = (ble_slope_init_t *)p_slope_init;  //undo const declaration
+	
+	// Here the sec level for the slope Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&slope_init->slope_level_char_attr_md.cccd_write_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&slope_init->slope_level_char_attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&slope_init->slope_level_char_attr_md.write_perm);
@@ -250,9 +265,6 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
     {
         return NRF_ERROR_NULL;
     }
-    
-    uint32_t   err_code;
-    ble_uuid_t ble_uuid;
 
     // Initialize service structure
     p_slope->evt_handler               = p_slope_init->evt_handler;
@@ -261,9 +273,7 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
     p_slope->slope_level_last        = INVALID_slope_LEVEL;
 
     // Add service
-    BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_UUID_SLOPE);
-
-    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, &p_slope->service_handle);
+    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_slope->service_handle);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;

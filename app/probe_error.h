@@ -34,6 +34,7 @@ struct ble_pes_s{
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t    char_handles;   //handles for the characteristic attributes to our struct
     uint8_t                     probe_error_code;
+    
     //ble_pes_evt_handler_t       evt_handler;
 };
 
