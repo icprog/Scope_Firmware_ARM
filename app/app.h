@@ -42,7 +42,7 @@
 #include <LSM303drv.h>
 #include <L3GD20drv.h>
 
-#define CALIBRATION 1
+#define CALIBRATION 0
 
 
 #define FW_VERSION "0.02.00"
@@ -107,6 +107,18 @@ typedef enum
     APP_STATE_START_VIB_CAL,
     
 } APP_STATES;
+
+typedef enum 
+{
+    ON = 0,
+    PROBING = 1,
+    PROCESSING = 2,
+    TRANSFERRING = 3,
+    CRITICAL_ERROR = 4,
+    SLOPE = 5,
+    FIRMWARE_UPDATING = 6,
+    ALIGNED_AND_READY = 8,
+}scope_status_t;
 
 
 

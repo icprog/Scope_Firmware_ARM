@@ -20,6 +20,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
+#include "SEGGER_RTT.h"
 
 
 #define INVALID_status_LEVEL 255
@@ -285,6 +286,7 @@ uint32_t ble_status_status_level_update(ble_status_t * p_status, uint8_t status_
 
     if (status_level != p_status->status_level_last)
     {
+        SEGGER_RTT_printf(0, "status updated to %d\n", status_level);
         // Initialize value struct.
         memset(&gatts_value, 0, sizeof(gatts_value));
 
