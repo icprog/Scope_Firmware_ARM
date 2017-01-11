@@ -135,9 +135,9 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
 
     /***** Declare char UUID and add it to the BLE stack  *****/
     ble_uuid_t char_uuid;
-//    char_uuid.uuid = STATUS_CHAR_UUID;
-//    char_uuid.type = p_status->uuid_type;
-    BLE_UUID_BLE_ASSIGN(char_uuid, STATUS_CHAR_UUID);
+    char_uuid.uuid = STATUS_CHAR_UUID;
+    char_uuid.type = p_status->uuid_type;
+   // BLE_UUID_BLE_ASSIGN(char_uuid, STATUS_CHAR_UUID);
     
     // Add status Level characteristic
     if (p_status->is_notification_supported)
@@ -238,14 +238,14 @@ uint32_t ble_status_init(ble_status_t * p_status, const ble_status_init_t * p_st
 	ble_status_init_t * status_init = (ble_status_init_t *)p_status_init;  //undo const declaration
 	
     /***** Declare service UUID and add it to the BLE stack  *****/
-//    ble_uuid128_t base_uuid = STATUS_BASE_UUID;
-//    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_status->uuid_type));
-//    APP_ERROR_CHECK(err_code);
+    ble_uuid128_t base_uuid = STATUS_BASE_UUID;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_status->uuid_type));
+    APP_ERROR_CHECK(err_code);
     
     ble_uuid_t service_uuid;
-//    service_uuid.uuid = SCOPE_UUID_STATUS;
-//    service_uuid.type = p_status->uuid_type;
-    BLE_UUID_BLE_ASSIGN(service_uuid, SCOPE_UUID_STATUS);
+    service_uuid.uuid = SCOPE_UUID_STATUS;
+    service_uuid.type = p_status->uuid_type;
+    //BLE_UUID_BLE_ASSIGN(service_uuid, SCOPE_UUID_STATUS);
     
 	// Here the sec level for the status Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&status_init->status_level_char_attr_md.cccd_write_perm);

@@ -44,7 +44,10 @@
 #include "ble.h"
 #include "ble_srv_common.h"
 
-#define SCOPE_UUID_BATTERY  0x180F  // custom scope battery UUID
+#define PROBE_ERROR_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
+#define SCOPE_UUID_BATTERY  0x180E  // custom scope battery UUID
+#define BATT_LEVEL_UUID 0x8E01
+#define NEW_BATTS_UUID 0xE02
 
 
 /**@brief Battery Service event type. */

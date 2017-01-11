@@ -394,13 +394,13 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     APP_ERROR_CHECK(err_code);
     
     /******* add charateristics  *******/
-//    profile_char_add(p_profile_service);
-//    profile_ids_char_add(p_profile_service);
-//    transfer_ids_char_add(p_profile_service);
-//    location_char_add(p_profile_service);
-//    profile_error_char_add(p_profile_service);
-//    profile_length_char_add(p_profile_service);
-//    raw_data_char_add(p_profile_service);
+    profile_char_add(p_profile_service);
+    profile_ids_char_add(p_profile_service);
+    transfer_ids_char_add(p_profile_service);
+    location_char_add(p_profile_service);
+    profile_error_char_add(p_profile_service);
+    profile_length_char_add(p_profile_service);
+    raw_data_char_add(p_profile_service);
     
 }
 

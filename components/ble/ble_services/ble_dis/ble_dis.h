@@ -37,11 +37,11 @@
 //Characteristic UUIDs:
 
 #define       SCOPE_CHAR_UUID_HW_REV		0x2A27
-#define				SCOPE_CHAR_UUID_SN				0x2A25
+#define		  SCOPE_CHAR_UUID_SN				0x2A25
 #define       SCOPE_CHAR_UUID_MODEL			0x2A24
-#define				SCOPE_CHAR_UUID_MANU			0x2A29
+#define		  SCOPE_CHAR_UUID_MANU			0x2A29
 #define       SCOPE_CHAR_UUID_FW_REV		0x2A26
-#define				SCOPE_CHAR_UUID_SYS_ID		0x2A23
+#define		  SCOPE_CHAR_UUID_SYS_ID		0x2A23
 
 
 
