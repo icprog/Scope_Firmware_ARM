@@ -44,10 +44,10 @@
 #include "ble.h"
 #include "ble_srv_common.h"
 
-#define PROBE_ERROR_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
+#define BATTERY_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
 #define SCOPE_UUID_BATTERY  0x180E  // custom scope battery UUID
-#define BATT_LEVEL_UUID 0x8E01
-#define NEW_BATTS_UUID 0xE02
+#define BATT_LEVEL_CHAR_UUID 0x8E01
+#define NEW_BATTS_CHAR_UUID 0xE02
 
 
 /**@brief Battery Service event type. */
@@ -84,10 +84,11 @@ typedef struct
 /**@brief Battery Service structure. This contains various status information for the service. */
 struct ble_bas_s
 {
-    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
+    uint8_t                       uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
     ble_bas_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
     uint16_t                      service_handle;                 /**< Handle of Battery Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t      battery_level_handles;          /**< Handles related to the Battery Level characteristic. */
+    ble_gatts_char_handles_t      new_batteries_handles;          /**< Handles related to the Battery Level characteristic. */
     uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
     uint8_t                       battery_level_last;             /**< Last Battery Level measurement passed to the Battery Service. */
     uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */
