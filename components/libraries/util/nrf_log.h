@@ -8,7 +8,7 @@
 #include <app_util.h>
 
 #ifndef NRF_LOG_USES_RTT
-#define NRF_LOG_USES_RTT 0
+#define NRF_LOG_USES_RTT 1
 #endif
 
 #ifndef NRF_LOG_USES_UART

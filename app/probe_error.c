@@ -32,11 +32,9 @@ void probe_error_char_add(ble_pes_t * p_pes)
     
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t base_uuid = PROBE_ERROR_BASE_UUID;
     char_uuid.uuid      = PROBE_ERROR_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
-    //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
+    char_uuid.type      = p_pes->uuid_type;
+    //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID); //only to be used with BLE SIG UUIDs
     
     /****** add read write properties ******/
     ble_gatts_char_md_t char_md;
@@ -86,9 +84,13 @@ void ble_probe_error_service_init(ble_pes_t * p_probe_error_service)
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
     ble_uuid_t service_uuid;
     ble_uuid128_t base_uuid = PROBE_ERROR_BASE_UUID;
-    service_uuid.uuid = PROBE_ERROR_SERVICE_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_probe_error_service->uuid_type));
     APP_ERROR_CHECK(err_code);
+
+    /*** add actual ervice UUID ***/
+    service_uuid.uuid = PROBE_ERROR_SERVICE_UUID;
+    service_uuid.type = p_probe_error_service->uuid_type;
+    
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROBE_ERROR_SERVICE_UUID);
     
     p_probe_error_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.

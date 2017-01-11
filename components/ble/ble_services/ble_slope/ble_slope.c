@@ -136,10 +136,8 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
 
     /****** add char UUID ******/
     ble_uuid_t          char_uuid;
-    ble_uuid128_t base_uuid = SLOPE_BASE_UUID;
     char_uuid.uuid      = SLOPE_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type      = p_slope->uuid_type;
     //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
     
     // Add slope Level characteristic
@@ -240,11 +238,14 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
 	
     /****** add service UUID ******/
     uint32_t err_code;
-    ble_uuid_t          service_uuid;
     ble_uuid128_t base_uuid = SLOPE_BASE_UUID;
-    service_uuid.uuid      = SCOPE_UUID_SLOPE;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_slope->uuid_type));
     APP_ERROR_CHECK(err_code);
+    
+    
+    ble_uuid_t          service_uuid;
+    service_uuid.uuid      = SCOPE_UUID_SLOPE;
+    service_uuid.type      = p_slope->uuid_type;
     //BLE_UUID_BLE_ASSIGN(char_uuid, PROBE_ERROR_CHAR_UUID);
     
 	ble_slope_init_t * slope_init = (ble_slope_init_t *)p_slope_init;  //undo const declaration

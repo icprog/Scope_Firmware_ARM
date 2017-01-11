@@ -553,21 +553,38 @@ static void ble_stack_init(void)
     err_code = softdevice_enable_get_default_config(CENTRAL_LINK_COUNT,
                                                     PERIPHERAL_LINK_COUNT,
                                                     &ble_enable_params);
+    if(err_code != 0)
+    {
+        SEGGER_RTT_printf(0, "1ERROR CODE = %d\n", err_code);
+    }
     APP_ERROR_CHECK(err_code);
+    
     
     //Check the ram settings against the used number of links
     CHECK_RAM_START_ADDR(CENTRAL_LINK_COUNT,PERIPHERAL_LINK_COUNT);
     
     // Enable BLE stack.
     err_code = softdevice_enable(&ble_enable_params);
+    if(err_code != 0)
+    {
+        //SEGGER_RTT_printf(0, "2ERROR CODE = %d\n", err_code);
+    }
     APP_ERROR_CHECK(err_code);
 
     // Register with the SoftDevice handler module for BLE events.
     err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
+    if(err_code != 0)
+    {
+        SEGGER_RTT_printf(0, "3ERROR CODE = %d\n", err_code);
+    }
     APP_ERROR_CHECK(err_code);
 
     // Register with the SoftDevice handler module for BLE events.
     err_code = softdevice_sys_evt_handler_set(sys_evt_dispatch);
+    if(err_code != 0)
+    {
+        SEGGER_RTT_printf(0, "4ERROR CODE = %d\n", err_code);
+    }
     APP_ERROR_CHECK(err_code);
 }
 
@@ -793,7 +810,7 @@ int main(void)
     nrf_delay_ms(100);
     nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
  // Initialize.
-    SEGGER_RTT_WriteString(0, "main init\n");
+    //SEGGER_RTT_WriteString(0, "main init\n");
 
     if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0) // if inn pole, restart into sleep mode (via shutdown_gpio fxn)
     {

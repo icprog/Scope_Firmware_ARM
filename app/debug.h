@@ -6,7 +6,7 @@
 #include "ble_srv_common.h"
 
 /********* UUIDS ************/
-#define DEBUG_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
+#define DEBUG_BASE_UUID  {{0x33, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
 #define DEBUG_SERVICE_UUID 0x0011
 #define DEBUG_CHAR_UUID 0x0012
 
@@ -30,6 +30,7 @@ typedef struct ble_dbs_s ble_dbs_t;
 typedef void (*ble_dbs_evt_handler_t) (ble_dbs_t * p_dbs, ble_dbs_evt_t * p_evt);
 
 struct ble_dbs_s{
+    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
 	uint16_t                    	conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t    char_handles;   //handles for the characteristic attributes to our struct

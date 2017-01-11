@@ -20,6 +20,7 @@
 #include "nordic_common.h"
 #include "ble_srv_common.h"
 #include "app_util.h"
+#include "app_error.h"
 
 
 #define INVALID_status_LEVEL 255
@@ -127,12 +128,17 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
     ble_gatts_char_md_t char_md;
     ble_gatts_attr_md_t cccd_md;
     ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
     ble_gatts_attr_md_t attr_md;
     uint8_t             initial_status_level;
     uint8_t             encoded_report_ref[BLE_SRV_ENCODED_REPORT_REF_LEN];
     uint8_t             init_len;
 
+    /***** Declare char UUID and add it to the BLE stack  *****/
+    ble_uuid_t char_uuid;
+//    char_uuid.uuid = STATUS_CHAR_UUID;
+//    char_uuid.type = p_status->uuid_type;
+    BLE_UUID_BLE_ASSIGN(char_uuid, STATUS_CHAR_UUID);
+    
     // Add status Level characteristic
     if (p_status->is_notification_supported)
     {
@@ -155,8 +161,6 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
     char_md.p_cccd_md         = (p_status->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
 
-    BLE_UUID_BLE_ASSIGN(ble_uuid,  status_CHAR_UUID); //was status-level char
-
     memset(&attr_md, 0, sizeof(attr_md));
 
     attr_md.read_perm  = p_status_init->status_level_char_attr_md.read_perm;
@@ -170,7 +174,7 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
 
     memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-    attr_char_value.p_uuid    = &ble_uuid;
+    attr_char_value.p_uuid    = &char_uuid;
     attr_char_value.p_attr_md = &attr_md;
     attr_char_value.init_len  = sizeof(uint8_t);
     attr_char_value.init_offs = 0;
@@ -188,7 +192,7 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
     if (p_status_init->p_report_ref != NULL)
     {
         // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+        BLE_UUID_BLE_ASSIGN(char_uuid, BLE_UUID_REPORT_REF_DESCR);
 
         memset(&attr_md, 0, sizeof(attr_md));
 
@@ -204,7 +208,7 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
         
         memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-        attr_char_value.p_uuid    = &ble_uuid;
+        attr_char_value.p_uuid    = &char_uuid;
         attr_char_value.p_attr_md = &attr_md;
         attr_char_value.init_len  = init_len;
         attr_char_value.init_offs = 0;
@@ -230,10 +234,20 @@ static uint32_t status_level_char_add(ble_status_t * p_status, const ble_status_
 
 uint32_t ble_status_init(ble_status_t * p_status, const ble_status_init_t * p_status_init)
 {
-		
-		ble_status_init_t * status_init = (ble_status_init_t *)p_status_init;  //undo const declaration
+	uint32_t   err_code;
+	ble_status_init_t * status_init = (ble_status_init_t *)p_status_init;  //undo const declaration
 	
-		// Here the sec level for the status Service can be changed/increased.
+    /***** Declare service UUID and add it to the BLE stack  *****/
+//    ble_uuid128_t base_uuid = STATUS_BASE_UUID;
+//    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_status->uuid_type));
+//    APP_ERROR_CHECK(err_code);
+    
+    ble_uuid_t service_uuid;
+//    service_uuid.uuid = SCOPE_UUID_STATUS;
+//    service_uuid.type = p_status->uuid_type;
+    BLE_UUID_BLE_ASSIGN(service_uuid, SCOPE_UUID_STATUS);
+    
+	// Here the sec level for the status Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&status_init->status_level_char_attr_md.cccd_write_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&status_init->status_level_char_attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&status_init->status_level_char_attr_md.write_perm);
@@ -249,9 +263,6 @@ uint32_t ble_status_init(ble_status_t * p_status, const ble_status_init_t * p_st
     {
         return NRF_ERROR_NULL;
     }
-    
-    uint32_t   err_code;
-    ble_uuid_t ble_uuid;
 
     // Initialize service structure
     p_status->evt_handler               = p_status_init->evt_handler;
@@ -260,9 +271,8 @@ uint32_t ble_status_init(ble_status_t * p_status, const ble_status_init_t * p_st
     p_status->status_level_last        = INVALID_status_LEVEL;
 
     // Add service
-    BLE_UUID_BLE_ASSIGN(ble_uuid, SCOPE_UUID_STATUS);
 
-    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, &p_status->service_handle);
+    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_status->service_handle);
     if (err_code != NRF_SUCCESS)
     {
         return err_code;

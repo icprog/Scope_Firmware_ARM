@@ -42,6 +42,7 @@ typedef void (*profile_evt_handler_t) (profile_t * p_profile, profile_evt_t * p_
 //service structure
 //TODO typedef might mess things up
 typedef struct {
+    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
 	profile_evt_handler_t       evt_handler;    /**< Event handler to be called for handling events in the Battery Service. */
 	uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */

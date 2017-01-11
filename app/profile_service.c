@@ -15,10 +15,8 @@ void profile_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = PROFILE_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     
@@ -71,10 +69,8 @@ void profile_ids_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = PROFILE_IDS_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add write properties ******/
@@ -125,10 +121,8 @@ void transfer_ids_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = TRANSFER_IDS_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add read write properties ******/
@@ -179,10 +173,8 @@ void location_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = LOCATION_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add read write properties ******/
@@ -233,10 +225,8 @@ void profile_error_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = PROFILE_ERROR_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add read write properties ******/
@@ -287,10 +277,8 @@ void raw_data_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUID and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = RAW_DATA_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add read/write properties ******/
@@ -341,10 +329,8 @@ void profile_length_char_add(ble_ps_t * p_ps)
     
     /***** Declare char UUIDs and add them to the BLE stack  *****/
     ble_uuid_t char_uuid;
-    ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
     char_uuid.uuid = PROFILE_LENGTH_CHAR_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &char_uuid.type);
-    APP_ERROR_CHECK(err_code);
+    char_uuid.type = p_ps->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     /****** add read write properties ******/
@@ -393,11 +379,14 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
         uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
     /***** Decalre service UUIDs and add them to the BLE stack  *****/
-    ble_uuid_t service_uuid;
+    
     ble_uuid128_t base_uuid = PROFILE_BASE_UUID;
-    service_uuid.uuid = PROFILE_SERVICE_UUID;
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &service_uuid.type);
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &(p_profile_service->uuid_type));
     APP_ERROR_CHECK(err_code);
+    
+    ble_uuid_t service_uuid;
+    service_uuid.uuid = PROFILE_SERVICE_UUID;
+    service_uuid.type = p_profile_service->uuid_type;
     //BLE_UUID_BLE_ASSIGN(service_uuid, PROFILE_SERVICE_UUID);
     
     p_profile_service->conn_handle = BLE_CONN_HANDLE_INVALID; //Set our service connection handle to default value. I.e. an invalid handle since we are not yet in a connection.
@@ -405,13 +394,13 @@ void ble_profile_service_init(ble_ps_t * p_profile_service)
     APP_ERROR_CHECK(err_code);
     
     /******* add charateristics  *******/
-    profile_char_add(p_profile_service);
-    profile_ids_char_add(p_profile_service);
-    transfer_ids_char_add(p_profile_service);
-    location_char_add(p_profile_service);
-    profile_error_char_add(p_profile_service);
-    profile_length_char_add(p_profile_service);
-    raw_data_char_add(p_profile_service);
+//    profile_char_add(p_profile_service);
+//    profile_ids_char_add(p_profile_service);
+//    transfer_ids_char_add(p_profile_service);
+//    location_char_add(p_profile_service);
+//    profile_error_char_add(p_profile_service);
+//    profile_length_char_add(p_profile_service);
+//    raw_data_char_add(p_profile_service);
     
 }
 

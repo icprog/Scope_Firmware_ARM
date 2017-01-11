@@ -44,8 +44,9 @@
 #include "ble.h"
 #include "ble_srv_common.h"
 
-#define SCOPE_UUID_STATUS				0x119B	  // UUID for status service
-#define status_CHAR_UUID         0x2222    //UUID for status characteristic
+#define STATUS_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x88, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
+#define SCOPE_UUID_STATUS		 0x119B	  // UUID for status service
+#define STATUS_CHAR_UUID         0x2222    //UUID for status characteristic
 
 static uint8_t             initial_status = 0x13;  //initial status value for testing purposes
 
@@ -83,6 +84,7 @@ typedef struct
 /**@brief status Service structure. This contains various status information for the service. */
 struct ble_status_s
 {
+    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
     ble_status_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the status Service. */
     uint16_t                      service_handle;                 /**< Handle of status Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t      status_level_handles;          /**< Handles related to the status Level characteristic. */

@@ -85,6 +85,7 @@ typedef struct
 /**@brief slope Service structure. This contains various status information for the service. */
 struct ble_slope_s
 {
+    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
     ble_slope_evt_handler_t       evt_handler;                    /**< Event handler to be called for handling events in the slope Service. */
     uint16_t                      service_handle;                 /**< Handle of slope Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t      slope_level_handles;          /**< Handles related to the slope Level characteristic. */

@@ -369,8 +369,8 @@ uint32_t softdevice_enable_get_default_config(uint8_t central_links_count,
                                               ble_enable_params_t * p_ble_enable_params)
 {
     memset(p_ble_enable_params, 0, sizeof(ble_enable_params_t));
-    p_ble_enable_params->common_enable_params.vs_uuid_count   = 5;
-    p_ble_enable_params->gatts_enable_params.attr_tab_size    = SOFTDEVICE_GATTS_ATTR_TAB_SIZE;
+    p_ble_enable_params->common_enable_params.vs_uuid_count   = 10;
+    p_ble_enable_params->gatts_enable_params.attr_tab_size    = 0x900; //SOFTDEVICE_GATTS_ATTR_TAB_SIZE;
     p_ble_enable_params->gatts_enable_params.service_changed  = SOFTDEVICE_GATTS_SRV_CHANGED;
     p_ble_enable_params->gap_enable_params.periph_conn_count  = periph_links_count;
     p_ble_enable_params->gap_enable_params.central_conn_count = central_links_count;
@@ -472,6 +472,7 @@ uint32_t softdevice_enable(ble_enable_params_t * p_ble_enable_params)
         app_ram_size -= app_ram_base;
         SD_HANDLER_LOG("ram size should be adjusted to 0x%x \r\n",
                   app_ram_size);
+        while(1);
     }
     else if (err_code != NRF_SUCCESS)
     {

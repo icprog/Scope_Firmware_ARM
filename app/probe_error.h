@@ -30,6 +30,7 @@ typedef struct ble_pes_s ble_pes_t;
 //typedef void (*ble_pes_evt_handler_t) (ble_pes_t * p_pes, ble_pes_evt_t * p_evt);
 
 struct ble_pes_s{
+    uint8_t                     uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
 	uint16_t                    conn_handle;    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection).*/
     uint16_t                    service_handle; /**< Handle of Our Service (as provided by the BLE stack). */
     ble_gatts_char_handles_t    char_handles;   //handles for the characteristic attributes to our struct
