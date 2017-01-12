@@ -32,23 +32,16 @@
 #include <stdint.h>
 #include "ble_srv_common.h"
 
+#define DEVICE_INFO_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
 //Service UUID:
 #define SCOPE_UUID_DEVICE_INFO 0x180A
 //Characteristic UUIDs:
-
-#define       SCOPE_CHAR_UUID_HW_REV		0x2A27
-#define		  SCOPE_CHAR_UUID_SN				0x2A25
-#define       SCOPE_CHAR_UUID_MODEL			0x2A24
-#define		  SCOPE_CHAR_UUID_MANU			0x2A29
-#define       SCOPE_CHAR_UUID_FW_REV		0x2A26
-#define		  SCOPE_CHAR_UUID_SYS_ID		0x2A23
-
-
+#define       DEVICE_NAME_CHAR_UUID		0xBA27
+#define		  SERIAL_NUM_CHAR_UUID			0xBA25
+#define       FW_REV_CHAR_UUID			0xBA24
+#define		  HW_REV_CHAR_UUID			0xBA29
 
 #define DEVICE_NAME                          "AAA123"                           /**< Name of device. Will be included in the advertising data. */
-
-
-
 #define MANUFACTURER_NAME                    "Avatech Inc."                      /**< Manufacturer. Will be passed to Device Information Service. */
 //#define SERIAL_NUMBER						 "SN 0001"
 #define MODEL_NUMBER						 "Scope V 1.0"
@@ -86,6 +79,25 @@ typedef struct
     uint16_t product_version;                                   /**< Product Version. */
 } ble_dis_pnp_id_t;
 
+/**@brief Device Info Service event type. */
+typedef enum
+{
+    BLE_DIS_EVT_NOTIFICATION_ENABLED,                             /**< Device info value notification enabled event. */
+    BLE_DIS_EVT_NOTIFICATION_DISABLED                             /**< Device info value notification disabled event. */
+} ble_dis_evt_type_t;
+
+/**@brief Device Info Service event. */
+typedef struct
+{
+    ble_dis_evt_type_t evt_type;                                  /**< Type of event. */
+} ble_dis_evt_t;
+
+// Forward declaration of the ble_bas_t type. 
+typedef struct ble_dis_s ble_dis_t;
+
+/**@brief Battery Service event handler type. */
+typedef void (*ble_dis_evt_handler_t) (ble_dis_t * p_dis, ble_dis_evt_t * p_evt);
+
 /**@brief Device Information Service init structure. This contains all possible characteristics 
  *        needed for initialization of the service.
  */
@@ -103,6 +115,22 @@ typedef struct
     ble_srv_security_mode_t        dis_attr_md;                 /**< Initial Security Setting for Device Information Characteristics. */
 } ble_dis_init_t;
 
+struct ble_dis_s
+{
+    uint8_t                       uuid_type; /**< vendor specific UUID type returned by sd_ble_uuid_vs_add() */
+    ble_dis_evt_handler_t         evt_handler;                    /**< Event handler to be called for handling events in the Battery Service. */
+    uint16_t                      service_handle;                 /**< Handle of Device Info Service (as provided by the BLE stack). */
+    ble_gatts_char_handles_t      device_name_handles;          /**< Handles related to the manufacture name characteristic. */
+    ble_gatts_char_handles_t      serial_num_handles;          /**< Handles related to the model num characteristic. */
+    ble_gatts_char_handles_t      hw_rev_handles;
+    ble_gatts_char_handles_t      fw_rev_handles;
+    uint16_t                      report_ref_handle;              /**< Handle of the Report Reference descriptor. */
+    uint8_t                       battery_level_last;             /**< Last Battery Level measurement passed to the Battery Service. */
+    uint16_t                      conn_handle;                    /**< Handle of the current connection (as provided by the BLE stack, is BLE_CONN_HANDLE_INVALID if not in a connection). */
+    bool                          is_notification_supported;      /**< TRUE if notification of Battery Level is supported. */
+};
+    
+
 /**@brief Function for initializing the Device Information Service.
  *
  * @details This call allows the application to initialize the device information service. 
@@ -115,8 +143,9 @@ typedef struct
  *
  * @return      NRF_SUCCESS on successful initialization of service.
  */
-uint32_t ble_dis_init(const ble_dis_init_t * p_dis_init);
-void serial_number_update(ble_evt_t * p_ble_evt); //TODO remove later
+void ble_device_info_service_init(ble_dis_t * p_dis);
+void ble_device_info_service_on_ble_evt(ble_dis_t * p_dis, ble_evt_t * p_ble_evt);
+
 
 
 #endif // BLE_DIS_H__

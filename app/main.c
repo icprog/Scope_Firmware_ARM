@@ -115,6 +115,7 @@ extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
+ble_dis_t                                    m_dis; //device info
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
 ble_pes_t 	 						         m_pes; //probing error service
 ble_ps_t                             		 m_ps; //profile service
@@ -245,12 +246,8 @@ static void services_init(void)
     uint32_t       err_code;
 	
     // Initialize Device Information Service.
-    ble_dis_init_t dis_init;
-    memset(&dis_init, 0, sizeof(dis_init));
-    err_code = ble_dis_init(&dis_init);
-    APP_ERROR_CHECK(err_code);
+    ble_device_info_service_init(&m_dis);
     
-
     //init firmware update service
     ble_fwu_service_init(&m_fwu);
     
