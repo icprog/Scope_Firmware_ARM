@@ -79,6 +79,7 @@ typedef enum
     PA_XMODEM,
     PA_START_TEST,
     PA_NEW_ID,
+    PA_NEW_NAME,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
@@ -140,6 +141,7 @@ extern pic_arm_pack_t pcb_test_data_pack;
 extern pic_arm_pack_t accelerometer_pack;
 extern pic_arm_pack_t squal_cal_start_pack;
 extern pic_arm_pack_t set_pic_to_cal_pack;
+extern pic_arm_pack_t new_name_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 

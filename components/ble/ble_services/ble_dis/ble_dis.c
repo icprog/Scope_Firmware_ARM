@@ -262,9 +262,8 @@ void on_write_device_info(ble_dis_t * p_dis, ble_evt_t * p_ble_evt)
     if(p_evt_write->handle == p_dis->device_name_handles.value_handle)
     {
         disable_imu();
-//        memcpy(&(appData.profile_id), (p_evt_write->data), sizeof(profile_id_t));
-//        SEGGER_RTT_printf(0,"profile_to_transfer:  type = %d num = %d \n", appData.profile_id.type, appData.profile_id.test_num);
-//        appData.state = APP_STATE_REQUEST_PROFILE;
+        memcpy(&(device_info.device_name), (p_evt_write->data), 20);
+        appData.state = APP_STATE_NAME_CHANGE;
     }
 }
 

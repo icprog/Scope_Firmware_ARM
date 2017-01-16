@@ -611,6 +611,14 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_NAME_CHANGE:
+        {
+            disable_imu();
+            nrf_delay_ms(100);
+            SEGGER_RTT_printf(0,"received new name: %s\n", device_info.device_name);
+            send_data_to_PIC(new_name_pack);
+            break;
+        }
         #else
         case APP_STATE_SET_PIC_CAL:  // puts PIC in CAL mode
         {
