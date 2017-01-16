@@ -31,10 +31,11 @@
 
 #include <stdint.h>
 #include "ble_srv_common.h"
+#include "app.h"
 
 #define DEVICE_INFO_BASE_UUID  {{0x23, 0xD1, 0x13, 0xEF, 0x5F, 0x78, 0x23, 0x15, 0xDE, 0xEF, 0x12, 0x12, 0x00, 0x00, 0x00, 0x00}} // 128-bit base UUID
 //Service UUID:
-#define SCOPE_UUID_DEVICE_INFO 0x180A
+#define SCOPE_UUID_DEVICE_INFO 0xB180
 //Characteristic UUIDs:
 #define       DEVICE_NAME_CHAR_UUID		0xBA27
 #define		  SERIAL_NUM_CHAR_UUID			0xBA25
@@ -145,8 +146,7 @@ struct ble_dis_s
  */
 void ble_device_info_service_init(ble_dis_t * p_dis);
 void ble_device_info_service_on_ble_evt(ble_dis_t * p_dis, ble_evt_t * p_ble_evt);
-
-
+void update_device_info(ble_dis_t * p_dis, device_info_t device_info);
 
 #endif // BLE_DIS_H__
 

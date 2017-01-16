@@ -22,8 +22,9 @@
 #include "SEGGER_RTT.h"
 #include "app.h"
 #include "timers.h"
+extern device_info_t device_info;
 
-void device_name_char_add(ble_dis_t * p_dis)
+void device_name_char_add(ble_dis_t * p_dis, char * device_name)
 {
         uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
@@ -66,15 +67,14 @@ void device_name_char_add(ble_dis_t * p_dis)
     /***  Set characteristic length in number of bytes  ****/
     attr_char_value.max_len     = 20;
     attr_char_value.init_len    = 20;
-    uint8_t value               = 0x00;
-    attr_char_value.p_value     = &value;
+    attr_char_value.p_value     = (uint8_t *)device_name;
     
     /**** add it too the softdevice  *****/
     err_code = sd_ble_gatts_characteristic_add(p_dis->service_handle, &char_md, &attr_char_value, &p_dis->device_name_handles);
     APP_ERROR_CHECK(err_code);
 }
 
-void serial_number_char_add(ble_dis_t * p_dis)
+void serial_number_char_add(ble_dis_t * p_dis, char * serial_number)
 {
     uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
@@ -117,14 +117,13 @@ void serial_number_char_add(ble_dis_t * p_dis)
     /***  Set characteristic length in number of bytes  ****/
     attr_char_value.max_len     = 6;
     attr_char_value.init_len    = 6;
-    uint8_t value               = 0x00;
-    attr_char_value.p_value     = &value;
+    attr_char_value.p_value     = (uint8_t *)serial_number;
     
     /**** add it too the softdevice  *****/
     err_code = sd_ble_gatts_characteristic_add(p_dis->service_handle, &char_md, &attr_char_value, &p_dis->serial_num_handles);
     APP_ERROR_CHECK(err_code);
 }
-void hw_rev_char_add(ble_dis_t * p_dis)
+void hw_rev_char_add(ble_dis_t * p_dis, char * hw_rev)
 {
     uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
@@ -165,16 +164,15 @@ void hw_rev_char_add(ble_dis_t * p_dis)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 2;
-    attr_char_value.init_len    = 2;
-    uint8_t value               = 0x00;
-    attr_char_value.p_value     = &value;
+    attr_char_value.max_len     = 3;
+    attr_char_value.init_len    = 3;
+    attr_char_value.p_value     = (uint8_t *)hw_rev;
     
     /**** add it too the softdevice  *****/
     err_code = sd_ble_gatts_characteristic_add(p_dis->service_handle, &char_md, &attr_char_value, &p_dis->hw_rev_handles);
     APP_ERROR_CHECK(err_code);
 }
-void fw_rev_char_add(ble_dis_t * p_dis)
+void fw_rev_char_add(ble_dis_t * p_dis, char * fw_rev)
 {
     uint32_t err_code; // Variable to hold return codes from library and softdevice functions
     
@@ -217,8 +215,7 @@ void fw_rev_char_add(ble_dis_t * p_dis)
     /***  Set characteristic length in number of bytes  ****/
     attr_char_value.max_len     = 20;
     attr_char_value.init_len    = 20;
-    uint8_t value               = 0x00;
-    attr_char_value.p_value     = &value;
+    attr_char_value.p_value     = (uint8_t *)fw_rev;
     
     /**** add it too the softdevice  *****/
     err_code = sd_ble_gatts_characteristic_add(p_dis->service_handle, &char_md, &attr_char_value, &p_dis->fw_rev_handles);
@@ -244,11 +241,18 @@ void ble_device_info_service_init(ble_dis_t * p_dis)
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &p_dis->service_handle);
     APP_ERROR_CHECK(err_code);
     
+    //build fw and hw strings
+    char fw_string[20];
+    strcpy(fw_string, (char *)(device_info.PIC_firmware_version));
+    strcat(fw_string, ",");
+    strcat(fw_string, FW_VERSION);
+    char hw_string[] = "4";
+    
     /******* add charateristics  *******/
-    device_name_char_add(p_dis);
-    serial_number_char_add(p_dis);
-    hw_rev_char_add(p_dis);
-    fw_rev_char_add(p_dis);
+    device_name_char_add(p_dis, device_info.device_name);
+    serial_number_char_add(p_dis, device_info.serial_number);
+    hw_rev_char_add(p_dis, hw_string);
+    fw_rev_char_add(p_dis, fw_string);
 }
 
 void on_write_device_info(ble_dis_t * p_dis, ble_evt_t * p_ble_evt)
