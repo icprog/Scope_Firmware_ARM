@@ -617,6 +617,7 @@ void APP_Tasks(void)
             nrf_delay_ms(100);
             SEGGER_RTT_printf(0,"received new name: %s\n", device_info.device_name);
             send_data_to_PIC(new_name_pack);
+            appData.state = APP_STATE_POLLING;
             break;
         }
         #else

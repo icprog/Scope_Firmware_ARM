@@ -17,9 +17,6 @@
 #define PROFILE_LENGTH_CHAR_UUID 0x321F
 #define RAW_DATA_CHAR_UUID 0x3219
 
-
-
-
 /**@brief Battery Service event type. */
 typedef enum
 {

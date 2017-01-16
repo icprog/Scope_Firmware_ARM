@@ -498,6 +498,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_advertising_on_ble_evt(p_ble_evt);
     ble_bas_on_ble_evt(&m_bas, p_ble_evt);
     ble_fwu_service_on_ble_evt(&m_fwu, p_ble_evt);
+    ble_device_info_service_on_ble_evt(&m_dis, p_ble_evt);
     if(CALIBRATION)
     {
         cal_vib_on_ble_evt(&m_vib,p_ble_evt);

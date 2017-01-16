@@ -262,6 +262,7 @@ void on_write_device_info(ble_dis_t * p_dis, ble_evt_t * p_ble_evt)
     if(p_evt_write->handle == p_dis->device_name_handles.value_handle)
     {
         disable_imu();
+        SEGGER_RTT_WriteString(0, "name change write \n");
         memcpy(&(device_info.device_name), (p_evt_write->data), 20);
         appData.state = APP_STATE_NAME_CHANGE;
     }
