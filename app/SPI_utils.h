@@ -79,6 +79,7 @@ typedef enum
     PA_XMODEM,
     PA_START_TEST,
     PA_NEW_ID,
+    PA_NEW_NAME,
     
     PA_PCB_TEST,
     PA_PCB_TEST_DATA,
