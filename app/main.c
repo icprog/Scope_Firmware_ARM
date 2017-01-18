@@ -113,6 +113,7 @@ device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
+extern uint8_t * debug_file;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -435,7 +436,15 @@ static void advertising_init(void)
     err_code = ble_advertising_init(&advdata, NULL, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
-
+void update_debug_file()
+{
+    uint16_t kk = 0;
+    for(kk=0;kk<13;kk++)
+    {
+        ble_debug_update(&m_ds,(char *)&(debug_file[kk]),20);
+        nrf_delay_ms(10);
+    }
+}
 /**@brief Function for handling the Application's BLE Stack events.
  *
  * @param[in]   p_ble_evt   Bluetooth stack event.
@@ -454,7 +463,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
             SEGGER_RTT_printf(0, "connected!\n");
-					 
+            //add flag to only run once
             break;
         }
 
@@ -838,6 +847,8 @@ int main(void)
         
         if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
+//        char debug_message[20] = "testing 1 2 3";
+//        ble_debug_update(&m_ds,debug_message,20);
         
         while(true)
         {
@@ -845,6 +856,7 @@ int main(void)
             {
                 power_manage();
                 APP_Tasks();    
+                //ble_debug_update(&m_ds,debug_message,20);
             }
             else  // in pole, restart into sleep-mode
             {

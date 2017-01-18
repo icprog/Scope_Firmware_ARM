@@ -79,7 +79,7 @@
 #include "timers.h"
 #include "fwu_service.h"
 
-
+#define DEBUG_FILE_SIZE 264   //flash page size
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -106,7 +106,7 @@ data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 uint32_t fw_size = 70000;
-
+uint8_t                         debug_file[DEBUG_FILE_SIZE];
 // *****************************************************************************
 /* Application Data
 
@@ -219,6 +219,15 @@ void APP_Tasks(void)
             device_info_received = true;
             appData.state = APP_STATE_POLLING;
             break;
+        }
+        case APP_STATE_DEBUG_FILE:
+        {
+//            kk = 0;
+//            for(kk=0;kk<13;kk++)
+//            {
+//                
+//            }
+//            break;
         }
         case APP_STATE_PIC_FWU_START:
         {
@@ -565,7 +574,7 @@ void APP_Tasks(void)
         {
 
             uint32_t err_code;
-//            disable_imu();
+            disable_imu();
             nrf_delay_ms(200);
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
             nrf_delay_ms(200); //wait for PIC to stop requesting accel

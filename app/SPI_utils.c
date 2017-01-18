@@ -93,6 +93,7 @@ extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
 extern profile_data_t profile_data;
 extern ble_dbs_t						m_ds;
+extern uint8_t * debug_file;
 
 /*
  * build the header packet, enable the RDY line and wait for the PIC to clock in the packet. 
@@ -194,6 +195,13 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 SEGGER_RTT_printf(0, "DEV STATUS\n");
                 rx_data_ptr = &(appData.status);
+                next_state = appData.state;
+                break;
+            }
+            case PA_DEBUG_FILE:
+            {
+                SEGGER_RTT_printf(0, "DEBUG FILE\n");
+                rx_data_ptr = debug_file;
                 next_state = appData.state;
                 break;
             }
