@@ -57,6 +57,7 @@ L3GD_DATA gyro_data; //gyro data to pass to PIC
 imu_data_t imu_data;
 uint8_t sending_data_to_phone = 0;
 volatile bool device_info_received = false;
+volatile bool debug_file_received = false;
 extern uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
 
 /********  global variable for building a tx packet for PIC   **********/
@@ -88,6 +89,7 @@ pic_arm_pack_t fwu_data_pack={PA_FWU_DATA, appData.fwu_data_buf, 0}; //will need
 pic_arm_pack_t pcb_test_data_pack = {PA_PCB_TEST_DATA, pcb_test_results, NUM_ARM_PCB_TESTS};
 pic_arm_pack_t squal_cal_start_pack = {PA_SQUAL_CAL, dummy_buf, 0};
 pic_arm_pack_t set_pic_to_cal_pack = {PA_CAL_MODE, dummy_buf, 0}; // for setting cal mode on PIC
+pic_arm_pack_t get_debug_pack = {PA_DEBUG_FILE, dummy_buf, 0}; // for setting cal mode on PIC
 
 extern device_info_t device_info;
 extern subsampled_raw_data_t raw_sub_data;
@@ -201,8 +203,8 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_DEBUG_FILE:
             {
                 SEGGER_RTT_printf(0, "DEBUG FILE\n");
-                rx_data_ptr = debug_file;
-                next_state = appData.state;
+                rx_data_ptr = &debug_file;
+                next_state = APP_STATE_DEBUG_REC_TEST;
                 break;
             }
             case PA_NEW_ID:

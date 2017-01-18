@@ -113,6 +113,7 @@ device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
+extern volatile bool debug_file_received;
 extern uint8_t * debug_file;
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
@@ -439,9 +440,12 @@ static void advertising_init(void)
 void update_debug_file()
 {
     uint16_t kk = 0;
+    char debug_message[20] = "testing 1 2 3";
+    ble_debug_update(&m_ds,debug_message,20);
     for(kk=0;kk<13;kk++)
     {
-        ble_debug_update(&m_ds,(char *)&(debug_file[kk]),20);
+        //ble_debug_update(&m_ds,(char *)&(debug_file[kk]),20);
+        ble_debug_update(&m_ds,debug_message,20);
         nrf_delay_ms(10);
     }
 }
@@ -463,7 +467,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
             SEGGER_RTT_printf(0, "connected!\n");
-            //add flag to only run once
+            //update_debug_file();//add flag to only run once
             break;
         }
 
@@ -787,6 +791,17 @@ void init_device_info(void)
     {
         APP_Tasks();
     }
+    nrf_delay_ms(100);
+    disable_imu();
+    nrf_delay_ms(100);
+    send_data_to_PIC(get_debug_pack); //send debug filr request to PIC
+    SEGGER_RTT_printf(0, "sent debug request\n");
+    while(!debug_file_received)
+    {
+        APP_Tasks();
+    }
+    SEGGER_RTT_printf(0, "received debug request\n");
+    enable_imu();
 }
 
 

@@ -78,6 +78,7 @@
 #include "nrf_drv_spis.h"
 #include "timers.h"
 #include "fwu_service.h"
+#include "debug.h"
 
 #define DEBUG_FILE_SIZE 264   //flash page size
 // *****************************************************************************
@@ -96,8 +97,10 @@ extern cal_optical_t			m_optical;
 extern cal_hall_effect_t	    m_hall_effect;
 extern ble_ps_t                 m_ps;
 extern ble_fwu_t                m_fwu;
+extern ble_dbs_t			    m_ds;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
+extern volatile bool            debug_file_received;
 extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
@@ -105,7 +108,7 @@ subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
-uint32_t fw_size = 70000;
+uint32_t                        fw_size = 70000;
 uint8_t                         debug_file[DEBUG_FILE_SIZE];
 // *****************************************************************************
 /* Application Data
@@ -222,12 +225,31 @@ void APP_Tasks(void)
         }
         case APP_STATE_DEBUG_FILE:
         {
-//            kk = 0;
-//            for(kk=0;kk<13;kk++)
-//            {
-//                
-//            }
-//            break;
+            //debug_file_received = true;
+            //SEGGER_RTT_WriteString(0, "APP_STATE_DEBUG_FILE \n");
+            kk = 0;
+            char debug_message[20] = "start of debug file:";
+            ble_debug_update(&m_ds,debug_message,20);
+            sprintf(debug_message,"                    ");
+            sprintf(debug_message,"index:%d\n file:            ",debug_file[0]);
+            ble_debug_update(&m_ds,debug_message,20);
+           // ble_debug_update(&m_ds,(char *)&(debug_file[0]),1);
+            nrf_delay_ms(110);
+            for(kk=0;kk<12;kk++)
+            {
+                ble_debug_update(&m_ds,(char *)&(debug_file[kk*20+1]),20);
+                //ble_debug_update(&m_ds,debug_message,20);
+                nrf_delay_ms(110);
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEBUG_REC_TEST:
+        {
+            debug_file_received = true;
+
+            appData.state = APP_STATE_POLLING;
+            break;
         }
         case APP_STATE_PIC_FWU_START:
         {

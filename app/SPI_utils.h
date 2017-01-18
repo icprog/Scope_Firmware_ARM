@@ -142,6 +142,7 @@ extern pic_arm_pack_t pcb_test_data_pack;
 extern pic_arm_pack_t accelerometer_pack;
 extern pic_arm_pack_t squal_cal_start_pack;
 extern pic_arm_pack_t set_pic_to_cal_pack;
+extern pic_arm_pack_t get_debug_pack;
 
 extern volatile bool raw_data_transfer_in_progress;
 
