@@ -486,10 +486,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-            if(appData.data_counts == 0)
-            {
-                SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
-            }
+            //SEGGER_RTT_printf(0, "----\n");
+            
             uint8_t bytes_sent;
             sending_data_to_phone = 1;
             static int raw_data_counts = 0;
@@ -499,6 +497,11 @@ void APP_Tasks(void)
             uint8_t ble_packet_length;
             bool buffer_done_flag = false;
             bool raw_data_done_flag = false;
+            
+            if(raw_data_counts == 0)
+            {
+                SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE\n");
+            }
             
             //SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
             while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
@@ -515,7 +518,7 @@ void APP_Tasks(void)
                 }
                 err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
                 
-								buffer_data_counts += bytes_sent;
+				buffer_data_counts += bytes_sent;
                 raw_data_counts += bytes_sent;
                 if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
                 {

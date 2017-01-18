@@ -331,14 +331,16 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring
         {
-             nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
-            SEGGER_RTT_printf(0, "finished transferring\n");
+            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+            SEGGER_RTT_printf(0, "finished transferring, cur state %d, next state %d\n", appData.state, next_state);
             appData.transfer_in_progress = false;
             appData.state = next_state;
         }
     }
     else
     {
+        /* This case gets triggered whenever we send a header packet to the PIC becuase we 
+        also clock in a garbage packet on our end and try to parse it */
 		//SEGGER_RTT_printf(0, " ***  ERROR  *** \n");
         return 1; //ERROR
     }

@@ -186,7 +186,7 @@ typedef struct raw_sub_data
 #define BYTES_RAW_SUB_DATA sizeof(subsampled_raw_data_t)
     
 #define RAW_DATA_BUFFER_SIZE 2000
-#define BYTES_RAW_TEST_DATA 41076
+#define BYTES_RAW_TEST_DATA 60067
 extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
 
 typedef struct profile_id
@@ -200,9 +200,9 @@ typedef struct imu_data
     int16_t    ax;
     int16_t    ay;
     int16_t    az;
-    int16_t    gx;
-    int16_t    gy;
-    int16_t    gz;
+//    int16_t    gx;
+//    int16_t    gy;
+//    int16_t    gz;
 } imu_data_t;
 
 typedef struct
