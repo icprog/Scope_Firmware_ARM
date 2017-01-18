@@ -486,7 +486,10 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-            SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
+            if(appData.data_counts == 0)
+            {
+                SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
+            }
             uint8_t bytes_sent;
             sending_data_to_phone = 1;
             static int raw_data_counts = 0;
@@ -497,7 +500,7 @@ void APP_Tasks(void)
             bool buffer_done_flag = false;
             bool raw_data_done_flag = false;
             
-            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
+            //SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
             while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
             {      
                 if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
@@ -522,7 +525,7 @@ void APP_Tasks(void)
                     send_data_to_PIC(raw_data_ack_pack);
                     appData.state = APP_STATE_POLLING;
                     buffer_data_counts = 0;
-                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
+                    //SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
                     //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                 }
@@ -541,7 +544,7 @@ void APP_Tasks(void)
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
                 {
-                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
                 }
                 counter++;
