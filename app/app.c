@@ -229,10 +229,29 @@ void APP_Tasks(void)
             //SEGGER_RTT_WriteString(0, "APP_STATE_DEBUG_FILE \n");
             kk = 0;
             char debug_message[20] = "start of debug file:";
+            char debug_message2[20] = "index: ";
+            ble_debug_update(&m_ds,debug_message2,20);
+            switch(debug_file[0]) // this switch prints out index 1 through 12 (the index is stored as an int in debug_file[0], and must be printed as a char array)
+            {
+                case 1:{ char index[20] = "01                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 2:{ char index[20] = "02                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 3:{ char index[20] = "03                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 4:{ char index[20] = "04                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 5:{ char index[20] = "05                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 6:{ char index[20] = "06                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 7:{ char index[20] = "07                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 8:{ char index[20] = "08                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 9:{ char index[20] = "09                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 10:{ char index[20] = "10                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 11:{ char index[20] = "11                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 12:{ char index[20] = "12                  "; ble_debug_update(&m_ds,index,20); break;}
+                default:{ char index[20] = "00                  "; ble_debug_update(&m_ds,index,20); break;}
+            }
+            
+            
             ble_debug_update(&m_ds,debug_message,20);
-            sprintf(debug_message,"                    ");
-            sprintf(debug_message,"index:%d\n file:            ",debug_file[0]);
-            ble_debug_update(&m_ds,debug_message,20);
+            
+            
            // ble_debug_update(&m_ds,(char *)&(debug_file[0]),1);
             nrf_delay_ms(110);
             for(kk=0;kk<12;kk++)
