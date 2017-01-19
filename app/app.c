@@ -221,6 +221,9 @@ void APP_Tasks(void)
         {
             device_info_received = true;
             appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.PIC_firmware_version);
+            SEGGER_RTT_printf(0, "\n NUMBER_OF_TESTS: %d\n",device_info.number_of_tests);
+            SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.serial_number);
             break;
         }
         case APP_STATE_DEBUG_FILE:

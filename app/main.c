@@ -114,7 +114,7 @@ extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
 extern volatile bool debug_file_received;
-extern uint8_t * debug_file;
+extern uint8_t  debug_file[264];
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -785,6 +785,7 @@ void init_device_info(void)
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
     nrf_delay_ms(500);
+    //nrf_delay_ms(5);
     send_data_to_PIC(send_device_info_pack);
     SEGGER_RTT_printf(0, "sent device info request\n");
     while(!device_info_received)
@@ -801,7 +802,7 @@ void init_device_info(void)
         APP_Tasks();
     }
     SEGGER_RTT_printf(0, "received debug request\n");
-    enable_imu();
+    //enable_imu();
 }
 
 

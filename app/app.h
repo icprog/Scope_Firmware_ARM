@@ -119,6 +119,7 @@ typedef struct{
     char serial_number[6];
     char device_name[32];
     char PIC_firmware_version[7]; //X.YY.ZZ,
+    char ARM_firmware_version[7]; //X.YY.ZZ
     uint16_t number_of_tests;
     uint8_t battery_capacity;
     uint8_t current_flash_bank;
