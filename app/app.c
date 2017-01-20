@@ -110,6 +110,7 @@ profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 uint32_t                        fw_size = 70000;
 uint8_t                         debug_file[DEBUG_FILE_SIZE];
+uint8_t                         status_disable_flag = 0;
 // *****************************************************************************
 /* Application Data
 
@@ -350,25 +351,35 @@ void APP_Tasks(void)
         case APP_STATE_REQUEST_PROFILE:
         {
             uint8_t error_code = 0;
+            uint16_t retry_counter = 0;
             sending_data_to_phone = 0; //if we are requesting a profile
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             disable_imu();
+            status_disable_flag = 1;
+            nrf_delay_ms(100);
+            
             appData.ack = 0;
-            while(appData.ack != 1)
+            while(appData.ack != 1)  // does this really timeout reliably? 
             {
                 if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
                     SEGGER_RTT_printf(0, "again\n");
+                    //disable_imu();
+                    nrf_delay_ms(50);
                     error_code = send_data_to_PIC(profile_id_pack);
                     if(error_code != 0)
                     {
-                        SEGGER_RTT_printf(0, "shit\n");
+                        SEGGER_RTT_printf(0, "send to pic error %d\n",error_code);
                     }
                     appData.ack = 0;
                     appData.ack_retry = 0;
+                    retry_counter++;
                 }
+                if(retry_counter>8)break;
+                
             }
             appData.state = APP_STATE_POLLING;
+            status_disable_flag = 0;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
         }
