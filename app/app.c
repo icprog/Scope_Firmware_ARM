@@ -98,14 +98,13 @@ extern ble_ps_t                 m_ps;
 extern ble_fwu_t                m_fwu;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
-extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
+extern LSM303_DATA              accel_data; //accelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
-uint32_t fw_size = 70000;
 
 // *****************************************************************************
 /* Application Data
@@ -182,7 +181,12 @@ void APP_Tasks(void)
 {   
 	uint16_t kk;
     static uint8_t packet_counter;
-	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
+//    static APP_STATES prev_state;
+//    if(prev_state != appData.state)
+//    {
+//        SEGGER_RTT_printf(0, "state=%d\n", appData.state);
+//    }
+//    prev_state = appData.state;
     switch (appData.state)
     {
         /* Application's initial state. */
@@ -226,7 +230,6 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
-            fwu_start_pack.data = (uint8_t *)(&fw_size);
             send_data_to_PIC(fwu_start_pack);
             appData.ack = 0;      
             appData.state = APP_STATE_POLLING;
