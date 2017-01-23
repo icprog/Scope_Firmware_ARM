@@ -78,8 +78,9 @@
 #include "nrf_drv_spis.h"
 #include "timers.h"
 #include "fwu_service.h"
+#include "debug.h"
 
-
+#define DEBUG_FILE_SIZE 264   //flash page size
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -96,8 +97,10 @@ extern cal_optical_t			m_optical;
 extern cal_hall_effect_t	    m_hall_effect;
 extern ble_ps_t                 m_ps;
 extern ble_fwu_t                m_fwu;
+extern ble_dbs_t			    m_ds;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
+extern volatile bool            debug_file_received;
 extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
@@ -105,8 +108,9 @@ subsampled_raw_data_t           raw_sub_data;
 data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
-uint32_t fw_size = 70000;
-
+uint32_t                        fw_size = 70000;
+uint8_t                         debug_file[DEBUG_FILE_SIZE];
+uint8_t                         status_disable_flag = 0;
 // *****************************************************************************
 /* Application Data
 
@@ -218,6 +222,56 @@ void APP_Tasks(void)
         {
             device_info_received = true;
             appData.state = APP_STATE_POLLING;
+            SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.PIC_firmware_version);
+            SEGGER_RTT_printf(0, "\n NUMBER_OF_TESTS: %d\n",device_info.number_of_tests);
+            SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.serial_number);
+            break;
+        }
+        case APP_STATE_DEBUG_FILE:
+        {
+            //debug_file_received = true;
+            //SEGGER_RTT_WriteString(0, "APP_STATE_DEBUG_FILE \n");
+            kk = 0;
+            char debug_message[20] = "start of debug file:";
+            char debug_message2[20] = "index: ";
+            ble_debug_update(&m_ds,debug_message2,20);
+            switch(debug_file[0]) // this switch prints out index 1 through 12 (the index is stored as an int in debug_file[0], and must be printed as a char array)
+            {
+                case 1:{ char index[20] = "01                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 2:{ char index[20] = "02                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 3:{ char index[20] = "03                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 4:{ char index[20] = "04                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 5:{ char index[20] = "05                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 6:{ char index[20] = "06                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 7:{ char index[20] = "07                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 8:{ char index[20] = "08                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 9:{ char index[20] = "09                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 10:{ char index[20] = "10                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 11:{ char index[20] = "11                  "; ble_debug_update(&m_ds,index,20); break;}
+                case 12:{ char index[20] = "12                  "; ble_debug_update(&m_ds,index,20); break;}
+                default:{ char index[20] = "00                  "; ble_debug_update(&m_ds,index,20); break;}
+            }
+            
+            
+            ble_debug_update(&m_ds,debug_message,20);
+            
+            
+           // ble_debug_update(&m_ds,(char *)&(debug_file[0]),1);
+            nrf_delay_ms(110);
+            for(kk=0;kk<12;kk++)
+            {
+                ble_debug_update(&m_ds,(char *)&(debug_file[kk*20+1]),20);
+                //ble_debug_update(&m_ds,debug_message,20);
+                nrf_delay_ms(110);
+            }
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
+        case APP_STATE_DEBUG_REC_TEST:
+        {
+            debug_file_received = true;
+
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_PIC_FWU_START:
@@ -297,25 +351,35 @@ void APP_Tasks(void)
         case APP_STATE_REQUEST_PROFILE:
         {
             uint8_t error_code = 0;
+            uint16_t retry_counter = 0;
             sending_data_to_phone = 0; //if we are requesting a profile
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             disable_imu();
+            status_disable_flag = 1;
+            nrf_delay_ms(100);
+            
             appData.ack = 0;
-            while(appData.ack != 1)
+            while(appData.ack != 1)  // does this really timeout reliably? 
             {
                 if(appData.ack_retry == 1 && !((NRF_GPIO->OUT >> SPIS_ARM_REQ_PIN) & 1UL)) //if REQ has been serviced and we timedout without an ACK
                 {
                     SEGGER_RTT_printf(0, "again\n");
+                    //disable_imu();
+                    nrf_delay_ms(50);
                     error_code = send_data_to_PIC(profile_id_pack);
                     if(error_code != 0)
                     {
-                        SEGGER_RTT_printf(0, "shit\n");
+                        SEGGER_RTT_printf(0, "send to pic error %d\n",error_code);
                     }
                     appData.ack = 0;
                     appData.ack_retry = 0;
+                    retry_counter++;
                 }
+                if(retry_counter>8)break;
+                
             }
             appData.state = APP_STATE_POLLING;
+            status_disable_flag = 0;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
         }
@@ -364,13 +428,17 @@ void APP_Tasks(void)
             {
                 /***** notify phone of how much data needs to be sent  *****/
                 final_depth = profile_data.metadata.profile_depth;
+                //final_depth = 1700;//TODO: fix this crappy short term solution to the test and serial number scrambling
                 if(final_depth > 3000)
                 {
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
                 }
+
                 update_profile_length(&m_ps, final_depth);
+
                 total_bytes = (uint16_t)sizeof(profile_data_t) - (PROFILE_MAX_COUNT - final_depth); // subtracting so that we don't miss padding between meta data and profile.
                 SEGGER_RTT_printf(0, "total_bytes = %d", total_bytes);
+
             }
             while(appData.data_counts<total_bytes && appData.ble_status == 1 && appData.ble_disconnect_flag == false)
             {      
@@ -411,6 +479,8 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
+
+
             break;
         }
 				
@@ -559,7 +629,7 @@ void APP_Tasks(void)
         {
 
             uint32_t err_code;
-//            disable_imu();
+            disable_imu();
             nrf_delay_ms(200);
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
