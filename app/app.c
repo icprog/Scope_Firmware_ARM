@@ -303,6 +303,7 @@ void APP_Tasks(void)
             sending_data_to_phone = 0; //if we are requesting a profile
             SEGGER_RTT_printf(0, "APP_STATE_REQUEST_PROFILE %d \n", appData.profile_id.test_num);
             disable_imu();
+            nrf_delay_ms(100);
             appData.ack = 0;
             while(appData.ack != 1)
             {
