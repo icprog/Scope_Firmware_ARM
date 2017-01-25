@@ -99,17 +99,17 @@ void application_timers_stop(void)
 /********** app timer handlers  ***********/
 void acc_timeout_handler(void *p_context)
 {
-     NRF_SPIS_Type * p_spis = spis.p_reg;
+    //NRF_SPIS_Type * p_spis = spis.p_reg;
     
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
     imu_data.ax = accel_data.X;
     imu_data.ay = accel_data.Y;
     imu_data.az = accel_data.Z;
-    gyro_data = getL3GDdata();
-    imu_data.gx = gyro_data.X;
-    imu_data.gy = gyro_data.Y;
-    imu_data.gz = gyro_data.Z;
+//    gyro_data = getL3GDdata();
+//    imu_data.gx = gyro_data.X;
+//    imu_data.gy = gyro_data.Y;
+//    imu_data.gz = gyro_data.Z;
     appData.send_imu_flag = true;
     //nrf_gpio_pin_toggle(SPIS_ARM_REQ_PIN); //JUST A TEST
     
@@ -150,8 +150,6 @@ void slope_timeout_handler(void *p_context)
     {
         appData.ack_retry = 1;
     }
-    
-    
     UNUSED_PARAMETER(p_context);
 }
 void status_timeout_handler(void *p_context)
