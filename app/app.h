@@ -45,7 +45,7 @@
 #define CALIBRATION 0
 
 
-#define FW_VERSION "0.02.00"
+#define FW_VERSION "0.03.00"
 
 
 // *****************************************************************************
@@ -83,6 +83,8 @@ typedef enum
     APP_STATE_PCB_TEST,
 	APP_STATE_ACCELEROMETER,
     APP_STATE_DEVICE_INFO,
+    APP_STATE_DEBUG_FILE,
+    APP_STATE_DEBUG_REC_TEST,
     APP_STATE_PROFILE_TRANSFER,
     APP_STATE_RAW_DATA_RECEIVE,
     APP_STATE_PROBE_ERROR,
@@ -110,11 +112,13 @@ typedef enum
 
 
 
+
+
 /****** DEVICE INFO STRUCT *****/
 typedef struct{
     char serial_number[6];
     char device_name[32];
-    char PIC_firmware_version[7]; //X.YY.ZZ
+    char PIC_firmware_version[7]; //X.YY.ZZ,
     char ARM_firmware_version[7]; //X.YY.ZZ
     uint16_t number_of_tests;
     uint8_t battery_capacity;

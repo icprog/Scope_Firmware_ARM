@@ -24,6 +24,7 @@ extern ble_slope_t m_slope; //slope service
 extern ble_ps_t m_ps;
 extern uint8_t sending_data_to_phone;
 extern uint16_t spis_rx_transfer_length;
+extern uint8_t status_disable_flag;
 
 /**@brief Function for the Timer initialization.
  * @details Initializes the timer module. This creates and starts application timers.
@@ -155,8 +156,8 @@ void status_timeout_handler(void *p_context)
 {
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
+
     ble_status_status_level_update(&m_status, appData.status);
-    
 }
     
 void start_ARM_RDY_timer(void)
