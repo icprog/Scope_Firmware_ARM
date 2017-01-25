@@ -90,7 +90,7 @@ static ble_beacon_init_t beacon_init;
 #define SLAVE_LATENCY                        0                                          /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                     MSEC_TO_UNITS(4000, UNIT_10_MS)            /**< Connection supervisory timeout (4 seconds). */
 
-#define BLE_TX_POWER                         4 //dB
+#define BLE_TX_POWER                         0 //dB
 
 #define FIRST_CONN_PARAMS_UPDATE_DELAY       APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER) /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY        APP_TIMER_TICKS(30000, APP_TIMER_PRESCALER)/**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
@@ -113,6 +113,8 @@ device_info_t device_info;
 extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
+extern volatile bool debug_file_received;
+extern uint8_t  debug_file[264];
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -435,7 +437,18 @@ static void advertising_init(void)
     err_code = ble_advertising_init(&advdata, NULL, &options, on_adv_evt, NULL);
     APP_ERROR_CHECK(err_code);
 }
-
+void update_debug_file()
+{
+    uint16_t kk = 0;
+    char debug_message[20] = "testing 1 2 3";
+    ble_debug_update(&m_ds,debug_message,20);
+    for(kk=0;kk<13;kk++)
+    {
+        //ble_debug_update(&m_ds,(char *)&(debug_file[kk]),20);
+        ble_debug_update(&m_ds,debug_message,20);
+        nrf_delay_ms(10);
+    }
+}
 /**@brief Function for handling the Application's BLE Stack events.
  *
  * @param[in]   p_ble_evt   Bluetooth stack event.
@@ -454,7 +467,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
             SEGGER_RTT_printf(0, "connected!\n");
-					 
+            //update_debug_file();//add flag to only run once
             break;
         }
 
@@ -772,13 +785,25 @@ void init_device_info(void)
     strcpy(device_info.serial_number, "NO SN");
     strcpy(device_info.device_name, "SCOPE NO SN");
     nrf_delay_ms(500);
+    //nrf_delay_ms(5);
     send_data_to_PIC(send_device_info_pack);
     SEGGER_RTT_printf(0, "sent device info request\n");
     while(!device_info_received)
     {
         APP_Tasks();
     }
-    SEGGER_RTT_printf(0, "test num = %d", device_info.number_of_tests);
+  
+    nrf_delay_ms(100);
+    disable_imu();
+    nrf_delay_ms(100);
+    send_data_to_PIC(get_debug_pack); //send debug filr request to PIC
+    SEGGER_RTT_printf(0, "sent debug request\n");
+    while(!debug_file_received)
+    {
+        APP_Tasks();
+    }
+    SEGGER_RTT_printf(0, "received debug request\n");
+    //enable_imu();
 }
 
 
@@ -839,6 +864,8 @@ int main(void)
         
         if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
+//        char debug_message[20] = "testing 1 2 3";
+//        ble_debug_update(&m_ds,debug_message,20);
         
         while(true)
         {
@@ -846,6 +873,7 @@ int main(void)
             {
                 power_manage();
                 APP_Tasks();    
+                //ble_debug_update(&m_ds,debug_message,20);
             }
             else  // in pole, restart into sleep-mode
             {
