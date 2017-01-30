@@ -375,10 +375,14 @@ void APP_Tasks(void)
                     appData.ack_retry = 0;
                     retry_counter++;
                 }
-                if(retry_counter>8)break;
+                if(retry_counter>8)
+                {
+                    appData.state = APP_STATE_POLLING;  //consider retrying instead?
+                    break;
+                }
                 
             }
-            appData.state = APP_STATE_POLLING;
+            appData.state = APP_STATE_POLLING;  //consider retrying instead?
             status_disable_flag = 0;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
