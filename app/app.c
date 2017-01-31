@@ -158,7 +158,7 @@ void APP_Initialize(void)
         appData.ble_status = 0;
         appData.data_counts = 0;
         appData.send_imu_flag = false;
-        appData.status = 0;
+        appData.status[0] = 0;
         appData.ack = 1;
 		init_LSM303();
         init_L3GD();
@@ -408,7 +408,7 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
-            appData.status = 3;
+            appData.status[0] = 3;
             uint16_t final_depth;
             static uint16_t total_bytes;
 
@@ -417,7 +417,7 @@ void APP_Tasks(void)
 				    appData.ble_disconnect_flag = false;
 					appData.state = APP_STATE_POLLING;
 					appData.prev_state = APP_STATE_POLLING;
-					appData.status = 0;
+					appData.status[0] = 0;
 					sending_data_to_phone = 0;
 					if(send_data_to_PIC(arm_done_pack))
                     {
@@ -457,7 +457,7 @@ void APP_Tasks(void)
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
+                    appData.status[0] = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
@@ -506,13 +506,13 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
-            appData.status = 3;
+            appData.status[0] = 3;
             if(appData.ble_disconnect_flag == true)
             {
                 appData.ble_disconnect_flag = false;
                 appData.state = APP_STATE_POLLING;
                 appData.prev_state = APP_STATE_POLLING;
-                appData.status = 0;
+                appData.status[0] = 0;
                 sending_data_to_phone = 0;
                 send_data_to_PIC(arm_done_pack);
                 appData.data_counts = 0;
@@ -531,7 +531,7 @@ void APP_Tasks(void)
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
+                    appData.status[0] = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
@@ -808,7 +808,7 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
-            appData.status = 3;
+            appData.status[0] = 3;
             static uint16_t total_bytes = sizeof(cal_data.optical_data);
 
 			if(appData.ble_disconnect_flag == true)
@@ -816,7 +816,7 @@ void APP_Tasks(void)
 				    appData.ble_disconnect_flag = false;
 					appData.state = APP_STATE_POLLING;
 					appData.prev_state = APP_STATE_POLLING;
-					appData.status = 0;
+					appData.status[0] = 0;
 					sending_data_to_phone = 0;
 					send_data_to_PIC(arm_done_pack);
 					appData.data_counts = 0;
@@ -834,7 +834,7 @@ void APP_Tasks(void)
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
+                    appData.status[0] = 0;
                     sending_data_to_phone = 0;
                     if(send_data_to_PIC(arm_done_pack))
                     {
@@ -940,7 +940,7 @@ void APP_Tasks(void)
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
-            appData.status = 3;
+            appData.status[0] = 3;
             uint16_t final_depth;
             static uint16_t total_bytes = sizeof(cal_data.squal_and_pic);
 
@@ -949,7 +949,7 @@ void APP_Tasks(void)
 				    appData.ble_disconnect_flag = false;
 					appData.state = APP_STATE_POLLING;
 					appData.prev_state = APP_STATE_POLLING;
-					appData.status = 0;
+					appData.status[0] = 0;
 					sending_data_to_phone = 0;
 					send_data_to_PIC(arm_done_pack);
 					appData.data_counts = 0;
@@ -967,7 +967,7 @@ void APP_Tasks(void)
                     done_flag = 1;
                     appData.state = APP_STATE_POLLING;
                     appData.prev_state = APP_STATE_POLLING;
-                    appData.status = 0;
+                    appData.status[0] = 0;
                     sending_data_to_phone = 0;
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);

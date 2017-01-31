@@ -159,7 +159,9 @@ void status_timeout_handler(void *p_context)
     //SEGGER_RTT_printf(0,"status\n");
     UNUSED_PARAMETER(p_context);
 
-    ble_status_status_level_update(&m_status, appData.status);
+    ble_status_status_level_update(&m_status, appData.status[0]);
+    //update slope too:
+    ble_slope_level_update(&m_slope, appData.status[1]);
 }
     
 void start_ARM_RDY_timer(void)

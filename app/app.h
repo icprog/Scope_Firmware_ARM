@@ -218,7 +218,7 @@ typedef struct
     uint16_t new_profile_num;
     uint16_t ble_status;
 	bool ble_disconnect_flag;
-    uint8_t status;
+    uint8_t status[2];
     bool send_imu_flag;
     bool imu_enabled;
     uint16_t data_counts;
