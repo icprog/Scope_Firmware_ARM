@@ -185,44 +185,44 @@ static uint32_t battery_level_char_add(ble_bas_t * p_bas, const ble_bas_init_t *
         return err_code;
     }
 
-    if (p_bas_init->p_report_ref != NULL)
-    {
-        // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+//    if (p_bas_init->p_report_ref != NULL)
+//    {
+//        // Add Report Reference descriptor
+//        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
 
-        memset(&attr_md, 0, sizeof(attr_md));
+//        memset(&attr_md, 0, sizeof(attr_md));
 
-        attr_md.read_perm = p_bas_init->battery_level_report_read_perm;
-        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
+//        attr_md.read_perm = p_bas_init->battery_level_report_read_perm;
+//        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
 
-        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
-        attr_md.rd_auth = 0;
-        attr_md.wr_auth = 0;
-        attr_md.vlen    = 0;
-        
-        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_bas_init->p_report_ref);
-        
-        memset(&attr_char_value, 0, sizeof(attr_char_value));
+//        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
+//        attr_md.rd_auth = 0;
+//        attr_md.wr_auth = 0;
+//        attr_md.vlen    = 0;
+//        
+//        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_bas_init->p_report_ref);
+//        
+//        memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-        attr_char_value.p_uuid    = &ble_uuid;
-        attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
-        attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
-        attr_char_value.p_value   = encoded_report_ref;
+//        attr_char_value.p_uuid    = &ble_uuid;
+//        attr_char_value.p_attr_md = &attr_md;
+//        attr_char_value.init_len  = init_len;
+//        attr_char_value.init_offs = 0;
+//        attr_char_value.max_len   = attr_char_value.init_len;
+//        attr_char_value.p_value   = encoded_report_ref;
 
-        err_code = sd_ble_gatts_descriptor_add(p_bas->battery_level_handles.value_handle,
-                                               &attr_char_value,
-                                               &p_bas->report_ref_handle);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-    }
-    else
-    {
-        p_bas->report_ref_handle = BLE_GATT_HANDLE_INVALID;
-    }
+//        err_code = sd_ble_gatts_descriptor_add(p_bas->battery_level_handles.value_handle,
+//                                               &attr_char_value,
+//                                               &p_bas->report_ref_handle);
+//        if (err_code != NRF_SUCCESS)
+//        {
+//            return err_code;
+//        }
+//    }
+//    else
+//    {
+//        p_bas->report_ref_handle = BLE_GATT_HANDLE_INVALID;
+//    }
 
     return NRF_SUCCESS;
 }
