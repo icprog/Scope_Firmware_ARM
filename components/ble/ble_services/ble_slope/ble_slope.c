@@ -22,6 +22,11 @@
 #include "app_util.h"
 #include "SEGGER_RTT.h"
 
+   /* computes the principal value of the arc sine of x */
+   /* a domain error occurs for arguments not in the range -1 to 1 */
+   /* and -HUGE_VAL is returned. */
+   /* Returns: the arc sine in the range -Pi/2 to Pi/2. */
+
 
 #define INVALID_slope_LEVEL 255
 
@@ -272,7 +277,80 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
     // Add slope level characteristic
     return slope_level_char_add(p_slope, p_slope_init);
 }
+//float ava_exp(float base, uint32_t ex)
+//{
+//    uint32_t ii;
+//    float output = base;
+//    if(ex == 0)
+//    {
+//        output = 1;
+//    }
+//    else if(ex == 1)
+//    {
+//        output = base;
+//    }    
+//    else
+//    {
+//        for(ii=2;ii<=ex;ii++)
+//        {
+//            output = output * base;
+//        }
+//    }
+//    return output;
+//}
 
+//float factorial(uint32_t n)
+//{
+//  int c;
+//  float result = 1;
+// 
+//  for (c = 1; c <= n; c++)
+//    result = result * c;
+// 
+//  return result;
+//}
+//float num_asin(float x,int iterations)
+//{
+//    float out = 0;
+//    uint16_t n = 0;
+//    for(n=0;n<iterations;n++)
+//    {
+//        out = out + ((factorial(2*n))/((ava_exp(2,(2*n)))*(factorial(n))*factorial(n))*((ava_exp(x,(2*n+1)))/(2*n+1)));
+//    }
+//    
+//    return out;
+//}
+
+//// calculate slope:
+
+//uint8_t slope_calc(int16_t ax,int16_t ay,int16_t az)
+//{
+//    float slope = 0;
+//    float inner = 0;
+//    float lower = 0;
+//    float roll = 0;
+//    float pitch = 0;
+//    float grav_full = 1310;
+//    //get pitch
+////    lower = (ax*ax) + (az*az);
+////    inner = ay/(sqrt(lower));
+////    pitch = atan(inner);
+////    pitch = (pitch/(2*3.14159))*360;
+//    
+//    //get roll
+////    lower = (ay*ay) + (az*az);
+////    inner = ax/(sqrt(lower));
+////    pitch = atan(inner);
+////    pitch = (pitch/(2*3.14159))*360;
+//    if(ay < 0) ay = 0-ay;
+//    slope = num_asin((float)ay/grav_full,8);
+//   // slope = (slope/(2*3.14159))*360;
+//    slope = (slope*180)/3.14159;
+//    if(slope<0)slope = 0-slope;
+//    return (uint8_t)slope;
+//    
+//    
+//}
 
 uint32_t ble_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level)
 {
