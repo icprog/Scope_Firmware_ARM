@@ -14,6 +14,7 @@
 #include "spi_utils.h"
 #include "pca10028.h"
 
+uint16_t battery_timeout_counter;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 extern LSM303_DATA accel_data;
 extern L3GD_DATA gyro_data;
@@ -49,7 +50,7 @@ void timers_init(void)
 	err_code = app_timer_create(&m_status_timer_id,
                                 APP_TIMER_MODE_REPEATED,
                                 status_timeout_handler);
-	
+	battery_timeout_counter = 0;
     APP_ERROR_CHECK(err_code);
 }
 
@@ -128,13 +129,14 @@ void disable_imu(void)
     appData.imu_enabled = false;
 }
 
-//This actually handles slope:
+//set to 2000 ticks:
 void battery_timeout_handler(void *p_context)
 {
-//    uint8_t slope_local;
-//    slope_local = slope_calc(imu_data.ax,imu_data.ay,imu_data.az);
-    //ble_slope_level_update(&m_slope, slope_local);
-    //ble_bas_battery_level_update(&m_bas, 77);
+    if(battery_timeout_counter > 10) // should be ~100 for final version?
+    {
+        //sleep to save battery
+    }
+    battery_timeout_counter++;
 }
 
 void slope_timeout_handler(void *p_context)

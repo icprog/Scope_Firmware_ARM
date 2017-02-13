@@ -115,6 +115,7 @@ extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
 extern volatile bool debug_file_received;
 extern uint8_t  debug_file[264];
+extern uint16_t battery_timeout_counter; // counter for sleep timout to svae batteries
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -457,6 +458,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t err_code;
     //SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
+    battery_timeout_counter = 0;
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
