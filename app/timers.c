@@ -15,6 +15,7 @@
 #include "pca10028.h"
 
 uint16_t battery_timeout_counter;
+uint8_t sleep_flag = 0;
 static const nrf_drv_spis_t spis = NRF_DRV_SPIS_INSTANCE(SPIS_INSTANCE);/**< SPIS instance. */
 extern LSM303_DATA accel_data;
 extern L3GD_DATA gyro_data;
@@ -26,6 +27,10 @@ extern ble_ps_t m_ps;
 extern uint8_t sending_data_to_phone;
 extern uint16_t spis_rx_transfer_length;
 extern uint8_t status_disable_flag;
+
+volatile int16_t ay_old;
+volatile int16_t ax_old;
+volatile int16_t az_old;
 
 /**@brief Function for the Timer initialization.
  * @details Initializes the timer module. This creates and starts application timers.
@@ -93,8 +98,8 @@ void application_timers_stop(void)
     APP_ERROR_CHECK(err_code);
     
 
-    err_code = app_timer_stop(m_acc_timer_id);
-    APP_ERROR_CHECK(err_code);
+//    err_code = app_timer_stop(m_acc_timer_id);
+//    APP_ERROR_CHECK(err_code);
 }
 
 /********** app timer handlers  ***********/
@@ -132,11 +137,28 @@ void disable_imu(void)
 //set to 2000 ticks:
 void battery_timeout_handler(void *p_context)
 {
-    if(battery_timeout_counter > 10) // should be ~100 for final version?
+    uint8_t motion_threshold = 100;
+    SEGGER_RTT_printf(0, "\nsleep timeout counter: %d\n",battery_timeout_counter);
+    if(battery_timeout_counter >3) // should be ~20 or 30 for final version?
     {
         //sleep to save battery
+        sleep_flag = 1;
     }
-    battery_timeout_counter++;
+    //check imu:
+    if(ax_old-imu_data.ax < motion_threshold && ax_old-imu_data.ax > -motion_threshold
+        && ay_old-imu_data.ay < motion_threshold && ay_old-imu_data.ay > -motion_threshold 
+    && az_old-imu_data.az < motion_threshold && az_old-imu_data.az > -motion_threshold)
+    {
+        battery_timeout_counter++;
+    }
+    else
+    {
+        battery_timeout_counter = 0;
+        sleep_flag = 0;
+    }
+    ax_old = imu_data.ax;
+    ay_old = imu_data.ay;
+    az_old = imu_data.az;
 }
 
 void slope_timeout_handler(void *p_context)
