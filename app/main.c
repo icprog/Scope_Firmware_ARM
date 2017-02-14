@@ -114,7 +114,16 @@ extern uint8_t dummy_buf[32];
 extern uint8_t sending_data_to_phone;
 extern volatile bool device_info_received;
 extern volatile bool debug_file_received;
-extern uint8_t  debug_file[264];
+extern uint8_t debug_file[264];
+extern uint16_t battery_timeout_counter; // counter for sleep timout to svae batteries
+extern uint8_t sleep_flag;
+extern imu_data_t imu_data;
+
+//for waking from sleep:
+extern volatile int16_t ay_old;
+extern volatile int16_t ax_old;
+extern volatile int16_t az_old;
+
 
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
@@ -379,13 +388,57 @@ static void conn_params_init(void)
  */
 static void sleep_mode_enter(void)
 {
-//    uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-//    APP_ERROR_CHECK(err_code);
+    uint8_t i;
+    int16_t motion_threshold = 200;
+    uint8_t motion_counter = 0;
+    nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
+    nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
+    sleep_flag = 0;
+    application_timers_stop();
+    sd_ble_gap_adv_stop();
+    
 
-    // Go to system-off mode (this function will not return; wakeup will cause a reset).
-   // err_code = sd_power_system_off();
-    //APP_ERROR_CHECK(err_code);
-    sd_power_system_off();
+
+    
+    
+    ax_old = imu_data.ax;
+    ay_old = imu_data.ay;
+    az_old = imu_data.az;
+    //NRF_POWER->TASKS_LOWPWR = 1;
+    sleep_L3GD();
+    while(1)//sleep_flag)
+    {
+        if(ax_old-imu_data.ax > motion_threshold || ax_old-imu_data.ax < -motion_threshold
+        || ay_old-imu_data.ay > motion_threshold || ay_old-imu_data.ay < -motion_threshold 
+        || az_old-imu_data.az > motion_threshold || az_old-imu_data.az < -motion_threshold)
+        {
+            motion_counter++;
+        }
+        else
+        {
+            motion_counter = 0;
+        }
+        if(motion_counter >= 3)
+        {
+            sleep_flag = 0;
+            battery_timeout_counter = 0;
+            nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); 
+            //NRF_POWER->TASKS_LOWPWR = 0;
+            
+            sd_nvic_SystemReset();
+            break;
+        }
+        //uint32_t err_code = sd_app_evt_wait();
+        battery_timeout_counter = 0;
+        //APP_ERROR_CHECK(err_code);
+        ax_old = imu_data.ax;
+        ay_old = imu_data.ay;
+        az_old = imu_data.az;
+        //sd_app_evt_wait();
+        nrf_delay_ms(100);
+
+    }
+
 }
 
 
@@ -457,6 +510,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t err_code;
     //SEGGER_RTT_WriteString(0, "BLE evt (no write fxn) \n");
+    battery_timeout_counter = 0;  //reset timout counter (for sleep)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
@@ -709,6 +763,7 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
         NRF_TIMER0->TASKS_STOP = 1;
 
     NRF_POWER->TASKS_LOWPWR = 1;
+    
     while(true)  
     {
 
@@ -886,6 +941,10 @@ int main(void)
                 sleep_LSM303();
                 sleep_L3GD();
                 sd_nvic_SystemReset();
+            }
+            if(sleep_flag) // timeout sleep mode triggered by inactivity
+            {
+                sleep_mode_enter();
             }
 
         }
