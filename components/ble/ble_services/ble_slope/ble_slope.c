@@ -22,6 +22,11 @@
 #include "app_util.h"
 #include "SEGGER_RTT.h"
 
+   /* computes the principal value of the arc sine of x */
+   /* a domain error occurs for arguments not in the range -1 to 1 */
+   /* and -HUGE_VAL is returned. */
+   /* Returns: the arc sine in the range -Pi/2 to Pi/2. */
+
 
 #define INVALID_slope_LEVEL 255
 
@@ -186,44 +191,44 @@ static uint32_t slope_level_char_add(ble_slope_t * p_slope, const ble_slope_init
         return err_code;
     }
 
-    if (p_slope_init->p_report_ref != NULL)
-    {
-        // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
+//    if (p_slope_init->p_report_ref != NULL)
+//    {
+//        // Add Report Reference descriptor
+//        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
 
-        memset(&attr_md, 0, sizeof(attr_md));
+//        memset(&attr_md, 0, sizeof(attr_md));
 
-        attr_md.read_perm = p_slope_init->slope_level_report_read_perm;
-        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
+//        attr_md.read_perm = p_slope_init->slope_level_report_read_perm;
+//        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
 
-        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
-        attr_md.rd_auth = 0;
-        attr_md.wr_auth = 0;
-        attr_md.vlen    = 0;
-        
-        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_slope_init->p_report_ref);
-        
-        memset(&attr_char_value, 0, sizeof(attr_char_value));
+//        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
+//        attr_md.rd_auth = 0;
+//        attr_md.wr_auth = 0;
+//        attr_md.vlen    = 0;
+//        
+//        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_slope_init->p_report_ref);
+//        
+//        memset(&attr_char_value, 0, sizeof(attr_char_value));
 
-        attr_char_value.p_uuid    = &ble_uuid;
-        attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
-        attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
-        attr_char_value.p_value   = encoded_report_ref;
+//        attr_char_value.p_uuid    = &ble_uuid;
+//        attr_char_value.p_attr_md = &attr_md;
+//        attr_char_value.init_len  = init_len;
+//        attr_char_value.init_offs = 0;
+//        attr_char_value.max_len   = attr_char_value.init_len;
+//        attr_char_value.p_value   = encoded_report_ref;
 
-        err_code = sd_ble_gatts_descriptor_add(p_slope->slope_level_handles.value_handle,
-                                               &attr_char_value,
-                                               &p_slope->report_ref_handle);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-    }
-    else
-    {
-        p_slope->report_ref_handle = BLE_GATT_HANDLE_INVALID;
-    }
+//        err_code = sd_ble_gatts_descriptor_add(p_slope->slope_level_handles.value_handle,
+//                                               &attr_char_value,
+//                                               &p_slope->report_ref_handle);
+//        if (err_code != NRF_SUCCESS)
+//        {
+//            return err_code;
+//        }
+//    }
+//    else
+//    {
+//        p_slope->report_ref_handle = BLE_GATT_HANDLE_INVALID;
+//    }
 
     return NRF_SUCCESS;
 }
@@ -272,7 +277,80 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
     // Add slope level characteristic
     return slope_level_char_add(p_slope, p_slope_init);
 }
+//float ava_exp(float base, uint32_t ex)
+//{
+//    uint32_t ii;
+//    float output = base;
+//    if(ex == 0)
+//    {
+//        output = 1;
+//    }
+//    else if(ex == 1)
+//    {
+//        output = base;
+//    }    
+//    else
+//    {
+//        for(ii=2;ii<=ex;ii++)
+//        {
+//            output = output * base;
+//        }
+//    }
+//    return output;
+//}
 
+//float factorial(uint32_t n)
+//{
+//  int c;
+//  float result = 1;
+// 
+//  for (c = 1; c <= n; c++)
+//    result = result * c;
+// 
+//  return result;
+//}
+//float num_asin(float x,int iterations)
+//{
+//    float out = 0;
+//    uint16_t n = 0;
+//    for(n=0;n<iterations;n++)
+//    {
+//        out = out + ((factorial(2*n))/((ava_exp(2,(2*n)))*(factorial(n))*factorial(n))*((ava_exp(x,(2*n+1)))/(2*n+1)));
+//    }
+//    
+//    return out;
+//}
+
+//// calculate slope:
+
+//uint8_t slope_calc(int16_t ax,int16_t ay,int16_t az)
+//{
+//    float slope = 0;
+//    float inner = 0;
+//    float lower = 0;
+//    float roll = 0;
+//    float pitch = 0;
+//    float grav_full = 1310;
+//    //get pitch
+////    lower = (ax*ax) + (az*az);
+////    inner = ay/(sqrt(lower));
+////    pitch = atan(inner);
+////    pitch = (pitch/(2*3.14159))*360;
+//    
+//    //get roll
+////    lower = (ay*ay) + (az*az);
+////    inner = ax/(sqrt(lower));
+////    pitch = atan(inner);
+////    pitch = (pitch/(2*3.14159))*360;
+//    if(ay < 0) ay = 0-ay;
+//    slope = num_asin((float)ay/grav_full,8);
+//   // slope = (slope/(2*3.14159))*360;
+//    slope = (slope*180)/3.14159;
+//    if(slope<0)slope = 0-slope;
+//    return (uint8_t)slope;
+//    
+//    
+//}
 
 uint32_t ble_slope_level_update(ble_slope_t * p_slope, uint8_t slope_level)
 {

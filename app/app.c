@@ -186,7 +186,12 @@ void APP_Tasks(void)
 {   
 	uint16_t kk;
     static uint8_t packet_counter;
-	//SEGGER_RTT_printf(0, "state = %d \n", appData.state);
+//    static APP_STATES prev_state;
+//    if(prev_state != appData.state)
+//    {
+//        SEGGER_RTT_printf(0, "state=%d\n", appData.state);
+//    }
+//    prev_state = appData.state;
     switch (appData.state)
     {
         /* Application's initial state. */
@@ -280,7 +285,6 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "Initiating Firmware Update Procedure\n");
             disable_imu();
             nrf_delay_ms(100);
-            fwu_start_pack.data = (uint8_t *)(&fw_size);
             send_data_to_PIC(fwu_start_pack);
             appData.ack = 0;      
             appData.state = APP_STATE_POLLING;
@@ -375,10 +379,14 @@ void APP_Tasks(void)
                     appData.ack_retry = 0;
                     retry_counter++;
                 }
-                if(retry_counter>8)break;
+                if(retry_counter>8)
+                {
+                    appData.state = APP_STATE_POLLING;  //consider retrying instead?
+                    break;
+                }
                 
             }
-            appData.state = APP_STATE_POLLING;
+            appData.state = APP_STATE_POLLING;  //consider retrying instead?
             status_disable_flag = 0;
             SEGGER_RTT_printf(0, "sent it\n");
             break;
@@ -556,7 +564,8 @@ void APP_Tasks(void)
         }
         case APP_STATE_RAW_DATA_RECEIVE:
         {
-            SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE");
+            //SEGGER_RTT_printf(0, "----\n");
+            
             uint8_t bytes_sent;
             sending_data_to_phone = 1;
             static int raw_data_counts = 0;
@@ -567,7 +576,12 @@ void APP_Tasks(void)
             bool buffer_done_flag = false;
             bool raw_data_done_flag = false;
             
-            SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
+            if(raw_data_counts == 0)
+            {
+                SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE\n");
+            }
+            
+            //SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
             while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
             {      
                 if(BYTES_RAW_TEST_DATA - raw_data_counts < 20)
@@ -582,7 +596,7 @@ void APP_Tasks(void)
                 }
                 err_code = raw_data_update(&m_ps, (uint8_t *)(&raw_data_buff)+buffer_data_counts, ble_packet_length, &bytes_sent);  //notify phone with raw data
                 
-								buffer_data_counts += bytes_sent;
+				buffer_data_counts += bytes_sent;
                 raw_data_counts += bytes_sent;
                 if(buffer_data_counts >= RAW_DATA_BUFFER_SIZE)
                 {
@@ -592,7 +606,7 @@ void APP_Tasks(void)
                     send_data_to_PIC(raw_data_ack_pack);
                     appData.state = APP_STATE_POLLING;
                     buffer_data_counts = 0;
-                    SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
+                    //SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
                     //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                 }
@@ -611,7 +625,7 @@ void APP_Tasks(void)
                 }
                 if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
                 {
-                    SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
+                    //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
                 }
                 counter++;

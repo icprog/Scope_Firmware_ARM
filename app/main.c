@@ -484,7 +484,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
             APP_ERROR_CHECK(err_code);
             SEGGER_RTT_printf(0, "disconnected!\n");
-        
+                
             break;
 		case BLE_EVT_TX_COMPLETE:
             if(sending_data_to_phone) 
@@ -792,6 +792,7 @@ void init_device_info(void)
     {
         APP_Tasks();
     }
+  
     nrf_delay_ms(100);
     disable_imu();
     nrf_delay_ms(100);

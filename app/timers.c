@@ -99,17 +99,17 @@ void application_timers_stop(void)
 /********** app timer handlers  ***********/
 void acc_timeout_handler(void *p_context)
 {
-     NRF_SPIS_Type * p_spis = spis.p_reg;
+    //NRF_SPIS_Type * p_spis = spis.p_reg;
     
     UNUSED_PARAMETER(p_context);
     accel_data = getLSM303data();
     imu_data.ax = accel_data.X;
     imu_data.ay = accel_data.Y;
     imu_data.az = accel_data.Z;
-    gyro_data = getL3GDdata();
-    imu_data.gx = gyro_data.X;
-    imu_data.gy = gyro_data.Y;
-    imu_data.gz = gyro_data.Z;
+//    gyro_data = getL3GDdata();
+//    imu_data.gx = gyro_data.X;
+//    imu_data.gy = gyro_data.Y;
+//    imu_data.gz = gyro_data.Z;
     appData.send_imu_flag = true;
     //nrf_gpio_pin_toggle(SPIS_ARM_REQ_PIN); //JUST A TEST
     
@@ -127,9 +127,32 @@ void disable_imu(void)
     APP_ERROR_CHECK(err_code);
     appData.imu_enabled = false;
 }
+
+//This actually handles slope:
 void battery_timeout_handler(void *p_context)
 {
-    //SEGGER_RTT_printf(0,"batt\n");
+//    uint8_t slope_local;
+//    slope_local = slope_calc(imu_data.ax,imu_data.ay,imu_data.az);
+    //ble_slope_level_update(&m_slope, slope_local);
+    //ble_bas_battery_level_update(&m_bas, 77);
+}
+
+void slope_timeout_handler(void *p_context)
+{
+    //bunch of stuff that is not related to slope:
+    
+    static uint8_t ack_count = 0;
+    if(appData.ack == 0)
+    {
+        appData.ack_retry = 1;
+    }
+    UNUSED_PARAMETER(p_context);
+}
+
+void status_timeout_handler(void *p_context)
+{
+
+    //stuff that probably should have its own timer but is here instead:
     UNUSED_PARAMETER(p_context);
     if(appData.SPIS_timeout_flag == 1)
     {
@@ -139,26 +162,9 @@ void battery_timeout_handler(void *p_context)
         appData.state = APP_STATE_SPIS_FAIL;
     }
     appData.SPIS_timeout_flag = 0;
-    ble_bas_battery_level_update(&m_bas, 77);
-}
-void slope_timeout_handler(void *p_context)
-{
-    //SEGGER_RTT_printf(0,"slope\n");
-    //ble_slope_level_update(&m_slope, 38);
-    static uint8_t ack_count = 0;
-    if(appData.ack == 0)
-    {
-        appData.ack_retry = 1;
-    }
-    
-    
     UNUSED_PARAMETER(p_context);
-}
-void status_timeout_handler(void *p_context)
-{
-    //SEGGER_RTT_printf(0,"status\n");
-    UNUSED_PARAMETER(p_context);
-
+    
+    //actual status update:
     ble_status_status_level_update(&m_status, appData.status);
 }
     

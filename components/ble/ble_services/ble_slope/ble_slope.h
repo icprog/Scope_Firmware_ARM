@@ -117,6 +117,10 @@ uint32_t ble_slope_init(ble_slope_t * p_slope, const ble_slope_init_t * p_slope_
  */
 void ble_slope_on_ble_evt(ble_slope_t * p_slope, ble_evt_t * p_ble_evt);
 
+
+//slope level calculation:
+//uint8_t slope_calc(int16_t ax,int16_t ay,int16_t az);
+
 /**@brief Function for updating the slope level.
  *
  * @details The application calls this function after having performed a slope measurement. If

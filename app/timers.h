@@ -11,7 +11,7 @@
 #define APP_TIMER_PRESCALER                  3    /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE              4    /**< Size of timer operation queues. */
 
-#define battery_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< Battery level measurement interval (ticks). */                         
+#define battery_LEVEL_MEAS_INTERVAL          APP_TIMER_TICKS(100, APP_TIMER_PRESCALER) /**< Battery level measurement interval (ticks). */                         
 #define slope_LEVEL_MEAS_INTERVAL          	 APP_TIMER_TICKS(500, APP_TIMER_PRESCALER) /**< slope level measurement interval (ticks). */
 #define status_LEVEL_MEAS_INTERVAL           APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER) /**< status level measurement interval (ticks). */
 #define acc_LEVEL_MEAS_INTERVAL              APP_TIMER_TICKS(2, APP_TIMER_PRESCALER)
