@@ -45,7 +45,7 @@
 #define CALIBRATION 0
 
 
-#define FW_VERSION "0.03.01"
+#define FW_VERSION "0.04.00"
 
 
 
