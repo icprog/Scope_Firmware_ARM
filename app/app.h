@@ -148,7 +148,7 @@ typedef struct  data_header
     /********** Device Specific  *************/
     uint8_t     accel_FS; //full scale of accelerometer
     uint16_t    gyro_FS; 
-    uint16_t    force_cal[5]; //in ADC counts
+    uint16_t    force_cal[6]; //in ADC counts
 
     uint16_t    optical_cal;
 
