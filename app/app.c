@@ -238,7 +238,7 @@ void APP_Tasks(void)
         case APP_STATE_BATTERY_VOLTAGE:
         {
             uint8_t battery_good_flag = 0;
-            if(battery_voltage > 4500)
+            if(battery_voltage > 4290)
             {
                 battery_good_flag = 1;
             }
