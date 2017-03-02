@@ -148,11 +148,12 @@ static uint32_t battery_level_char_add(ble_bas_t * p_bas, const ble_bas_init_t *
     memset(&char_md, 0, sizeof(char_md));
 
     char_md.char_props.read   = 1;
-    char_md.char_props.notify = (p_bas->is_notification_supported) ? 1 : 0;
+    char_md.char_props.notify   = 1;
+    //char_md.char_props.notify = (p_bas->is_notification_supported) ? 1 : 0;
     char_md.p_char_user_desc  = NULL;
     char_md.p_char_pf         = NULL;
     char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = (p_bas->is_notification_supported) ? &cccd_md : NULL;
+    char_md.p_cccd_md         = &cccd_md;//(p_bas->is_notification_supported) ? &cccd_md : NULL;
     char_md.p_sccd_md         = NULL;
 
     BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_BATTERY_LEVEL_CHAR);
