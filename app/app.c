@@ -248,6 +248,7 @@ void APP_Tasks(void)
             }
             //take battery voltage, compare to threshold, send result to phone via bas service
             ble_bas_battery_level_update(&m_bas, battery_good_flag);
+            appData.state = APP_STATE_POLLING;
             break;
         }
         case APP_STATE_DEBUG_FILE:
