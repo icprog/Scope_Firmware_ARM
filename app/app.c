@@ -79,6 +79,7 @@
 #include "timers.h"
 #include "fwu_service.h"
 #include "debug.h"
+#include "ble_bas.h"
 
 #define DEBUG_FILE_SIZE 264   //flash page size
 // *****************************************************************************
@@ -98,6 +99,7 @@ extern cal_hall_effect_t	    m_hall_effect;
 extern ble_ps_t                 m_ps;
 extern ble_fwu_t                m_fwu;
 extern ble_dbs_t			    m_ds;
+extern ble_bas_t                m_bas;
 extern uint8_t                  sending_data_to_phone;
 extern volatile bool            device_info_received;
 extern volatile bool            debug_file_received;
@@ -111,6 +113,7 @@ uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer fo
 uint32_t                        fw_size = 70000;
 uint8_t                         debug_file[DEBUG_FILE_SIZE];
 uint8_t                         status_disable_flag = 0;
+uint16_t                        battery_voltage;
 // *****************************************************************************
 /* Application Data
 
@@ -230,6 +233,21 @@ void APP_Tasks(void)
             SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.PIC_firmware_version);
             SEGGER_RTT_printf(0, "\n NUMBER_OF_TESTS: %d\n",device_info.number_of_tests);
             SEGGER_RTT_printf(0, "\n SERIAL_NUMBER: %s\n",device_info.serial_number);
+            break;
+        }
+        case APP_STATE_BATTERY_VOLTAGE:
+        {
+            uint8_t battery_good_flag = 0;
+            if(battery_voltage > 4500)
+            {
+                battery_good_flag = 1;
+            }
+            else
+            {
+                battery_good_flag = 0;
+            }
+            //take battery voltage, compare to threshold, send result to phone via bas service
+            ble_bas_battery_level_update(&m_bas, battery_good_flag);
             break;
         }
         case APP_STATE_DEBUG_FILE:
