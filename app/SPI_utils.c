@@ -59,7 +59,7 @@ uint8_t sending_data_to_phone = 0;
 volatile bool device_info_received = false;
 volatile bool debug_file_received = false;
 extern uint8_t pcb_test_results[NUM_ARM_PCB_TESTS];
-
+extern uint16_t battery_voltage;
 /********  global variable for building a tx packet for PIC   **********/
 volatile bool raw_data_transfer_in_progress = false;
 uint16_t spis_rx_transfer_length = 0;
@@ -315,6 +315,12 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_FWU_DONE:
             {
                 next_state = APP_STATE_FWU_DONE;
+                break;
+            }
+            case PA_BATTERY_VOLTAGE:
+            {
+                rx_data_ptr = &battery_voltage;
+                next_state = APP_STATE_BATTERY_VOLTAGE;
                 break;
             }
             default:

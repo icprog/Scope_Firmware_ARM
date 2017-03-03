@@ -45,7 +45,7 @@
 #define CALIBRATION 0
 
 
-#define FW_VERSION "0.04.00"
+#define FW_VERSION "0.04.01"
 
 
 
@@ -108,7 +108,7 @@ typedef enum
     APP_STATE_START_OPTICAL_CAL,
     APP_STATE_SET_PIC_CAL,
     APP_STATE_START_VIB_CAL,
-    
+    APP_STATE_BATTERY_VOLTAGE,
 } APP_STATES;
 
 

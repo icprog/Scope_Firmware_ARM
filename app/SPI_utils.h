@@ -90,6 +90,7 @@ typedef enum
     PA_FWU_ERROR,
     PA_FWU_DONE,
     PA_DEBUG_FILE,
+    PA_BATTERY_VOLTAGE,
      /******************  calibration codes  ****************/
     PA_CAL_START, //dummy code used to mark where cal codes start
             
