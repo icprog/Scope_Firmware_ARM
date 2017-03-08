@@ -114,6 +114,7 @@ uint32_t                        fw_size = 70000;
 uint8_t                         debug_file[DEBUG_FILE_SIZE];
 uint8_t                         status_disable_flag = 0;
 uint16_t                        battery_voltage;
+uint8_t                         battery_good_flag = 1;
 // *****************************************************************************
 /* Application Data
 
@@ -237,15 +238,12 @@ void APP_Tasks(void)
         }
         case APP_STATE_BATTERY_VOLTAGE:
         {
-            uint8_t battery_good_flag = 0;
-            if(battery_voltage > 4290)
-            {
-                battery_good_flag = 1;
-            }
-            else
+           // uint8_t battery_good_flag = 0;
+            if(battery_voltage < 4210)
             {
                 battery_good_flag = 0;
             }
+            
             //take battery voltage, compare to threshold, send result to phone via bas service
             ble_bas_battery_level_update(&m_bas, battery_good_flag);
             appData.state = APP_STATE_POLLING;
