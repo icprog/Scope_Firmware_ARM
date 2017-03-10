@@ -550,7 +550,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 
         memset(&hvx_params, 0, sizeof(hvx_params));
 
-        hvx_params.handle = p_ps->raw_data_char_handles.value_handle; //TODO: change to raw  data char when we are using it
+        hvx_params.handle = p_ps->raw_data_char_handles.value_handle; 
         hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
         hvx_params.offset = gatts_value.offset;
         hvx_params.p_len  = &gatts_value.len;
@@ -566,7 +566,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         else
         {
             *bytes_sent = 0;
-            SEGGER_RTT_printf(0, "error %d in raw data update\n", err_code);
+            //SEGGER_RTT_printf(0, "error %d in raw data update\n", err_code);
         }
 	}
     else
@@ -574,7 +574,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         SEGGER_RTT_printf(0, "\n invalid conn handle \n");	
         err_code = NRF_ERROR_INVALID_STATE;
     }
-		return err_code;
+	return err_code;
 }
 
 void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)

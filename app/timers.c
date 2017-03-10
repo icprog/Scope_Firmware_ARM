@@ -135,6 +135,9 @@ void battery_timeout_handler(void *p_context)
 //    slope_local = slope_calc(imu_data.ax,imu_data.ay,imu_data.az);
     //ble_slope_level_update(&m_slope, slope_local);
     //ble_bas_battery_level_update(&m_bas, 77);
+    
+    //actual status update:
+    ble_status_status_level_update(&m_status, appData.status);
 }
 
 void slope_timeout_handler(void *p_context)
@@ -164,8 +167,6 @@ void status_timeout_handler(void *p_context)
     appData.SPIS_timeout_flag = 0;
     UNUSED_PARAMETER(p_context);
     
-    //actual status update:
-    ble_status_status_level_update(&m_status, appData.status);
 }
     
 void start_ARM_RDY_timer(void)

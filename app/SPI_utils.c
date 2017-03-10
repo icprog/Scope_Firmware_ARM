@@ -135,6 +135,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         }
         else if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_CPU)
         {
+            SEGGER_RTT_printf(0, "ERROR in send_data_to_PIC: sem stat is taken by CPU\n");
             return 1;
         }
         else
@@ -149,6 +150,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
     else
     {
         return 1;//ERROR
+        SEGGER_RTT_printf(0, "ERROR in send_data_to_PIC: spis_tx_transfer_length != 0\n");
     }
     return 0;
 }
@@ -272,7 +274,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             }
             case PA_RAW_DATA:
             {
-                SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
+                //SEGGER_RTT_printf(0, "PA_RAW_DATA\n");
                 next_state = APP_STATE_RAW_DATA_RECEIVE;
                 rx_data_ptr = &raw_data_buff;
                 break;
@@ -342,7 +344,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         if(spis_rx_transfer_length == 0) //finished transferring
         {
             nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
-            SEGGER_RTT_printf(0, "finished transferring, cur state %d, next state %d\n", appData.state, next_state);
+            //SEGGER_RTT_printf(0, "finished transferring, cur state %d, next state %d\n", appData.state, next_state);
             appData.transfer_in_progress = false;
             appData.state = next_state;
         }
