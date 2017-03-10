@@ -198,7 +198,7 @@ void TIMER2_IRQHandler(void)
         {
             if(appData.ack == 0)
             {
-                SEGGER_RTT_printf(0, "clearing = %d     ", nrf_spis_semaphore_status_get(p_spis));
+                //SEGGER_RTT_printf(0, "clearing = %d     ", nrf_spis_semaphore_status_get(p_spis));
             }
             nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);       
 		}

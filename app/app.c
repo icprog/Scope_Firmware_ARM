@@ -405,10 +405,7 @@ void APP_Tasks(void)
 				appData.prev_state = APP_STATE_POLLING;
             }
                 
-            
             uint8_t bytes_sent = 0;
-            //static int data_counts = 0;
-            uint8_t counter = 0;
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
@@ -472,17 +469,15 @@ void APP_Tasks(void)
                     appData.data_counts = 0;
 
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || done_flag)
                 {
                     //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }
-                counter++;
             }
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            if((err_code == BLE_ERROR_NO_TX_PACKETS) && !done_flag)
             {
-                counter = 0;
                 appData.prev_state = APP_STATE_PROFILE_TRANSFER;
                 appData.state = APP_STATE_POLLING;
                 break;
@@ -506,7 +501,6 @@ void APP_Tasks(void)
             }
             
             uint8_t bytes_sent = 0;
-            uint8_t counter = 0;
             uint32_t err_code;
             uint8_t done_flag = 0;
             sending_data_to_phone = 1;
@@ -544,18 +538,16 @@ void APP_Tasks(void)
                     appData.data_counts = 0;
 
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || done_flag)
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || done_flag)
                 {
                     //SEGGER_RTT_printf(0, "data_counts = %d\n", data_counts);
                     break;
                     
                 }
-                counter++;
             }		
 
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !done_flag)
+            if((err_code == BLE_ERROR_NO_TX_PACKETS) && !done_flag)
             {
-                counter = 0;
                 appData.prev_state = APP_STATE_RAW_SUB_DATA_RECEIVE;
                 appData.state = APP_STATE_POLLING;
                 break;
@@ -570,7 +562,6 @@ void APP_Tasks(void)
             sending_data_to_phone = 1;
             static int raw_data_counts = 0;
             static int buffer_data_counts = 0;
-            uint8_t counter = 0;
             uint32_t err_code;
             uint8_t ble_packet_length;
             bool buffer_done_flag = false;
@@ -623,16 +614,14 @@ void APP_Tasks(void)
                     nrf_delay_ms(5);
                     send_data_to_PIC(arm_done_pack);
                 }
-                if(err_code == BLE_ERROR_NO_TX_PACKETS || counter == 3 || buffer_done_flag) //limit sending to 4 packet per connection interval
+                if(err_code == BLE_ERROR_NO_TX_PACKETS || buffer_done_flag) //limit sending to 4 packet per connection interval
                 {
                     //SEGGER_RTT_printf(0, "buffer_data_counts = %d\n", buffer_data_counts);
                     break;
                 }
-                counter++;
             }
-            if((err_code == BLE_ERROR_NO_TX_PACKETS  || counter == 3) && !buffer_done_flag)
+            if((err_code == BLE_ERROR_NO_TX_PACKETS) && !buffer_done_flag)
             {
-                counter = 0;
                 appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
                 appData.state = APP_STATE_POLLING;
                 break; //TODO (JT): might be redudant with next break
