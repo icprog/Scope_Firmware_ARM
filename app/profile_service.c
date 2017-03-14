@@ -512,6 +512,7 @@ uint32_t profile_data_update(ble_ps_t * p_ps, uint8_t * profile_data, uint8_t si
 uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint8_t * bytes_sent)
 {
     static int count=0;
+    static int packet_count=0;
 	if (p_ps == NULL)
     {
         //return NRF_ERROR_NULL;
@@ -521,6 +522,9 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
+    
+    /*** TESTING REMOVE THIS ***/
+    raw_data[0] = packet_count;
 
     // Initialize value struct.
     memset(&gatts_value, 0, sizeof(gatts_value));
@@ -560,6 +564,7 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
         if (err_code == NRF_SUCCESS)
         {
             count+=gatts_value.len;
+            packet_count++;
             *bytes_sent = gatts_value.len;
             //SEGGER_RTT_printf(0, "data to phone: %d\n", count);
         }

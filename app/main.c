@@ -467,7 +467,13 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             app_beacon_start();
             SEGGER_RTT_printf(0, "connected!\n");
-            //update_debug_file();//add flag to only run once
+            /*** if reconnection within time limit resume BLE transfer ***/
+            if(appData.BLE_timeout_flag == true)
+            {
+                SEGGER_RTT_printf(0, "ble timeout flag is true!\n");
+                appData.state = appData.prev_state; 
+                appData.BLE_timeout_flag = false;
+            }
             break;
         }
 
@@ -476,6 +482,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 			appData.ble_disconnect_flag = true;
             err_code = bsp_indication_set(BSP_INDICATE_IDLE);
             APP_ERROR_CHECK(err_code);
+            if(appData.prev_state == APP_STATE_RAW_DATA_RECEIVE)
+            {
+                appData.BLE_timeout_flag = true;
+            }
             sending_data_to_phone = 0;
             app_beacon_stop();
         

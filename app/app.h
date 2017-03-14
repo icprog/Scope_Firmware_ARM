@@ -224,6 +224,7 @@ typedef struct
     bool imu_enabled;
     uint16_t data_counts;
     bool SPIS_timeout_flag;
+    bool BLE_timeout_flag;
     bool transfer_in_progress;
     volatile uint8_t ack;
     volatile uint8_t ack_retry;

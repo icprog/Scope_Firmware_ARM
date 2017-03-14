@@ -62,7 +62,6 @@ void application_timers_start(void)
     // Start application timers.
     err_code = app_timer_start(m_battery_timer_id, battery_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-    
 	
 	err_code = app_timer_start(m_slope_timer_id, slope_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
@@ -154,17 +153,40 @@ void slope_timeout_handler(void *p_context)
 
 void status_timeout_handler(void *p_context)
 {
-
+    static uint8_t ble_timeout_check = 0;
     //stuff that probably should have its own timer but is here instead:
     UNUSED_PARAMETER(p_context);
-    if(appData.SPIS_timeout_flag == 1)
+//    if(appData.SPIS_timeout_flag == 1)
+//    {
+//        SEGGER_RTT_printf(0, "SPIS transfer timed out :(\n");
+//        appData.transfer_in_progress = false;
+//        spis_rx_transfer_length = 0;
+//        appData.state = APP_STATE_SPIS_FAIL;
+//    }
+//    appData.SPIS_timeout_flag = 0;
+    
+    if(appData.BLE_timeout_flag == true)
     {
-        SEGGER_RTT_printf(0, "transfer timed out :(\n");
-        appData.transfer_in_progress = false;
-        spis_rx_transfer_length = 0;
-        appData.state = APP_STATE_SPIS_FAIL;
+        if(ble_timeout_check == 5)
+        {
+            SEGGER_RTT_printf(0, "BLE transfer timed out :(\n");
+            appData.transfer_in_progress = false;
+            appData.state = APP_STATE_SPIS_FAIL;
+            ble_timeout_check = 0;
+            appData.BLE_timeout_flag = false;
+        }
+        else
+        {
+            SEGGER_RTT_printf(0, "BLE transfer almost timed out\n");
+            ble_timeout_check++;
+        }
     }
-    appData.SPIS_timeout_flag = 0;
+    else
+    {
+        ble_timeout_check = 0;
+    }
+        
+    
     UNUSED_PARAMETER(p_context);
     
 }

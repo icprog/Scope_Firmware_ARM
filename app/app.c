@@ -563,6 +563,7 @@ void APP_Tasks(void)
             static int raw_data_counts = 0;
             static int buffer_data_counts = 0;
             uint32_t err_code;
+            uint8_t SPIS_error_code;
             uint8_t ble_packet_length;
             bool buffer_done_flag = false;
             bool raw_data_done_flag = false;
@@ -571,7 +572,15 @@ void APP_Tasks(void)
             {
                 SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE\n");
             }
-            
+            //if we get disconnected, resend from the beginign of the current buffer
+            if(appData.ble_disconnect_flag == true && raw_data_counts > 0)
+            {
+                appData.ble_disconnect_flag = false;
+                nrf_delay_ms(100);
+                raw_data_counts  = raw_data_counts - buffer_data_counts;
+                buffer_data_counts = 0;
+                
+            }
             //SEGGER_RTT_printf(0, "raw_data_counts = %d\n", buffer_data_counts);
             while(buffer_data_counts<=RAW_DATA_BUFFER_SIZE)
             {      
@@ -595,7 +604,11 @@ void APP_Tasks(void)
                         buffer_done_flag = true;
                         appData.prev_state = APP_STATE_POLLING;
                         nrf_delay_ms(2);
-                        send_data_to_PIC(raw_data_ack_pack);
+                        SPIS_error_code = send_data_to_PIC(raw_data_ack_pack);
+                        if(SPIS_error_code != 0)
+                        {
+                            SEGGER_RTT_printf(0, "problem sending ack\n");
+                        }
                         appData.state = APP_STATE_POLLING;
                         buffer_data_counts = 0;
                         //SEGGER_RTT_printf(0, "first num of buff = %d\n", ((uint16_t *)(raw_data_buff))[0]);
@@ -607,6 +620,7 @@ void APP_Tasks(void)
                         SEGGER_RTT_printf(0, "raw_data_counts = %d\n", raw_data_counts);
                         raw_data_done_flag = true;
                         buffer_done_flag = true;
+                        appData.prev_state = APP_STATE_POLLING;
                         appData.state = APP_STATE_POLLING;
                         buffer_data_counts = 0;
                         raw_data_counts = 0;
@@ -625,7 +639,8 @@ void APP_Tasks(void)
                 {
                     //device disconnected, wait for fast reconnection, otherwise exit. 
                     SEGGER_RTT_printf(0, "error %d in raw data update\n", err_code);
-                    
+                    appData.prev_state = APP_STATE_RAW_DATA_RECEIVE;
+                    appData.state = APP_STATE_POLLING;
                     break;
                 }
             }
