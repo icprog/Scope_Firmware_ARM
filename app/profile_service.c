@@ -522,9 +522,6 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
     
     uint32_t err_code = NRF_SUCCESS;
     ble_gatts_value_t gatts_value;
-    
-    /*** TESTING REMOVE THIS ***/
-    raw_data[0] = packet_count;
 
     // Initialize value struct.
     memset(&gatts_value, 0, sizeof(gatts_value));

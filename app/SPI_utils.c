@@ -136,6 +136,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         else if(nrf_spis_semaphore_status_get(p_spis) == NRF_SPIS_SEMSTAT_CPU)
         {
             SEGGER_RTT_printf(0, "ERROR in send_data_to_PIC: sem stat is taken by CPU\n");
+            SEGGER_RTT_printf(0, "Failed to send packet %d\n", packet.code);
             return 1;
         }
         else

@@ -570,6 +570,7 @@ void APP_Tasks(void)
             
             if(raw_data_counts == 0)
             {
+                disable_imu(); ///this should be redundant but accel start packs are coming in at random times
                 SEGGER_RTT_printf(0, "APP STATE RAW DATA RECEIVE\n");
             }
             //if we get disconnected, resend from the beginign of the current buffer
