@@ -130,17 +130,86 @@ extern device_info_t device_info;
     
 
 
-/***** meta data struct *****/
-typedef struct  data_header
+
+/*  
+ * codes for meta data attributes. Add new fields by taking the incrementing the 
+ * largest number, excluding the end_of_metadata number. each attribute id is 
+ * specified so it will be backward compatible with previous versions. 
+ * DO NOT CHANGE ANY OF THE CURRENT ASSIGNMENTS
+ * will be cast to uint8 so only upto 255 values here
+ */
+typedef enum
+{
+    /**********  Environmental ************/
+    temperature_m = 0,
+    location_m = 1,
+    time_m = 2,
+
+    /*********** Test Specific  ***********/
+    test_num_m = 3,
+    profile_depth_m = 4,
+    battery_capacity_m = 5,
+    test_time_m = 6,
+    error_code_m = 7,
+            
+    /********** Device Specific  *************/
+    accel_FS_m = 8,
+    gyro_FS_m = 9,
+    force_cal_m = 10,
+    optical_cal_m = 11,
+            
+    /*************  Versions and Revisions ************/
+    serial_number_m = 12,
+    PIC_firmware_version_m = 13,
+    ARM_firmware_version_m = 14,
+    main_pcb_rev_m = 15,
+    nrf_pcb_rev_m = 16,
+    number_of_metadata_ids_m,
+    end_of_metadata_m = 255,
+            
+} metadata_id;
+
+
+typedef enum
+{
+    uint8_ = 0,
+    uint16_ = 1,
+    uint32_ = 2,
+    int8_ = 3,
+    int16_ = 4,
+    int32_ = 5,
+    float_ = 6,
+    double_ = 7,
+    bool_ = 8,
+    char_ = 9,
+    void_ = 10,
+} metadata_type;
+
+/*
+ * structure to label metadata attributes. to be intrpreted by the phone or 
+ * by raw data parser. Allows for flexible metadata stuctures and backward 
+ * compatible changes. This header will go in front of a chunk of size bytes
+ */
+typedef struct metadata_header
+{
+    metadata_id attribute_id;
+    metadata_type data_type_id;
+    uint8_t size; //number of bytes.
+            
+} metadata_header_t;
+
+
+typedef struct  metadata
 {
     /**********  Environmental ************/
     int8_t      temperature; // in degrees C
     //Date and Time
+    uint32_t    time;
     float       location[2];//Location
     
     /*********** Test Specific  ***********/
     uint16_t    test_num; //test number (device specific)
-    uint16_t    profile_depth;
+    uint16_t    profile_depth; //in mm
     uint8_t     battery_capacity;
     float       test_time; //seconds
     uint8_t     error_code;
@@ -149,28 +218,29 @@ typedef struct  data_header
     uint8_t     accel_FS; //full scale of accelerometer
     uint16_t    gyro_FS; 
     uint16_t    force_cal[5]; //in ADC counts
-
     uint16_t    optical_cal;
-
     
     /*************  User Settings ************/
     
     /*************  Versions and Revisions ************/
-    char        serial_number[8]; // device serial #
+    char        serial_number[8]; // device serial #, was 8
     char        PIC_firmware_version[8]; //ex. 1.0.3
     char        ARM_firmware_version[8];
-    uint8_t     main_PCB_rev; //ex. 3
-    uint8_t     NRF_PCB_rev;
-   
+    uint8_t     main_pcb_rev; //ex. 3
+    uint8_t     nrf_pcb_rev;
+    
     //add the rest here...
-} data_header_t;
+} metadata_t;
+
 #define BYTES_OF_METADATA sizeof(data_header_t)
-extern data_header_t metadata;
+#define MAX_BYTES_OF_METADATA 256
+extern metadata_t metadata;
 
 #define PROFILE_MAX_COUNT 3000
 typedef struct profile_data
 {
-    data_header_t metadata;
+    //metadata_t metadata;
+    uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t profile[PROFILE_MAX_COUNT];
 }profile_data_t;
 extern profile_data_t profile_data;
@@ -181,7 +251,8 @@ extern profile_data_t profile_data;
 #define POINTS_PER_RAW_SIGNAL 1000
 typedef struct raw_sub_data
 {
-    data_header_t metadata;
+    //metadata_t metadata;
+    uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t test_number;
     uint8_t profile[1500];
     uint16_t force[POINTS_PER_RAW_SIGNAL];
@@ -364,6 +435,9 @@ void prompt(void);
  */
 
 void monitor(void);
+
+void decode_metadata(metadata_t * metadata, uint8_t * metadata_buffer);
+
 
 #endif	/* APP_H */
 

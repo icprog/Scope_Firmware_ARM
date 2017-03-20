@@ -107,7 +107,7 @@ extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t           raw_sub_data;
-data_header_t                   metadata;
+metadata_t                      metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 uint32_t                        fw_size = 70000;
@@ -168,7 +168,7 @@ void APP_Initialize(void)
         init_L3GD();
         nrf_gpio_cfg_output(SCOPE_SPIS_READY);
         nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
-        SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
+        SEGGER_RTT_printf(0, "size of metadata = %d but %d is allocated", sizeof(metadata_t), MAX_BYTES_OF_METADATA);
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
         
         // set CAL mode on PIC if necessary:
@@ -413,7 +413,9 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 disable_imu();
-                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", profile_data.metadata.test_num, profile_data.metadata.serial_number);
+                //TODO: remove this eventually when aRM does not need to convert metadata
+                decode_metadata(&metadata, profile_data.metadata); //read metadata into a struct
+                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", metadata.test_num, metadata.serial_number);
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -452,8 +454,7 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 /***** notify phone of how much data needs to be sent  *****/
-                final_depth = profile_data.metadata.profile_depth;
-                //final_depth = 1700;//TODO: fix this crappy short term solution to the test and serial number scrambling
+                final_depth = metadata.profile_depth;
                 if(final_depth > 3000)
                 {
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
@@ -483,7 +484,6 @@ void APP_Tasks(void)
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
-                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 					//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
                     appData.data_counts = 0;
@@ -504,8 +504,6 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
-
-
             break;
         }
 				
@@ -513,7 +511,7 @@ void APP_Tasks(void)
         {
             if(appData.data_counts == 0)
             {
-                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED\n");
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -557,7 +555,6 @@ void APP_Tasks(void)
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
-                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     appData.data_counts = 0;
 
                 }
@@ -1125,3 +1122,117 @@ void APP_Tasks(void)
 //				}
 //		}
 //}
+
+/*
+ * decodes header + data buffer of metadata into a struct that can then be
+ *  referenced more easily
+ */
+void decode_metadata(metadata_t * metadata, uint8_t * metadata_buffer)
+{
+    uint16_t metadata_ptr = 0; 
+    uint8_t * data;
+    metadata_header_t * header;
+    
+    while(header->attribute_id != end_of_metadata_m)
+    {
+        header = (metadata_header_t *)(metadata_buffer + metadata_ptr);
+        metadata_ptr += sizeof(metadata_header_t);
+        switch(header->attribute_id)
+        {
+        case temperature_m:
+        {
+            data = (uint8_t *)&(metadata->temperature);
+            break;
+        }
+        case location_m:
+        {
+            data = (uint8_t *)&(metadata->location);
+            break;
+        }
+        case time_m:
+        {
+            data = (uint8_t *)&(metadata->time);
+            break;
+        }
+        case test_num_m:
+        {
+            data = (uint8_t *)&(metadata->test_num);
+            break;
+        }
+        case profile_depth_m:
+        {
+            data = (uint8_t *)&(metadata->profile_depth);
+            break;
+        }
+        case battery_capacity_m:
+        {
+            data = (uint8_t *)&(metadata->battery_capacity);
+            break;
+        }
+        case test_time_m:
+        {
+            data = (uint8_t *)&(metadata->test_time);
+            break;
+        }
+        case error_code_m:
+        {
+            data = (uint8_t *)&(metadata->error_code);
+            break;
+        }
+        case accel_FS_m:
+        {
+            data = (uint8_t *)&(metadata->accel_FS);
+            break;
+        }
+        case gyro_FS_m:
+        {
+            data = (uint8_t *)&(metadata->gyro_FS);
+            break;
+        }
+        case force_cal_m:
+        {
+            data = (uint8_t *)&(metadata->force_cal);
+            break;
+        }
+        case optical_cal_m:
+        {
+            data = (uint8_t *)&(metadata->optical_cal);
+            break;
+        }
+        case serial_number_m:
+        {
+            data = (uint8_t *)&(metadata->serial_number);
+            break;
+        }
+        case PIC_firmware_version_m:
+        {
+            data = (uint8_t *)&(metadata->PIC_firmware_version);
+            break;
+        }
+        case ARM_firmware_version_m:
+        {
+            data = (uint8_t *)&(metadata->ARM_firmware_version);
+            break;
+        }
+        case main_pcb_rev_m:
+        {
+            data = (uint8_t *)&(metadata->main_pcb_rev);
+            break;
+        }
+        case nrf_pcb_rev_m:
+        {
+            data = (uint8_t *)&(metadata->nrf_pcb_rev);
+            break;
+        }
+        default:
+        {
+            printf("ERROR: metadata id not recognized\n");
+        }
+        }
+        
+        /****  read metadata out of buffer into struct  ****/
+        memcpy((void *)data, (void *)(metadata_buffer+metadata_ptr), header->size);
+        metadata_ptr += header->size;
+        
+    }
+}
