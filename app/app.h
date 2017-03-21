@@ -128,47 +128,12 @@ typedef struct{
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
 extern device_info_t device_info;
 
-typedef struct  metadata
-{
-    /**********  Environmental ************/
-    int8_t      temperature; // in degrees C
-    //Date and Time
-    uint32_t    time;
-    float       location[2];//Location
-    
-    /*********** Test Specific  ***********/
-    uint16_t    test_num; //test number (device specific)
-    uint16_t    profile_depth; //in mm
-    uint8_t     battery_capacity;
-    float       test_time; //seconds
-    uint8_t     error_code;
-    
-    /********** Device Specific  *************/
-    uint8_t     accel_FS; //full scale of accelerometer
-    uint16_t    gyro_FS; 
-    uint16_t    force_cal[5]; //in ADC counts
-    uint16_t    optical_cal;
-    
-    /*************  User Settings ************/
-    
-    /*************  Versions and Revisions ************/
-    char        serial_number[8]; // device serial #, was 8
-    char        PIC_firmware_version[8]; //ex. 1.0.3
-    char        ARM_firmware_version[8];
-    uint8_t     main_pcb_rev; //ex. 3
-    uint8_t     nrf_pcb_rev;
-    
-    //add the rest here...
-} metadata_t;
-
 #define BYTES_OF_METADATA sizeof(data_header_t)
 #define MAX_BYTES_OF_METADATA 256
-extern metadata_t metadata;
 
 #define PROFILE_MAX_COUNT 3000
 typedef struct profile_data
 {
-    //metadata_t metadata;
     uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t profile[PROFILE_MAX_COUNT];
 }profile_data_t;
@@ -180,7 +145,6 @@ extern profile_data_t profile_data;
 #define POINTS_PER_RAW_SIGNAL 1000
 typedef struct raw_sub_data
 {
-    //metadata_t metadata;
     uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t test_number;
     uint8_t profile[1500];
@@ -221,6 +185,8 @@ typedef struct
     uint16_t ble_status;
 	bool ble_disconnect_flag;
     uint8_t status;
+    float time_location[3];
+    uint8_t probe_error_code;
     bool send_imu_flag;
     bool imu_enabled;
     uint16_t data_counts;

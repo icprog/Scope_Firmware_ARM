@@ -590,7 +590,7 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
         SEGGER_RTT_printf(0,"location received \n");
-        memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
+        //memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
         //memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
     }
 }

@@ -107,7 +107,6 @@ extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t           raw_sub_data;
-metadata_t                      metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 uint32_t                        fw_size = 70000;
@@ -168,7 +167,6 @@ void APP_Initialize(void)
         init_L3GD();
         nrf_gpio_cfg_output(SCOPE_SPIS_READY);
         nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
-        SEGGER_RTT_printf(0, "size of metadata = %d but %d is allocated", sizeof(metadata_t), MAX_BYTES_OF_METADATA);
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
         
         // set CAL mode on PIC if necessary:
@@ -415,7 +413,7 @@ void APP_Tasks(void)
                 disable_imu();
                 //TODO: remove this eventually when aRM does not need to convert metadata
                 //decode_metadata(&metadata, profile_data.metadata); //read metadata into a struct
-                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", metadata.test_num, metadata.serial_number);
+                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER \n");
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -663,7 +661,7 @@ void APP_Tasks(void)
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
 //            nrf_delay_ms(200); //wait for PIC to stop requesting accel
             //SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
-            err_code = ble_probe_error_update(&m_pes, metadata.error_code);
+            err_code = ble_probe_error_update(&m_pes, appData.probe_error_code);
 
 
             appData.state = APP_STATE_POLLING;
