@@ -842,26 +842,16 @@ static void cb_handler(pstorage_handle_t  * handle,
 {
     SEGGER_RTT_printf(0, "\n flash cb handler \n");
 }
-void setup_flash_storage(void)
+uint8_t setup_flash_storage(uint8_t data)
 {
     //init pstorage for non-volatile memory:
     uint32_t retval;
     uint8_t read_data[4] = {27,2,3,4};
     uint8_t test_data[4] = {5,6,7,8};
+    test_data[0] = data;
     SEGGER_RTT_printf(0, "\n pstorage init start \n");
     retval = pstorage_init();
-    if(retval == NRF_SUCCESS)
-    {
-        // Module initialization successful.
-        SEGGER_RTT_printf(0, "\n successfully setup pstorage \n");
-        
-    }
-    else
-    {
-       // Initialization failed, take corrective action.
-        SEGGER_RTT_printf(0, "\n pstorage init failure \n");
-        
-    }
+
     pstorage_handle_t   base_handle;
     pstorage_handle_t block_handle;
     pstorage_handle_t       handle;
@@ -873,75 +863,17 @@ void setup_flash_storage(void)
     param.cb          = cb_handler;
         
     retval = pstorage_register(&param, &base_handle);
-    if (retval == NRF_SUCCESS)
-    {
-        // Registration successful.
-        SEGGER_RTT_printf(0, "\n successfully pstorage registration\n");
-    }
-    else
-    {
-        // Failed to register, take corrective action.
-        SEGGER_RTT_printf(0, "\n pstorage reg failure \n");
-    }
+
     
     SEGGER_RTT_printf(0, "\n\n\n ***  PSTORAGE TEST: *** \n \n");
     retval = pstorage_block_identifier_get(&base_handle, 0, &block_handle);
-    if (retval == NRF_SUCCESS)
-    {
-        // Registration successful.
-        SEGGER_RTT_printf(0, "\n successfully pstorage block thingy\n");
-    }
-    else
-    {
-        // Failed to register, take corrective action.
-        SEGGER_RTT_printf(0, "\n pstorage block ident fail \n");
-    }
-    
-    SEGGER_RTT_printf(0, "\n data before read: %d\n",read_data[0]);
-    //nrf_delay_ms(500); // try clearing!
-//    retval = pstorage_clear(&base_handle, 1024);
-//    if (retval == NRF_SUCCESS)
-//    {
-//        // Registration successful.
-//        SEGGER_RTT_printf(0, "\n successfully pstorage clear\n");
-//    }
-//    else
-//    {
-//        // Failed to register, take corrective action.
-//        SEGGER_RTT_printf(0, "\n pstorage clear error \n");
-//    }
-    //retval = pstorage_store(&block_handle, test_data, 4, 0);
+
+    retval = pstorage_load(read_data, &block_handle, 4, 0);
+    nrf_delay_ms(100);
     retval = pstorage_update(&block_handle, test_data, 4, 0);
     nrf_delay_ms(100);
-    if (retval == NRF_SUCCESS)
-    {
-        // Registration successful.
-        SEGGER_RTT_printf(0, "\n successfully pstorage store\n");
-    }
-    else
-    {
-        // Failed to register, take corrective action.
-        SEGGER_RTT_printf(0, "\n pstorage store error \n");
-    }
-    SEGGER_RTT_printf(0, "\n data middle: %d\n",read_data[0]);
-    //pstorage_block_identifier_get(&base_handle, 0, &block_handle);
-    retval = pstorage_load(read_data, &block_handle, 4, 0);
-    
-    //nrf_delay_ms(500);
-    if (retval == NRF_SUCCESS)
-    {
-        // Registration successful.
-        SEGGER_RTT_printf(0, "\n successfully pstorage retrieval\n");
-    }
-    else
-    {
-        // Failed to register, take corrective action.
-        SEGGER_RTT_printf(0, "\n pstorage retrieval error \n");
-    }
-    SEGGER_RTT_printf(0, "\n data after read read: %d\n \n",read_data[0]);
-    //test_data++;
-   
-    
+
+    return read_data[0];
     
 }
 
@@ -1031,7 +963,14 @@ int main(void)
         
 //        char debug_message[20] = "testing 1 2 3";
 //        ble_debug_update(&m_ds,debug_message,20);
-         setup_flash_storage();
+SEGGER_RTT_printf(0, "flash 1:  %d", setup_flash_storage(1));
+nrf_delay_ms(100);
+SEGGER_RTT_printf(0, "flash 2:  %d", setup_flash_storage(0));
+nrf_delay_ms(100);
+SEGGER_RTT_printf(0, "flash 3:  %d", setup_flash_storage(3));
+nrf_delay_ms(100);
+SEGGER_RTT_printf(0, "flash 4:  %d", setup_flash_storage(0));
+
         SEGGER_RTT_WriteString(0, "start of main loop: \n");
         while(true)
         {
