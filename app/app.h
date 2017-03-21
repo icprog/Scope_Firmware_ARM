@@ -127,77 +127,6 @@ typedef struct{
 }device_info_t;
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
 extern device_info_t device_info;
-    
-
-
-
-/*  
- * codes for meta data attributes. Add new fields by taking the incrementing the 
- * largest number, excluding the end_of_metadata number. each attribute id is 
- * specified so it will be backward compatible with previous versions. 
- * DO NOT CHANGE ANY OF THE CURRENT ASSIGNMENTS
- * will be cast to uint8 so only upto 255 values here
- */
-typedef enum
-{
-    /**********  Environmental ************/
-    temperature_m = 0,
-    location_m = 1,
-    time_m = 2,
-
-    /*********** Test Specific  ***********/
-    test_num_m = 3,
-    profile_depth_m = 4,
-    battery_capacity_m = 5,
-    test_time_m = 6,
-    error_code_m = 7,
-            
-    /********** Device Specific  *************/
-    accel_FS_m = 8,
-    gyro_FS_m = 9,
-    force_cal_m = 10,
-    optical_cal_m = 11,
-            
-    /*************  Versions and Revisions ************/
-    serial_number_m = 12,
-    PIC_firmware_version_m = 13,
-    ARM_firmware_version_m = 14,
-    main_pcb_rev_m = 15,
-    nrf_pcb_rev_m = 16,
-    number_of_metadata_ids_m,
-    end_of_metadata_m = 255,
-            
-} metadata_id;
-
-
-typedef enum
-{
-    uint8_ = 0,
-    uint16_ = 1,
-    uint32_ = 2,
-    int8_ = 3,
-    int16_ = 4,
-    int32_ = 5,
-    float_ = 6,
-    double_ = 7,
-    bool_ = 8,
-    char_ = 9,
-    void_ = 10,
-} metadata_type;
-
-/*
- * structure to label metadata attributes. to be intrpreted by the phone or 
- * by raw data parser. Allows for flexible metadata stuctures and backward 
- * compatible changes. This header will go in front of a chunk of size bytes
- */
-typedef struct metadata_header
-{
-    metadata_id attribute_id;
-    metadata_type data_type_id;
-    uint8_t size; //number of bytes.
-            
-} metadata_header_t;
-
 
 typedef struct  metadata
 {
@@ -288,6 +217,7 @@ typedef struct
     APP_STATES prev_state;
     profile_id_t profile_id;
     uint16_t new_profile_num;
+    uint16_t profile_size;
     uint16_t ble_status;
 	bool ble_disconnect_flag;
     uint8_t status;
@@ -435,9 +365,6 @@ void prompt(void);
  */
 
 void monitor(void);
-
-void decode_metadata(metadata_t * metadata, uint8_t * metadata_buffer);
-
 
 #endif	/* APP_H */
 

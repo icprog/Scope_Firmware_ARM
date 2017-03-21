@@ -414,7 +414,7 @@ void APP_Tasks(void)
             {
                 disable_imu();
                 //TODO: remove this eventually when aRM does not need to convert metadata
-                decode_metadata(&metadata, profile_data.metadata); //read metadata into a struct
+                //decode_metadata(&metadata, profile_data.metadata); //read metadata into a struct
                 SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", metadata.test_num, metadata.serial_number);
             }
             /***** if we disconnect get out of here  *******/
@@ -454,7 +454,7 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 /***** notify phone of how much data needs to be sent  *****/
-                final_depth = metadata.profile_depth;
+                final_depth = appData.profile_size;
                 if(final_depth > 3000)
                 {
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
@@ -1123,116 +1123,3 @@ void APP_Tasks(void)
 //		}
 //}
 
-/*
- * decodes header + data buffer of metadata into a struct that can then be
- *  referenced more easily
- */
-void decode_metadata(metadata_t * metadata, uint8_t * metadata_buffer)
-{
-    uint16_t metadata_ptr = 0; 
-    uint8_t * data;
-    metadata_header_t * header;
-    
-    while(header->attribute_id != end_of_metadata_m)
-    {
-        header = (metadata_header_t *)(metadata_buffer + metadata_ptr);
-        metadata_ptr += sizeof(metadata_header_t);
-        switch(header->attribute_id)
-        {
-        case temperature_m:
-        {
-            data = (uint8_t *)&(metadata->temperature);
-            break;
-        }
-        case location_m:
-        {
-            data = (uint8_t *)&(metadata->location);
-            break;
-        }
-        case time_m:
-        {
-            data = (uint8_t *)&(metadata->time);
-            break;
-        }
-        case test_num_m:
-        {
-            data = (uint8_t *)&(metadata->test_num);
-            break;
-        }
-        case profile_depth_m:
-        {
-            data = (uint8_t *)&(metadata->profile_depth);
-            break;
-        }
-        case battery_capacity_m:
-        {
-            data = (uint8_t *)&(metadata->battery_capacity);
-            break;
-        }
-        case test_time_m:
-        {
-            data = (uint8_t *)&(metadata->test_time);
-            break;
-        }
-        case error_code_m:
-        {
-            data = (uint8_t *)&(metadata->error_code);
-            break;
-        }
-        case accel_FS_m:
-        {
-            data = (uint8_t *)&(metadata->accel_FS);
-            break;
-        }
-        case gyro_FS_m:
-        {
-            data = (uint8_t *)&(metadata->gyro_FS);
-            break;
-        }
-        case force_cal_m:
-        {
-            data = (uint8_t *)&(metadata->force_cal);
-            break;
-        }
-        case optical_cal_m:
-        {
-            data = (uint8_t *)&(metadata->optical_cal);
-            break;
-        }
-        case serial_number_m:
-        {
-            data = (uint8_t *)&(metadata->serial_number);
-            break;
-        }
-        case PIC_firmware_version_m:
-        {
-            data = (uint8_t *)&(metadata->PIC_firmware_version);
-            break;
-        }
-        case ARM_firmware_version_m:
-        {
-            data = (uint8_t *)&(metadata->ARM_firmware_version);
-            break;
-        }
-        case main_pcb_rev_m:
-        {
-            data = (uint8_t *)&(metadata->main_pcb_rev);
-            break;
-        }
-        case nrf_pcb_rev_m:
-        {
-            data = (uint8_t *)&(metadata->nrf_pcb_rev);
-            break;
-        }
-        default:
-        {
-            printf("ERROR: metadata id not recognized\n");
-        }
-        }
-        
-        /****  read metadata out of buffer into struct  ****/
-        memcpy((void *)data, (void *)(metadata_buffer+metadata_ptr), header->size);
-        metadata_ptr += header->size;
-        
-    }
-}
