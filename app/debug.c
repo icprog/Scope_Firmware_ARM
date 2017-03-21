@@ -181,7 +181,7 @@ static void on_write(ble_dbs_t * p_ds, ble_evt_t * p_ble_evt)
 
 uint32_t ble_debug_update(ble_dbs_t * p_dbs, char * debug_message,uint8_t length)
 {
-		SEGGER_RTT_printf(0, "debug update");
+		//SEGGER_RTT_printf(0, "debug update");
     if (p_dbs == NULL)
     {
         return NRF_ERROR_NULL;

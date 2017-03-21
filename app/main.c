@@ -125,6 +125,7 @@ extern volatile int16_t ax_old;
 extern volatile int16_t az_old;
 
 
+
 static uint16_t                              m_conn_handle = BLE_CONN_HANDLE_INVALID;   /**< Handle of the current connection. */
 ble_bas_t                                    m_bas;                                     /**< Structure used to identify the battery service. */
 ble_pes_t 	 						         m_pes; //probing error service
@@ -833,7 +834,102 @@ static void shutdown_gpio_init(void)    // <====== set up systemoff on pin chang
 
     APP_ERROR_CHECK(err_code);
 }
-
+static void cb_handler(pstorage_handle_t  * handle,
+                               uint8_t              op_code,
+                               uint32_t             result,
+                               uint8_t            * p_data,
+                               uint32_t             data_len)
+{
+    SEGGER_RTT_printf(0, "\n flash cb handler \n");
+}
+void setup_flash_storage(void)
+{
+    //init pstorage for non-volatile memory:
+    uint32_t retval;
+    uint8_t read_data[4] = {1,2,3,4};
+    uint8_t test_data[4] = {5,6,7,8};
+    SEGGER_RTT_printf(0, "\n pstorage init start \n");
+    retval = pstorage_init();
+    if(retval == NRF_SUCCESS)
+    {
+        // Module initialization successful.
+        SEGGER_RTT_printf(0, "\n successfully setup pstorage \n");
+        
+    }
+    else
+    {
+       // Initialization failed, take corrective action.
+        SEGGER_RTT_printf(0, "\n pstorage init failure \n");
+        
+    }
+    pstorage_handle_t   base_handle;
+    pstorage_handle_t block_handle;
+    pstorage_handle_t       handle;
+    pstorage_module_param_t param;
+    //uint32_t                retval;
+          
+    param.block_size  = 100;
+    param.block_count = 2;
+    param.cb          = cb_handler;
+        
+    retval = pstorage_register(&param, &base_handle);
+    if (retval == NRF_SUCCESS)
+    {
+        // Registration successful.
+        SEGGER_RTT_printf(0, "\n successfully pstorage registration\n");
+    }
+    else
+    {
+        // Failed to register, take corrective action.
+        SEGGER_RTT_printf(0, "\n pstorage reg failure \n");
+    }
+    
+    SEGGER_RTT_printf(0, "\n\n\n ***  PSTORAGE TEST: *** \n \n");
+    retval = pstorage_block_identifier_get(&base_handle, 0, &block_handle);
+        if (retval == NRF_SUCCESS)
+    {
+        // Registration successful.
+        SEGGER_RTT_printf(0, "\n successfully pstorage block thingy\n");
+    }
+    else
+    {
+        // Failed to register, take corrective action.
+        SEGGER_RTT_printf(0, "\n pstorage block ident fail \n");
+    }
+    
+    SEGGER_RTT_printf(0, "\n data before read: %d\n",read_data[0]);
+    retval = pstorage_store(&block_handle, test_data, 4, 0);
+        if (retval == NRF_SUCCESS)
+    {
+        // Registration successful.
+        SEGGER_RTT_printf(0, "\n successfully pstorage store\n");
+    }
+    else
+    {
+        // Failed to register, take corrective action.
+        SEGGER_RTT_printf(0, "\n pstorage store error \n");
+    }
+    SEGGER_RTT_printf(0, "\n data middle: %d\n",read_data[0]);
+    //pstorage_block_identifier_get(&base_handle, 0, &block_handle);
+    retval = pstorage_load(read_data, &block_handle, 4, 0);
+    
+    //nrf_delay_ms(500);
+    if (retval == NRF_SUCCESS)
+    {
+        // Registration successful.
+        SEGGER_RTT_printf(0, "\n successfully pstorage retrieval\n");
+    }
+    else
+    {
+        // Failed to register, take corrective action.
+        SEGGER_RTT_printf(0, "\n pstorage retrieval error \n");
+    }
+    SEGGER_RTT_printf(0, "\n data after read read: %d\n \n",read_data[0]);
+    //test_data++;
+   
+    
+    
+}
 
 void init_device_info(void)
 {
@@ -890,58 +986,61 @@ int main(void)
         beacon_adv_init();
         device_manager_init(erase_bonds);
         /* Init for SPI comm with PIC and IMU*/
-        spi_init();   
-        spis_init();  
+        //spi_init();   
+        //spis_init();  
         appData.state = APP_STATE_POLLING;		
 
         SEGGER_RTT_WriteString(0, "starting dev info init\n");
-        init_device_info();
+        //init_device_info();
         
         gap_params_init();
         advertising_init();
         services_init();
         conn_params_init();
 
-        APP_Initialize();      //  Init IMU and other stuff
+        //APP_Initialize();      //  Init IMU and other stuff
 
         // Start execution.
-        application_timers_start();  
-        SEGGER_RTT_WriteString(0, "starting adv\n");
-        err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
-        APP_ERROR_CHECK(err_code);
+        //application_timers_start();  
+//        SEGGER_RTT_WriteString(0, "starting adv\n");
+//        err_code = ble_advertising_start(BLE_ADV_MODE_DIRECTED);
+//        APP_ERROR_CHECK(err_code);
 
 
-        SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-        profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
-        SEGGER_RTT_WriteString(0, "main loop:\n");
-        nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
+//        SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
+//        profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
+//        SEGGER_RTT_WriteString(0, "main loop:\n");
+//        nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
         
         
-        if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
+        //if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
 //        char debug_message[20] = "testing 1 2 3";
 //        ble_debug_update(&m_ds,debug_message,20);
-        
+         setup_flash_storage();
+        SEGGER_RTT_WriteString(0, "start of main loop: \n");
         while(true)
         {
-            if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 || CALIBRATION)  //out of pole or in Calibration, run normal loop
-            {
+//            if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 || CALIBRATION)  //out of pole or in Calibration, run normal loop
+//            {
+           
                 power_manage();
-                APP_Tasks();    
+                //APP_Tasks();    
                 //ble_debug_update(&m_ds,debug_message,20);
-            }
-            else  // in pole, restart into sleep-mode
-            {
-                SEGGER_RTT_WriteString(0, "*** MAGNETIC FIELD ***\n");
-                //shutdown_gpio_init();
-                nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
-                nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
                 
-                /*  IMU POWERDOWN */
-                sleep_LSM303();
-                sleep_L3GD();
-                sd_nvic_SystemReset();
-            }
+//            }
+//            else  // in pole, restart into sleep-mode
+//            {
+//                SEGGER_RTT_WriteString(0, "*** MAGNETIC FIELD ***\n");
+//                //shutdown_gpio_init();
+//                nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
+//                nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
+//                
+//                /*  IMU POWERDOWN */
+//                sleep_LSM303();
+//                sleep_L3GD();
+//                sd_nvic_SystemReset();
+//            }
             if(sleep_flag) // timeout sleep mode triggered by inactivity
             {
                 sleep_mode_enter();
