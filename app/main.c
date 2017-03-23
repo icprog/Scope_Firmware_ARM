@@ -812,7 +812,7 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
         nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
 
     }
-    nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_HIGH);
+    nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_LOW);
         NRF_CLOCK->TASKS_HFCLKSTOP = 1;
         NRF_TIMER0->TASKS_STOP = 1;
 
@@ -825,8 +825,9 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
             sleep_timeout_flash_flag =0;
             while(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)
             {
-                __WFE();
+               // __WFE();
             }
+            nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_HIGH);
         }
         
         if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  // out of pole, reset back into normal mode
