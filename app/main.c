@@ -796,8 +796,9 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
 
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);
     nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN);
-    setup_flash_storage(0);
-        nrf_delay_ms(100);
+    //setup_flash_storage(0);
+//    SEGGER_RTT_printf(0, "\n flash while sleeping:  %d \n", setup_flash_storage(3));
+//        nrf_delay_ms(100);
     //config all pins except the shutdown ("SCOPE_HALL_PIN") pin as input with pulldown:
     for(i=0;i<=6;i++)
     {
@@ -819,21 +820,39 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
     
     while(true)  
     {
-
-        if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 && sleep_timeout_flash_flag == 0)  // out of pole, reset back into normal mode
+        if(sleep_timeout_flash_flag ==1)
         {
+            sleep_timeout_flash_flag =0;
+            while(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)
+            {
+                
+            }
+        }
+        
+        if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  // out of pole, reset back into normal mode
+        {
+            
+            
+//            NRF_CLOCK->TASKS_HFCLKSTOP = 0;
+//            NRF_TIMER0->TASKS_STOP = 0;
+
+//            NRF_POWER->TASKS_LOWPWR = 0;
+// 
+//        
+//            ble_stack_init();
+
+            device_manager_init(erase_bonds);
+            
+            SEGGER_RTT_printf(0, "\n flash while sleeping:  %d \n", setup_flash_storage(3));
+            nrf_delay_ms(100);
 //            setup_flash_storage(0);
 //            nrf_delay_ms(100);
+            
             NVIC_SystemReset(); // must be changed to sd_ for sd operation
             //sd_nvic_SystemReset();
         }
-        if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0)
-        {
-            sleep_timeout_flash_flag = 0;
-        }
         else
         {
-
             __WFE();
 
         }
@@ -937,7 +956,10 @@ int main(void)
     nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
  // Initialize.
     //SEGGER_RTT_WriteString(0, "main init\n");
-    sleep_timeout_flash_flag =  setup_flash_storage(2);
+    sleep_timeout_flash_flag =  setup_flash_storage(3);
+    nrf_delay_ms(100);
+    SEGGER_RTT_printf(0, "flash 0:  %d", sleep_timeout_flash_flag);
+
     if((nrf_gpio_pin_read(SCOPE_HALL_PIN) == 0) || (sleep_timeout_flash_flag == 1)) // if inn pole, restart into sleep mode (via shutdown_gpio fxn)
     {
         shutdown_gpio_init();  // init pins for hall-effect sensor used to enter sleep mode   <====== setup GPIOTE to trigger system-off on pin-change
@@ -983,12 +1005,11 @@ int main(void)
         
         //char debug_message[20] = "testing 1 2 3";
 //        ble_debug_update(&m_ds,debug_message,20);
-//SEGGER_RTT_printf(0, "flash 1:  %d", setup_flash_storage(1));
-//nrf_delay_ms(100);
-//SEGGER_RTT_printf(0, "flash 2:  %d", setup_flash_storage(0));
-//nrf_delay_ms(100);
-SEGGER_RTT_printf(0, "flash 3:  %d", setup_flash_storage(3));
+SEGGER_RTT_printf(0, "flash 1:  %d", setup_flash_storage(1));
 nrf_delay_ms(100);
+SEGGER_RTT_printf(0, "flash 2:  %d", setup_flash_storage(0));
+nrf_delay_ms(100);
+
 //SEGGER_RTT_printf(0, "flash 4:  %d", setup_flash_storage(0));
 
         SEGGER_RTT_WriteString(0, "start of main loop: \n");
@@ -1016,10 +1037,12 @@ nrf_delay_ms(100);
             }
             if(sleep_flag) // timeout sleep mode triggered by inactivity
             {
-                setup_flash_storage(1);
+                SEGGER_RTT_printf(0, "flash 3:  %d", setup_flash_storage(1));
                 nrf_delay_ms(100);
-                SEGGER_RTT_printf(0, "flash on timeout:  %d", setup_flash_storage(1));
-                nrf_delay_ms(100);
+//                setup_flash_storage(1);
+//                nrf_delay_ms(100);
+//                SEGGER_RTT_printf(0, "flash on timeout:  %d", setup_flash_storage(1));
+//                nrf_delay_ms(100);
                 nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  //set 3.3 v enable to digital output
                 nrf_gpio_pin_clear(SCOPE_3V3_ENABLE_PIN); // turn off main board
                 
