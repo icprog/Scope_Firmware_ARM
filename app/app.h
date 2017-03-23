@@ -174,6 +174,12 @@ typedef struct imu_data
 //    int16_t    gz;
 } imu_data_t;
 
+typedef struct time_location
+{
+    uint32_t seconds_since_2001;
+    float lat_long[2];
+}time_location_t;
+
 typedef struct
 {
     /* The application's current state */
@@ -185,7 +191,7 @@ typedef struct
     uint16_t ble_status;
 	bool ble_disconnect_flag;
     uint8_t status;
-    float time_location[3];
+    time_location_t time_and_loc;
     uint8_t probe_error_code;
     bool send_imu_flag;
     bool imu_enabled;
