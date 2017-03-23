@@ -825,7 +825,7 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
             sleep_timeout_flash_flag =0;
             while(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)
             {
-                
+                __WFE();
             }
         }
         
