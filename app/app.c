@@ -707,6 +707,12 @@ void APP_Tasks(void)
             appData.state = APP_STATE_POLLING;
             break;
         }
+        case APP_STATE_TIME_AND_LOC:
+        {
+            send_data_to_PIC(location_time_pack);
+            appData.state = APP_STATE_POLLING;
+            break;
+        }
         #else
         case APP_STATE_SET_PIC_CAL:  // puts PIC in CAL mode
         {
