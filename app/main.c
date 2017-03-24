@@ -749,7 +749,7 @@ uint8_t setup_flash_storage(uint8_t data)
     uint8_t read_data[4] = {27,2,3,4};
     uint8_t test_data[4] = {5,6,7,8};
     test_data[0] = data;
-    SEGGER_RTT_printf(0, "\n pstorage init start \n");
+    //SEGGER_RTT_printf(0, "\n pstorage init start \n");
     retval = pstorage_init();
 
     pstorage_handle_t   base_handle;
@@ -765,7 +765,7 @@ uint8_t setup_flash_storage(uint8_t data)
     retval = pstorage_register(&param, &base_handle);
 
     
-    SEGGER_RTT_printf(0, "\n\n\n ***  PSTORAGE TEST: *** \n \n");
+    //SEGGER_RTT_printf(0, "\n\n\n ***  PSTORAGE TEST: *** \n \n");
     retval = pstorage_block_identifier_get(&base_handle, 0, &block_handle);
 
     retval = pstorage_load(read_data, &block_handle, 4, 0);
@@ -812,7 +812,15 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
         nrf_gpio_cfg_input(i,NRF_GPIO_PIN_PULLDOWN);
 
     }
-    nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_LOW);
+    
+     if(sleep_timeout_flash_flag ==1)
+     {
+        nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_LOW);
+     }
+     else
+     {
+         nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLDOWN, NRF_GPIO_PIN_SENSE_HIGH);
+     }
         NRF_CLOCK->TASKS_HFCLKSTOP = 1;
         NRF_TIMER0->TASKS_STOP = 1;
 
@@ -825,9 +833,9 @@ void in_pole_sleep(void)   // <======== this fxn puts device in systemmoff mode
             sleep_timeout_flash_flag =0;
             while(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)
             {
-               // __WFE();
+                __WFE();
             }
-            nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_HIGH);
+            nrf_gpio_cfg_sense_input(SCOPE_HALL_PIN, NRF_GPIO_PIN_PULLDOWN, NRF_GPIO_PIN_SENSE_HIGH);
         }
         
         if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1)  // out of pole, reset back into normal mode
@@ -979,7 +987,9 @@ int main(void)
         spis_init();  
         appData.state = APP_STATE_POLLING;		
 
-        SEGGER_RTT_WriteString(0, "starting dev info init\n");
+        //SEGGER_RTT_WriteString(0, "starting dev info init\n");
+        nrf_delay_ms(100);
+        nrf_delay_ms(50);
         init_device_info();
         
         gap_params_init();

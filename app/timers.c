@@ -140,7 +140,7 @@ void battery_timeout_handler(void *p_context)
     uint8_t motion_threshold = 100;
     SEGGER_RTT_printf(0, "\nsleep timeout counter: %d\n",battery_timeout_counter);
 
-    if(battery_timeout_counter >3)//>60) // should be ~20 or 30 for final version?
+    if(battery_timeout_counter >60) // should be ~20 or 30 for final version?
     {
         //sleep to save battery
         sleep_flag = 1;
