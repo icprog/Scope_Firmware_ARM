@@ -709,7 +709,17 @@ void APP_Tasks(void)
         }
         case APP_STATE_TIME_AND_LOC:
         {
+            bool imu_enabled = appData.imu_enabled;
+            if(imu_enabled == true)
+            {
+                appData.imu_paused = true;
+            }   
             send_data_to_PIC(location_time_pack);
+            //SEGGER_RTT_printf(0, "\n in our structure: ");
+            for(int i = 0;i<location_time_pack.data_size;i++)
+            {
+                SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(location_time_pack.data))[i]);
+            }
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -1027,7 +1037,7 @@ void APP_Tasks(void)
         }
     }
     /****** keeping imu sending out of state machine becuase it can happen in multiple states ***/
-    if(appData.send_imu_flag)
+    if(appData.send_imu_flag && !appData.imu_paused)
     {
         send_data_to_PIC(accelerometer_pack);
         appData.send_imu_flag = false;

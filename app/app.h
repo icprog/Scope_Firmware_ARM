@@ -196,6 +196,7 @@ typedef struct
     uint8_t probe_error_code;
     bool send_imu_flag;
     bool imu_enabled;
+    bool imu_paused;
     uint16_t data_counts;
     bool SPIS_timeout_flag;
     bool transfer_in_progress;
