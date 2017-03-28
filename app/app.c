@@ -364,7 +364,7 @@ void APP_Tasks(void)
         {
             SEGGER_RTT_printf(0, "APP_STATE_NEW_ID\n");
             device_info.number_of_tests = appData.new_profile_num + 1; //update device info stored on ARM
-            profile_ids_update(&m_ps, device_info.number_of_tests - 1); //update the phone with the new id if connected!
+            profile_ids_update(&m_ps, device_info.number_of_tests); //update the phone with the new id if connected!
             SEGGER_RTT_printf(0, "updating number of tests to %d \n", device_info.number_of_tests);
             appData.state = APP_STATE_POLLING;
             break;
