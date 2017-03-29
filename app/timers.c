@@ -132,6 +132,7 @@ void disable_imu(void)
     uint32_t err_code = app_timer_stop(m_acc_timer_id);
     APP_ERROR_CHECK(err_code);
     appData.imu_enabled = false;
+    appData.send_imu_flag = false;
 }
 
 //set to 2000 ticks:
@@ -225,13 +226,12 @@ void TIMER2_IRQHandler(void)
             {
                 SEGGER_RTT_printf(0, "clearing = %d     ", nrf_spis_semaphore_status_get(p_spis));
             }
-            nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);       
+            nrf_gpio_pin_clear(SPIS_ARM_RDY_PIN);
 		}
         else
         {
             nrf_gpio_pin_set(SPIS_ARM_RDY_PIN);
         }
-        
         NRF_TIMER2->CC[0] += CC_DELAY;
     }
 }

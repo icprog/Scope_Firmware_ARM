@@ -79,7 +79,7 @@ pic_arm_pack_t accelerometer_pack = {PA_IMU_DATA, (uint8_t *)&imu_data, sizeof(i
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
-pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)appData.time_location, 12};
+pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)&(appData.time_and_loc), sizeof(time_location_t)};
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number, 6};
 pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
@@ -141,13 +141,14 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
         {
             while(nrf_spis_semaphore_status_get(p_spis) != NRF_SPIS_SEMSTAT_FREE)
             {
-                SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
+                //SEGGER_RTT_printf(0, "sem stat = %d\n", nrf_spis_semaphore_status_get(p_spis));
             }
             set_ARM_REQ(); 
         }
     }
     else
     {
+        SEGGER_RTT_printf(0, "ERROR: attempting to send packet %d when previous is not finished\n", pa_pack.code);
         return 1;//ERROR
     }
     return 0;
@@ -407,18 +408,17 @@ void spis_event_handler(nrf_drv_spis_event_t event)
         if(spis_tx_transfer_length == 0)
         {
             clear_ARM_REQ(); ///TODO: REQ not RDY
+            appData.imu_paused = false;
         }
         
         /**********  determine length of the packet to send and new one to receive *********/
         rx_length = buffer_size_calc(spis_rx_transfer_length);
         tx_length = buffer_size_calc(spis_tx_transfer_length);
         
-        
+        //SEGGER_RTT_printf(0, "before = %d, tx_length = %d", spis_tx_transfer_length, tx_length);
         memcpy(m_tx_buf_s, tx_data_ptr, tx_length); //copy data to send into tx buffer
         if(spis_tx_transfer_length != 0)
         {
-            //TODO: assign pointer
-            //TODO: increment pointer
             
 //            SEGGER_RTT_printf(0, "sending:");
 //            for(int i = 0; i < tx_length; i++)
@@ -427,6 +427,7 @@ void spis_event_handler(nrf_drv_spis_event_t event)
 //            }
             spis_tx_transfer_length -= tx_length;
         }
+        //SEGGER_RTT_printf(0, "  after = %d\n", spis_tx_transfer_length);
         
         //SEGGER_RTT_printf(0, "\nplanning on receiving %d bytes: ", rx_length);
         if (nrf_drv_spis_buffers_set(&spis, m_tx_buf_s, tx_length, m_rx_buf_s, rx_length) != NRF_SUCCESS)

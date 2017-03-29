@@ -7,6 +7,8 @@
 #include "SEGGER_RTT.h"
 #include "SPI_utils.h"
 #include "timers.h"
+#include "nrf_delay.h"
+#include "app.h"
 
 void profile_char_add(ble_ps_t * p_ps)
 {
@@ -204,10 +206,10 @@ void location_char_add(ble_ps_t * p_ps)
     attr_char_value.p_attr_md   = &attr_md;
     
     /***  Set characteristic length in number of bytes  ****/
-    attr_char_value.max_len     = 8;
-    attr_char_value.init_len    = 8;
-    uint8_t value               = 0x0000000000000000;
-    attr_char_value.p_value     = &value;
+    attr_char_value.max_len     = 12;
+    attr_char_value.init_len    = 12;
+    uint32_t value[3]           = {0, 0, 0};
+    attr_char_value.p_value     = (uint8_t *)&value;
     
     /**** add it too the softdevice  *****/
     err_code = sd_ble_gatts_characteristic_add(p_ps->service_handle, &char_md, &attr_char_value, &p_ps->location_char_handles);
@@ -589,9 +591,25 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     }
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
-        SEGGER_RTT_printf(0,"location received \n");
-        //memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
-        //memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
+        SEGGER_RTT_printf(0,"time and location received \n");
+        memcpy(&(appData.time_and_loc), (p_evt_write->data), p_evt_write->len);
+        for(int i = 0;i<p_evt_write->len;i++)
+        {
+            SEGGER_RTT_printf(0, "0x%x ", (p_evt_write->data)[i]);
+        }
+        SEGGER_RTT_printf(0, "\n in our structure: ");
+        for(int i = 0;i<4;i++)
+        {
+            SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(appData.time_and_loc.seconds_since_2001))[i]);
+        }
+        uint32_t temp = appData.time_and_loc.seconds_since_2001;
+        SEGGER_RTT_printf(0, "time = %d", temp);
+        /*SEGGER_RTT_printf(0, "loc = %f, %f    time =  %d\n", appData.time_and_loc.lat_long[0], 
+                                                            appData.time_and_loc.lat_long[1],
+                                                            appData.time_and_loc.seconds_since_2001);
+        */
+        appData.state = APP_STATE_TIME_AND_LOC;
+        
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
