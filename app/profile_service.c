@@ -580,7 +580,6 @@ uint32_t raw_data_update(ble_ps_t * p_ps, uint8_t * raw_data, uint8_t size, uint
 void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
 {
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-    profile_t * p_profile;
     if(p_evt_write->handle == p_ps->transfer_ids_char_handles.value_handle)
     {
         disable_imu();
@@ -591,8 +590,8 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     else if(p_evt_write->handle == p_ps->location_char_handles.value_handle)
     {
         SEGGER_RTT_printf(0,"location received \n");
-        memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
-        memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
+        //memcpy(metadata.location, p_evt_write->data, 2*sizeof(float));
+        //memcpy(profile_data.metadata.location, p_evt_write->data, 2*sizeof(float));
     }
 }
 void ble_profile_service_on_ble_evt(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)

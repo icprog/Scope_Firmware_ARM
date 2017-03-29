@@ -107,7 +107,6 @@ extern LSM303_DATA              accel_data; //acelerometer data to pass to PIC
 uint8_t                         pcb_test_results[NUM_ARM_PCB_TESTS];
 extern void *                   tx_data_ptr; //where to pull data from to send to PIC
 subsampled_raw_data_t           raw_sub_data;
-data_header_t                   metadata;
 profile_data_t                  profile_data;
 uint8_t                         raw_data_buff[RAW_DATA_BUFFER_SIZE]; //buffer for raw data coming from PIC and going to ARM
 uint32_t                        fw_size = 70000;
@@ -168,7 +167,6 @@ void APP_Initialize(void)
         init_L3GD();
         nrf_gpio_cfg_output(SCOPE_SPIS_READY);
         nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
-        SEGGER_RTT_printf(0, "size of metadata = %d", sizeof(data_header_t));
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
         
         // set CAL mode on PIC if necessary:
@@ -413,7 +411,9 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 disable_imu();
-                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER\n profile:%d SN:%s \n", profile_data.metadata.test_num, profile_data.metadata.serial_number);
+                //TODO: remove this eventually when aRM does not need to convert metadata
+                //decode_metadata(&metadata, profile_data.metadata); //read metadata into a struct
+                SEGGER_RTT_printf(0, "APP_STATE_PROFILE_TRANSFER \n");
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -452,8 +452,7 @@ void APP_Tasks(void)
             if(appData.data_counts == 0)
             {
                 /***** notify phone of how much data needs to be sent  *****/
-                final_depth = profile_data.metadata.profile_depth;
-                //final_depth = 1700;//TODO: fix this crappy short term solution to the test and serial number scrambling
+                final_depth = appData.profile_size;
                 if(final_depth > 3000)
                 {
                      SEGGER_RTT_printf(0, "ERROR final depth is too large! depth = %d", final_depth);
@@ -483,7 +482,6 @@ void APP_Tasks(void)
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", total_bytes);
-                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     //nrf_spis_int_enable(p_spis, NRF_SPIS_INT_ACQUIRED_MASK | NRF_SPIS_INT_END_MASK);
 					//nrf_drv_common_irq_enable(p_instance->irq, p_config->irq_priority);
                     appData.data_counts = 0;
@@ -504,8 +502,6 @@ void APP_Tasks(void)
                 appData.state = APP_STATE_POLLING;
                 break;
             }
-
-
             break;
         }
 				
@@ -513,7 +509,7 @@ void APP_Tasks(void)
         {
             if(appData.data_counts == 0)
             {
-                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED test num = %d\n", raw_sub_data.metadata.test_num);
+                SEGGER_RTT_printf(0, "APP_STATE_RAW_SUBSAMPLED\n");
             }
             /***** if we disconnect get out of here  *******/
             if(appData.ble_status == 0)
@@ -557,7 +553,6 @@ void APP_Tasks(void)
                     send_data_to_PIC(arm_done_pack);
                     SEGGER_RTT_printf(0, "data_counts = %d\n", appData.data_counts);
                     SEGGER_RTT_printf(0, "final count = %d\n", sizeof(subsampled_raw_data_t));
-                    SEGGER_RTT_printf(0, "size of meta data = %d\n", sizeof(data_header_t));
                     appData.data_counts = 0;
 
                 }
@@ -666,7 +661,7 @@ void APP_Tasks(void)
             nrf_delay_ms(200); //wait for PIC to stop requesting accel
 //            nrf_delay_ms(200); //wait for PIC to stop requesting accel
             //SEGGER_RTT_printf(0, "PROBE ERROR = %d\n", metadata.error_code);
-            err_code = ble_probe_error_update(&m_pes, metadata.error_code);
+            err_code = ble_probe_error_update(&m_pes, appData.probe_error_code);
 
 
             appData.state = APP_STATE_POLLING;
@@ -1125,3 +1120,4 @@ void APP_Tasks(void)
 //				}
 //		}
 //}
+

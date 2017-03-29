@@ -127,50 +127,14 @@ typedef struct{
 }device_info_t;
 #define BYTES_OF_DEVICE_INFO sizeof(device_data_t)
 extern device_info_t device_info;
-    
 
-
-/***** meta data struct *****/
-typedef struct  data_header
-{
-    /**********  Environmental ************/
-    int8_t      temperature; // in degrees C
-    //Date and Time
-    float       location[2];//Location
-    
-    /*********** Test Specific  ***********/
-    uint16_t    test_num; //test number (device specific)
-    uint16_t    profile_depth;
-    uint8_t     battery_capacity;
-    float       test_time; //seconds
-    uint8_t     error_code;
-    
-    /********** Device Specific  *************/
-    uint8_t     accel_FS; //full scale of accelerometer
-    uint16_t    gyro_FS; 
-    uint16_t    force_cal[5]; //in ADC counts
-
-    uint16_t    optical_cal;
-
-    
-    /*************  User Settings ************/
-    
-    /*************  Versions and Revisions ************/
-    char        serial_number[8]; // device serial #
-    char        PIC_firmware_version[8]; //ex. 1.0.3
-    char        ARM_firmware_version[8];
-    uint8_t     main_PCB_rev; //ex. 3
-    uint8_t     NRF_PCB_rev;
-   
-    //add the rest here...
-} data_header_t;
 #define BYTES_OF_METADATA sizeof(data_header_t)
-extern data_header_t metadata;
+#define MAX_BYTES_OF_METADATA 256
 
 #define PROFILE_MAX_COUNT 3000
 typedef struct profile_data
 {
-    data_header_t metadata;
+    uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t profile[PROFILE_MAX_COUNT];
 }profile_data_t;
 extern profile_data_t profile_data;
@@ -181,7 +145,7 @@ extern profile_data_t profile_data;
 #define POINTS_PER_RAW_SIGNAL 1000
 typedef struct raw_sub_data
 {
-    data_header_t metadata;
+    uint8_t metadata[MAX_BYTES_OF_METADATA];
     uint8_t test_number;
     uint8_t profile[1500];
     uint16_t force[POINTS_PER_RAW_SIGNAL];
@@ -191,7 +155,7 @@ typedef struct raw_sub_data
 #define BYTES_RAW_SUB_DATA sizeof(subsampled_raw_data_t)
     
 #define RAW_DATA_BUFFER_SIZE 2000
-#define BYTES_RAW_TEST_DATA 60067
+#define BYTES_RAW_TEST_DATA 60264
 extern uint8_t raw_data_buff[RAW_DATA_BUFFER_SIZE];
 
 typedef struct profile_id
@@ -217,9 +181,12 @@ typedef struct
     APP_STATES prev_state;
     profile_id_t profile_id;
     uint16_t new_profile_num;
+    uint16_t profile_size;
     uint16_t ble_status;
 	bool ble_disconnect_flag;
     uint8_t status;
+    float time_location[3];
+    uint8_t probe_error_code;
     bool send_imu_flag;
     bool imu_enabled;
     uint16_t data_counts;

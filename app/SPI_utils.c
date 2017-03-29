@@ -79,7 +79,7 @@ pic_arm_pack_t accelerometer_pack = {PA_IMU_DATA, (uint8_t *)&imu_data, sizeof(i
 pic_arm_pack_t arm_done_pack = {PA_ARM_DONE, dummy_buf, 0};
 pic_arm_pack_t raw_data_ack_pack = {PA_RAW_DATA, dummy_buf, 0};
 pic_arm_pack_t profile_id_pack = {PA_PROFILE_ID, (uint8_t *)&(appData.profile_id), sizeof(profile_id_t)};
-pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)metadata.location, 12};
+pic_arm_pack_t location_time_pack = {PA_LOCATION_TIME, (uint8_t *)appData.time_location, 12};
 pic_arm_pack_t spis_fail_pack = {PA_TIMEOUT, dummy_buf, 0};
 pic_arm_pack_t serial_set_pack = {PA_SERIAL_SET, (uint8_t *)&device_info.serial_number, 6};
 pic_arm_pack_t xmodem_pack = {PA_XMODEM, dummy_buf, 0};
@@ -218,6 +218,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             {
                 appData.ble_disconnect_flag = false;
                 SEGGER_RTT_printf(0, "PA_PROFILE\n");
+                appData.profile_size = packet->length; //so we know how much to transmit later
 				rx_data_ptr = &profile_data;
 				next_state = APP_STATE_PROFILE_TRANSFER; //TODO
                 break;
@@ -288,7 +289,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
             case PA_PROBE_ERROR:
             {
                 SEGGER_RTT_printf(0, "PA_PROBE_ERROR\n");
-                rx_data_ptr = &(metadata.error_code);
+                rx_data_ptr = &(appData.probe_error_code);
                 next_state = APP_STATE_PROBE_ERROR;
                 break;
             }
