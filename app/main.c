@@ -912,10 +912,9 @@ int main(void)
 
 
         SEGGER_RTT_printf(0, "updating number of available tests to %d", device_info.number_of_tests);
-        profile_ids_update(&m_ps, device_info.number_of_tests - 1);    
+        profile_ids_update(&m_ps, device_info.number_of_tests);    
         SEGGER_RTT_WriteString(0, "main loop:\n");
         nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);  //set hal sensor pin to digital input
-        
         
         if(CALIBRATION) appData.state = APP_STATE_SET_PIC_CAL;	
         
