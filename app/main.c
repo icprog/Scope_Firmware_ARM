@@ -959,10 +959,12 @@ int main(void)
     uint32_t err_code;
     bool erase_bonds;  
     //NRF_POWER->RESET = 0;
+   // nrf_gpio_cfg_output(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_PULLDOWN);
     nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
     nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
     //nrf_delay_ms(100);
     nrf_gpio_cfg_input(SCOPE_HALL_PIN,NRF_GPIO_PIN_PULLDOWN);
+
  // Initialize.
     //SEGGER_RTT_WriteString(0, "main init\n");
     sleep_timeout_flash_flag =  setup_flash_storage(3);
@@ -1022,13 +1024,15 @@ SEGGER_RTT_printf(0, "flash 2:  %d", setup_flash_storage(0));
 nrf_delay_ms(100);
 
 //SEGGER_RTT_printf(0, "flash 4:  %d", setup_flash_storage(0));
+nrf_gpio_pin_dir_set(SCOPE_3V3_ENABLE_PIN,NRF_GPIO_PIN_DIR_OUTPUT);  // pin to toggle power for main PCB
+    nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
 
         SEGGER_RTT_WriteString(0, "start of main loop: \n");
         while(true)
         {
             if(nrf_gpio_pin_read(SCOPE_HALL_PIN) == 1 || CALIBRATION)  //out of pole or in Calibration, run normal loop
             {
-           
+                nrf_gpio_pin_set(SCOPE_3V3_ENABLE_PIN); //enable power
                 power_manage();
                 APP_Tasks();    
                 //ble_debug_update(&m_ds,debug_message,20);
