@@ -62,7 +62,13 @@ Scope has a somewhat complicated sleep/power system due to its low power require
 TODO: need to detail out the sleep stuff.
 
 ### Firmware Update
-Updating the FW on the ARM is pretty easy once it's set up. FWU requires a bootloader which contains custom FW and a BLE Profile that connects to a special service we have set up on the app. Like the PIC, the ARM has a dual bank configuration so it can boot into either bank.The bootloader code handles the transfer of data from the phone to the opposite bank and booting into it. We still need to test that we can get back to the other bank in case of the FWU failure. 
+Updating the FW on the ARM is pretty easy once it's set up. FWU requires a bootloader which contains custom FW and a BLE Profile that connects to a special service we have set up on the app. Like the PIC, the ARM has a dual bank configuration so it can boot into either bank.The bootloader code handles the transfer of data from the phone to the opposite bank and booting into it. We still need to test that we can get back to the other bank in case of the FWU failure.
+
+For updating firmware from the app, the code will need to be packaged as a zip. We use a utility called nrfutil. This is easily downlaoded and installed on Windows, but took a little inginuity to get it working on OSX. To generate the zip file need by the DFU api run the following command from the command line or terminal:
+```
+>>> nrfutil dfu genpkg --application path_to_hex_file.hex name_of_created_zip.zip
+```
+
 
 ### Accelerometer and Gyro
 The ARM board contains an Accelerometer ([LSM303D](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/LSM303D.pdf)) and Gyro ([L3GD20H](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/L3GD20H.pdf) for detemining orientation and helping with depth accuracy. They share a SPI bus connected to that ARM. Unfortunately, the ARm doesn't really need this data, it just sends it to the PIC. The device samples the accelerometer and gyro at 500Hz and sends this info to the PIC, which basically occupies the entire bandwhich of that SPI comms channel. We have run into lots of issues with sending accelerometer while trying to do something else. We currently have a system that disbales it if we are trying to do something that needs to control the PIC-ARM link for a little while. The accelerometer is sampled and sent on timer depending on if it is enabled or not. The PIC has the ability to enable and disbale it depending on when it needs acc data. The Arm also has the ability to override this if it wants to change the state flow. There is a lot of optimizatoin to be donw with this system.
