@@ -161,6 +161,18 @@ void battery_timeout_handler(void *p_context)
     ax_old = imu_data.ax;
     ay_old = imu_data.ay;
     az_old = imu_data.az;
+    
+    
+    //stuff that probably should have its own timer but is here instead:
+    if(appData.SPIS_timeout_flag == 1)
+    {
+        SEGGER_RTT_printf(0, "transfer timed out :(\n");
+        appData.transfer_in_progress = false;
+        spis_rx_transfer_length = 0;
+        appData.state = APP_STATE_SPIS_FAIL;
+    }
+    appData.SPIS_timeout_flag = 0;
+    UNUSED_PARAMETER(p_context);
 }
 
 void slope_timeout_handler(void *p_context)
@@ -177,19 +189,6 @@ void slope_timeout_handler(void *p_context)
 
 void status_timeout_handler(void *p_context)
 {
-
-    //stuff that probably should have its own timer but is here instead:
-    UNUSED_PARAMETER(p_context);
-    if(appData.SPIS_timeout_flag == 1)
-    {
-        SEGGER_RTT_printf(0, "transfer timed out :(\n");
-        appData.transfer_in_progress = false;
-        spis_rx_transfer_length = 0;
-        appData.state = APP_STATE_SPIS_FAIL;
-    }
-    appData.SPIS_timeout_flag = 0;
-    UNUSED_PARAMETER(p_context);
-    
     //actual status update:
     ble_status_status_level_update(&m_status, appData.status);
 }

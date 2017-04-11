@@ -593,17 +593,17 @@ void on_write_profile_service(ble_ps_t * p_ps, ble_evt_t * p_ble_evt)
     {
         SEGGER_RTT_printf(0,"time and location received \n");
         memcpy(&(appData.time_and_loc), (p_evt_write->data), p_evt_write->len);
-        for(int i = 0;i<p_evt_write->len;i++)
-        {
-            SEGGER_RTT_printf(0, "0x%x ", (p_evt_write->data)[i]);
-        }
-        SEGGER_RTT_printf(0, "\n in our structure: ");
-        for(int i = 0;i<4;i++)
-        {
-            SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(appData.time_and_loc.seconds_since_2001))[i]);
-        }
+//        for(int i = 0;i<p_evt_write->len;i++)
+//        {
+//            SEGGER_RTT_printf(0, "0x%x ", (p_evt_write->data)[i]);
+//        }
+//        SEGGER_RTT_printf(0, "\n in our structure: ");
+//        for(int i = 0;i<4;i++)
+//        {
+//            SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(appData.time_and_loc.seconds_since_2001))[i]);
+//        }
         uint32_t temp = appData.time_and_loc.seconds_since_2001;
-        SEGGER_RTT_printf(0, "time = %d", temp);
+        //SEGGER_RTT_printf(0, "time = %d", temp);
         /*SEGGER_RTT_printf(0, "loc = %f, %f    time =  %d\n", appData.time_and_loc.lat_long[0], 
                                                             appData.time_and_loc.lat_long[1],
                                                             appData.time_and_loc.seconds_since_2001);

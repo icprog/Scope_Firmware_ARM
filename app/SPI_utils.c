@@ -160,7 +160,7 @@ uint8_t send_data_to_PIC(pic_arm_pack_t pa_pack)
  */
 uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
 {
-    nrf_gpio_pin_clear(SCOPE_SPIS_READY); //clear ready pin
+    //nrf_gpio_pin_clear(SCOPE_SPIS_READY); //clear ready pin
     header_packet_t * packet = (header_packet_t *)rx_buffer;
     static APP_STATES next_state = APP_STATE_POLLING;
 	char debug_out_string[20];
@@ -331,7 +331,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
                 next_state = appData.state;
                 break;
             }
-            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+            //nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
         }
         if(!appData.transfer_in_progress)
         {
@@ -349,7 +349,7 @@ uint8_t parse_packet_from_PIC(uint8_t * rx_buffer, uint8_t rx_buffer_length)
         appData.SPIS_timeout_flag = 0;
         if(spis_rx_transfer_length == 0) //finished transferring
         {
-            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+            //nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
             SEGGER_RTT_printf(0, "finished transferring, cur state %d, next state %d\n", appData.state, next_state);
             appData.transfer_in_progress = false;
             appData.state = next_state;

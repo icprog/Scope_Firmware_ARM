@@ -161,12 +161,13 @@ void APP_Initialize(void)
         appData.ble_status = 0;
         appData.data_counts = 0;
         appData.send_imu_flag = false;
+        appData.imu_paused = false;
         appData.status = 0;
         appData.ack = 1;
 		init_LSM303();
         init_L3GD();
-        nrf_gpio_cfg_output(SCOPE_SPIS_READY);
-        nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+        //nrf_gpio_cfg_output(SCOPE_SPIS_READY);
+        //nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
 		SEGGER_RTT_WriteString(0, "APP Init End \n");
         
         // set CAL mode on PIC if necessary:
@@ -200,7 +201,7 @@ void APP_Tasks(void)
         case APP_STATE_INIT:
         {
             SEGGER_RTT_WriteString(0, "init state \n");
-            nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+            //nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
             //prompt();
             send_data_to_PIC(arm_done_pack); //send arm done just in case PIC is waiting for PCB test
             appData.state = APP_STATE_POLLING;
@@ -210,7 +211,7 @@ void APP_Tasks(void)
         case APP_STATE_POLLING:
         {
 
-          nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
+            //nrf_gpio_pin_set(SCOPE_SPIS_READY); //set ready pin
 
 
             //SEGGER_RTT_WriteString(0, "APP_STATE_POLLING \n");
@@ -709,17 +710,19 @@ void APP_Tasks(void)
         }
         case APP_STATE_TIME_AND_LOC:
         {
+            //SEGGER_RTT_printf(0, "time + loc\n");
             bool imu_enabled = appData.imu_enabled;
             if(imu_enabled == true)
             {
+                //disable_imu();
                 appData.imu_paused = true;
             }   
             send_data_to_PIC(location_time_pack);
             //SEGGER_RTT_printf(0, "\n in our structure: ");
-            for(int i = 0;i<location_time_pack.data_size;i++)
-            {
-                SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(location_time_pack.data))[i]);
-            }
+//            for(int i = 0;i<location_time_pack.data_size;i++)
+//            {
+//                SEGGER_RTT_printf(0, "0x%x ", ((uint8_t *)&(location_time_pack.data))[i]);
+//            }
             appData.state = APP_STATE_POLLING;
             break;
         }
@@ -1037,10 +1040,10 @@ void APP_Tasks(void)
         }
     }
     /****** keeping imu sending out of state machine becuase it can happen in multiple states ***/
-    if(appData.send_imu_flag && !appData.imu_paused)
+    if(appData.send_imu_flag && !appData.imu_paused && spis_tx_transfer_length == 0)
     {
-        send_data_to_PIC(accelerometer_pack);
         appData.send_imu_flag = false;
+        send_data_to_PIC(accelerometer_pack);
     }
 }
 
