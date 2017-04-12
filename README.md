@@ -33,6 +33,7 @@ Processor: [NRF51822](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/doc
     * [Power and Sleep](#power-and-sleep)
     * [Firmware Update](#firmware-update)
     * [Accelerometer and Gyro](accelerometer-and-gyro)
+    * [Calibration](#calibration)
 
 ----
 
@@ -74,4 +75,7 @@ For updating firmware from the app, the code will need to be packaged as a zip. 
 The ARM board contains an Accelerometer ([LSM303D](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/LSM303D.pdf)) and Gyro ([L3GD20H](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/L3GD20H.pdf) for detemining orientation and helping with depth accuracy. They share a SPI bus connected to that ARM. Unfortunately, the ARm doesn't really need this data, it just sends it to the PIC. The device samples the accelerometer and gyro at 500Hz and sends this info to the PIC, which basically occupies the entire bandwhich of that SPI comms channel. We have run into lots of issues with sending accelerometer while trying to do something else. We currently have a system that disbales it if we are trying to do something that needs to control the PIC-ARM link for a little while. The accelerometer is sampled and sent on timer depending on if it is enabled or not. The PIC has the ability to enable and disbale it depending on when it needs acc data. The Arm also has the ability to override this if it wants to change the state flow. There is a lot of optimizatoin to be donw with this system.
 
 NOTE: we currently not using or sending gyro info to the PIC. 
+
+### Calibration
+Unlike the PIC, the ARM firmware needs to be recompiled in a special mode to calibrate the device. To set the ARM in calibration mode the change `#define CALIBRATION 0` to `#define CALIBRATION 1`. Once in calibration mode, the reset functionality is disabled to be able to properly test the magnetic sensor system. The test flow is also disabled, so it will not vibrate and light up when vertically oriented. Furthermore, the BLE profile is different than in normal operations so there is a seperate calibration app that connects to this profile. The device will not work with the normal app when in calibration mode. The ARM mostly coordinates information transfer between the PIC and the phone. The two most important calibration procedures are the Optical Sensor and the Force Sensor. These sensors actually need to use a calibration value to be accurate as the sensors depend in the manufacturing practices. The other processes are for testing different systems.
 
