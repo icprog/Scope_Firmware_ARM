@@ -34,6 +34,7 @@ Processor: [NRF51822](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/doc
     * [Firmware Update](#firmware-update)
     * [Accelerometer and Gyro](accelerometer-and-gyro)
     * [Calibration](#calibration)
+4. [Release Instructions](doc/release_instructions.md)
 
 ----
 
