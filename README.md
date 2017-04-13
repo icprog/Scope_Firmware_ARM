@@ -33,6 +33,7 @@ Processor: [NRF51822](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/doc
     * [Power and Sleep](#power-and-sleep)
     * [Firmware Update](#firmware-update)
     * [Accelerometer and Gyro](accelerometer-and-gyro)
+    * [Calibration](#calibration)
 
 ----
 
@@ -62,10 +63,22 @@ Scope has a somewhat complicated sleep/power system due to its low power require
 TODO: need to detail out the sleep stuff.
 
 ### Firmware Update
-Updating the FW on the ARM is pretty easy once it's set up. FWU requires a bootloader which contains custom FW and a BLE Profile that connects to a special service we have set up on the app. Like the PIC, the ARM has a dual bank configuration so it can boot into either bank.The bootloader code handles the transfer of data from the phone to the opposite bank and booting into it. We still need to test that we can get back to the other bank in case of the FWU failure. 
+Updating the FW on the ARM is pretty easy once it's set up. FWU requires a bootloader which contains custom FW and a BLE Profile that connects to a special service we have set up on the app. Like the PIC, the ARM has a dual bank configuration so it can boot into either bank.The bootloader code handles the transfer of data from the phone to the opposite bank and booting into it. We still need to test that we can get back to the other bank in case of the FWU failure.
+
+For updating firmware from the app, the code will need to be packaged as a zip. We use a utility called nrfutil. This is easily downlaoded and installed on Windows, but took a little inginuity to get it working on OSX. To generate the zip file need by the DFU api run the following command from the command line or terminal:
+```
+>>> nrfutil dfu genpkg --application path_to_hex_file.hex name_of_created_zip.zip
+```
+
 
 ### Accelerometer and Gyro
 The ARM board contains an Accelerometer ([LSM303D](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/LSM303D.pdf)) and Gyro ([L3GD20H](https://github.com/avatech-inc/Scope_Firmware_ARM/blob/documentation/doc/Scope%20Datasheets/L3GD20H.pdf) for detemining orientation and helping with depth accuracy. They share a SPI bus connected to that ARM. Unfortunately, the ARm doesn't really need this data, it just sends it to the PIC. The device samples the accelerometer and gyro at 500Hz and sends this info to the PIC, which basically occupies the entire bandwhich of that SPI comms channel. We have run into lots of issues with sending accelerometer while trying to do something else. We currently have a system that disbales it if we are trying to do something that needs to control the PIC-ARM link for a little while. The accelerometer is sampled and sent on timer depending on if it is enabled or not. The PIC has the ability to enable and disbale it depending on when it needs acc data. The Arm also has the ability to override this if it wants to change the state flow. There is a lot of optimizatoin to be donw with this system.
 
 NOTE: we currently not using or sending gyro info to the PIC. 
+
+### Calibration
+Unlike the PIC, the ARM firmware needs to be recompiled in a special mode to calibrate the device. To set the ARM in calibration mode the change `#define CALIBRATION 0` to `#define CALIBRATION 1`. Once in calibration mode, the reset functionality is disabled to be able to properly test the magnetic sensor system. The test flow is also disabled, so it will not vibrate and light up when vertically oriented. Furthermore, the BLE profile is different than in normal operations so there is a seperate calibration app that connects to this profile. The device will not work with the normal app when in calibration mode. The ARM mostly coordinates information transfer between the PIC and the phone. The two most important calibration procedures are the Optical Sensor and the Force Sensor. These sensors actually need to use a calibration value to be accurate as the sensors depend in the manufacturing practices. The other processes are for testing different systems.
+
+### PCB Test
+Another part of our QA procedure involves testing the PCB assembly before assmebling the entire product and calibrating it. This allows us to reject bad PCBs early in the process. The code lives in pcb_test.c. To execute the tests, the boards should be in the PCB test jig, which includes a UART link to a computer. The results fo the test are displayed over UART. The tests are run by `run_pcb_tests()` when the PIC sends over a command to tell the ARM that the device is in the PCB test jig and running the tests. This function has an array of function pointers that point to the actual tests. If adding a new test, write the test as a seperate function with no parameters and returning a uint8_t, then add its header as a funtion pointer to the array in `run_pcb_tests()`. These test are designed to check if the ICs are turning on and generally working.
 
